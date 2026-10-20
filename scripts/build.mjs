@@ -241,6 +241,13 @@ for (const k of Object.keys(logos)) {
 out("avatar/avatar.svg", avatar(512), 1024);
 out("avatar/favicon.svg", avatar(64, 12), 64);
 
+// Google Workspace header logo (Admin console → Account → Personalization):
+// 320×132 max. XENA on a space tile so it reads on light and dark themes
+// alike; XENA STUDIOS is illegible at the ~40px height Gmail draws it.
+out("workspace/logo.svg", logoBox("short", { w: 320, h: 132, fill: C.text, bg: C.space, radius: 16, scaleW: 0.78, scaleH: 0.42 }), 320);
+
+// The horizon on its own, no type: backgrounds for the website and anything else.
+out("scene/horizon.svg", svgDoc(2400, 900, `<rect width="2400" height="900" fill="${C.void}"/>` + planetLimb(2400, 900, { cx: 1200, r: 2400 * 1.3, top: 900 * 0.62 })), 2400);
 out("social/x-header.svg", orgCard(1500, 500), 3000);
 out("social/discord-banner.svg", orgCard(960, 540, { scale: 0.75 }), 1920);
 out("social/og-card.svg", orgCard(1200, 630, { scale: 0.85 }), 2400);

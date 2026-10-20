@@ -61,6 +61,15 @@ Every Xena graphic uses the same scene: a flat `void` sky and one huge planet wh
 | `social/og-card` | 1200×630 | Link preview for xenastudios.co |
 | `avatar/avatar` | 512×512 | GitHub org and social avatars |
 | `avatar/favicon` | 64×64 | Favicon |
+| `scene/horizon` | 2400×900 | The horizon alone, no type: website and slide backgrounds |
+
+## Google Workspace
+
+Upload [`workspace/logo.png`](workspace/logo.png) (320×132, Google's maximum) in the Admin console under **Account → Account settings → Personalization → Logo → Custom logo**. It shows at the top of Gmail, Calendar and Drive, and can take up to 3 days to appear.
+
+<img src="workspace/logo.png" width="160" alt="Workspace logo">
+
+It's the short **XENA** form on a `space` tile: users pick light or dark themes, so a transparent logo would vanish on one of them, and XENA STUDIOS is illegible at the ~40px height Gmail draws it.
 
 ## Raptor
 

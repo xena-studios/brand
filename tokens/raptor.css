@@ -1,0 +1,21 @@
+:root {
+  --raptor-signal-red: oklch(0.66 0.19 25); /* #F05653 */
+  --raptor-signal-red-daylight: oklch(0.545 0.215 25); /* #D01025 */
+  --raptor-on-signal: oklch(0.17 0.03 25); /* #1B0A09 */
+  --raptor-ink: oklch(0.145 0.012 25); /* #0F0808 */
+  --raptor-ink-raised: oklch(0.185 0.013 25); /* #181110 */
+  --raptor-ink-sidebar: oklch(0.125 0.01 25); /* #0A0505 */
+  --raptor-ink-muted: oklch(0.225 0.014 25); /* #221918 */
+  --raptor-ink-rule: oklch(0.3 0.012 25); /* #342C2B */
+  --raptor-bone: oklch(0.96 0.005 25); /* #F5F0F0 */
+  --raptor-ash: oklch(0.68 0.011 25); /* #9F9695 */
+  --raptor-daylight: oklch(0.975 0.004 25); /* #F9F6F5 */
+  --raptor-daylight-raised: oklch(0.955 0.006 25); /* #F4EFEE */
+  --raptor-daylight-rule: oklch(0.88 0.01 25); /* #DED5D4 */
+  --raptor-graphite: oklch(0.18 0.018 25); /* #190F0E */
+  --raptor-slate: oklch(0.46 0.013 25); /* #5F5554 */
+  --raptor-ok: oklch(0.8 0.16 150); /* #66DA85 */
+  --raptor-warn: oklch(0.82 0.15 80); /* #F7B83D */
+  --raptor-danger: oklch(0.72 0.17 10); /* #FB718C */
+  --raptor-terminal-ink: #0a0c11; /* #0A0C11 */
+}

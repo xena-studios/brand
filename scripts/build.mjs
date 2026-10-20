@@ -8,7 +8,7 @@ import path from "node:path";
 import os from "node:os";
 import opentype from "opentype.js";
 import { Resvg } from "@resvg/resvg-js";
-import { clawPath, raptorPath, wordmarkPath, wordmarkBox } from "./raptor-brand.mjs";
+import { clawPath, raptorPath, wordmarkPath, raptorColors, lockup } from "./raptor-brand.mjs";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const FONT_DIR = path.join(os.homedir(), "Library/Fonts");
@@ -17,6 +17,8 @@ const fontFile = (p) => opentype.parse(fs.readFileSync(p).buffer);
 const display = fontFile(process.env.ETHNOCENTRIC ?? path.join(ROOT, ".local-fonts/Ethnocentric-Regular.otf"));
 const mono = fontFile(process.env.MONO ?? path.join(FONT_DIR, "JetBrainsMono-Regular.ttf"));
 const monoLight = fontFile(process.env.MONO_LIGHT ?? path.join(FONT_DIR, "JetBrainsMono-Light.ttf"));
+// Raptor's sans (OFL), static 700 instance from Google Fonts.
+const hankenBold = fontFile(process.env.HANKEN_BOLD ?? path.join(ROOT, ".local-fonts/HankenGrotesk-700.ttf"));
 
 // ---------------------------------------------------------------- tokens
 
@@ -26,12 +28,35 @@ export const C = {
   muted: "#8A93A6", text: "#EDF1F7", accent: "#5CB4FF",
 };
 
-// Raptor keeps its own identity (red, Archivo wordmark, raptor, claw R);
-// Xena provides the horizon and the "XENA STUDIOS" endorsement.
+// oklch() → #rrggbb, so Raptor's DESIGN.md tokens render anywhere (resvg,
+// image editors) while the oklch values stay the source of truth.
+function oklchHex(v) {
+  const m = v.match(/oklch\(([\d.]+) ([\d.]+) ([\d.]+)\)/);
+  if (!m) return v.toUpperCase();
+  const [L, Ch, h] = [+m[1], +m[2], (+m[3] * Math.PI) / 180];
+  const a = Ch * Math.cos(h), b = Ch * Math.sin(h);
+  const l = (L + 0.3963377774 * a + 0.2158037573 * b) ** 3;
+  const mm = (L - 0.1055613458 * a - 0.0638541728 * b) ** 3;
+  const s = (L - 0.0894841775 * a - 1.291485548 * b) ** 3;
+  const rgb = [
+    4.0767416621 * l - 3.3077115913 * mm + 0.2309699292 * s,
+    -1.2684380046 * l + 2.6097574011 * mm - 0.3413193965 * s,
+    -0.0041960863 * l - 0.7034186147 * mm + 1.707614701 * s,
+  ];
+  return "#" + rgb.map((x) => {
+    x = Math.min(1, Math.max(0, x));
+    x = x <= 0.0031308 ? 12.92 * x : 1.055 * x ** (1 / 2.4) - 0.055;
+    return Math.round(x * 255).toString(16).padStart(2, "0");
+  }).join("").toUpperCase();
+}
+const hexify = (svg) => svg.replace(/oklch\([^)]+\)/g, oklchHex);
+
+// Raptor keeps its own identity (docs/DESIGN.md in xena-studios/raptor):
+// Signal Red on warm Ink, the raptor + RAPTOR lockup, and the claw R.
+const R = Object.fromEntries(Object.entries(raptorColors).map(([k, v]) => [k, oklchHex(v)]));
 const raptor = {
-  red: "#F05653",
-  tagline: "Turn any Linux box into a reliable game server host.",
-  kind: "GAME SERVER PANEL",
+  kicker: "// GAME SERVER PANEL",
+  headline: ["Your own game servers, ", "on your own machine."],
 };
 
 const ORG_TAGLINE = "Game server infrastructure, built in the open.";
@@ -131,34 +156,35 @@ const avatar = (size = 512, radius = 0) => logoBox("x", { w: size, h: size, fill
 
 // ---------------------------------------------------------------- raptor
 
-// Claw R on a red tile, as Raptor's favicon draws it.
-const clawTile = (x, y, size, r = size * 0.22) =>
-  `<rect x="${f(x)}" y="${f(y)}" width="${f(size)}" height="${f(size)}" rx="${f(r)}" fill="${raptor.red}"/>` +
-  `<path d="${clawPath}" transform="translate(${f(x + size * 0.055)} ${f(y + size * 0.8)}) scale(${f((size / 32) * 0.028 * 1e4) / 1e4})" fill-rule="evenodd" fill="#FFFFFF"/>`;
+// The favicon / app icon: claw R in on-signal Ink on a Signal Red tile, 6/32 corners.
+const raptorIcon = (size) => svgDoc(size, size,
+  `<rect width="${size}" height="${size}" rx="${f((size * 6) / 32)}" fill="${R["signal-red"]}"/>` +
+  `<path d="${clawPath}" transform="translate(${f((size * 1.76) / 32)} ${f((size * 25.6) / 32)}) scale(${f(((size / 32) * 0.028) * 1e5) / 1e5})" fill-rule="evenodd" fill="${R["on-signal"]}"/>`);
 
-// "RAPTOR" wordmark with its ink cap height = `cap`, left edge at x, baseline y.
-const raptorWordmark = (x, y, cap, fill) => {
-  const s = cap / 687.4;
-  return { svg: `<path d="${wordmarkPath}" transform="translate(${f(x - wordmarkBox.x * s)} ${f(y)}) scale(${f(s * 1e5) / 1e5})" fill="${fill}"/>`, width: wordmarkBox.w * s };
-};
+// The small mark: claw R alone in Signal Red (logo.tsx's Logo).
+const raptorMark = (size) => svgDoc(size, size,
+  `<path d="${clawPath}" transform="translate(${f((size * -0.9) / 32)} ${f((size * 28.3) / 32)}) scale(${f(((size / 32) * 0.0335) * 1e5) / 1e5})" fill-rule="evenodd" fill="${R["signal-red"]}"/>`);
 
-const raptorRun = (x, y, h, fill) => {
-  const s = h / 46;
-  return `<path d="${raptorPath}" transform="translate(${f(x)} ${f(y - 3 * s)}) scale(${f(s * 1e4) / 1e4})" fill-rule="evenodd" fill="${fill}"/>`;
+// The full logo, raptor beside RAPTOR, at height h with its top-left at (x, y).
+const raptorLogo = (x, y, h, word = R.bone) => {
+  const s = h / lockup.h;
+  return `<g transform="translate(${f(x)} ${f(y)}) scale(${f(s * 1e4) / 1e4})">` +
+    `<path transform="translate(0 -3)" fill-rule="evenodd" fill="${R["signal-red"]}" d="${raptorPath}"/>` +
+    `<path transform="translate(${lockup.word.x} ${lockup.word.y}) scale(${lockup.word.scale})" fill="${word}" d="${wordmarkPath}"/></g>`;
 };
 
 // ---------------------------------------------------------------- scenery
 
 // The horizon: a huge planet whose Ion Blue limb arcs across the bottom of the frame.
-function planetLimb(w, h, { cx = w * 0.62, r = w * 1.1, top = h * 0.74 } = {}) {
+function planetLimb(w, h, { cx = w * 0.62, r = w * 1.1, top = h * 0.74, sky = C.void, body = C.surface, rim = C.accent } = {}) {
   const cy = top + r;
   const g = id("limb"), b = id("glow");
   return `<defs><linearGradient id="${g}" x1="0" y1="${f(top)}" x2="0" y2="${f(top + h * 0.5)}" gradientUnits="userSpaceOnUse">` +
-    `<stop offset="0" stop-color="${C.surface}"/><stop offset="1" stop-color="${C.void}"/></linearGradient>` +
+    `<stop offset="0" stop-color="${body}"/><stop offset="1" stop-color="${sky}"/></linearGradient>` +
     `<filter id="${b}" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="${f(h * 0.035)}"/></filter></defs>` +
-    `<circle cx="${f(cx)}" cy="${f(cy)}" r="${f(r)}" fill="none" stroke="${C.accent}" stroke-width="${f(h * 0.05)}" opacity="0.22" filter="url(#${b})"/>` +
+    `<circle cx="${f(cx)}" cy="${f(cy)}" r="${f(r)}" fill="none" stroke="${rim}" stroke-width="${f(h * 0.05)}" opacity="0.22" filter="url(#${b})"/>` +
     `<circle cx="${f(cx)}" cy="${f(cy)}" r="${f(r)}" fill="url(#${g})"/>` +
-    `<circle cx="${f(cx)}" cy="${f(cy)}" r="${f(r)}" fill="none" stroke="${C.accent}" stroke-width="1.5" opacity="0.7"/>`;
+    `<circle cx="${f(cx)}" cy="${f(cy)}" r="${f(r)}" fill="none" stroke="${rim}" stroke-width="1.5" opacity="0.7"/>`;
 }
 
 // ---------------------------------------------------------------- compositions
@@ -176,32 +202,20 @@ function orgCard(w, h, { scale = 1 } = {}) {
   return svgDoc(w, h, body);
 }
 
-// Raptor README banner, 1920×600: the raptor always sits beside the name.
+// Raptor README banner, 1920×600, in Raptor's own colours and type: Ink sky,
+// the full logo, a // kicker, and the site's headline in Hanken Grotesk.
 function raptorBanner() {
   const W = 1920, H = 600;
-  let body = `<rect width="${W}" height="${H}" fill="${C.void}"/>`;
-  body += planetLimb(W, H, { cx: W * 0.7, r: W * 1.25, top: H * 0.8 });
-  body += logo("full", { x: 120, y: 98, cap: 14, fill: C.text }).svg;
-  body += text(mono, raptor.kind, { size: 17, tracking: 0.3, fill: C.muted, x: W - 120, y: 111, anchor: "end" }).svg;
-  const cap = 74, base = 300, runH = 100, runW = runH * (96 / 46), wx = 120 + runW + 40;
-  body += raptorRun(120, base - cap / 2 - runH / 2, runH, raptor.red);
-  body += raptorWordmark(wx, base, cap, C.text).svg;
-  body += text(monoLight, raptor.tagline, { size: 30, tracking: 0.02, fill: C.muted, x: wx + 2, y: base + 62 }).svg;
+  let body = `<rect width="${W}" height="${H}" fill="${R.ink}"/>`;
+  body += planetLimb(W, H, { cx: W * 0.7, r: W * 1.25, top: H * 0.8, sky: R.ink, body: R["ink-raised"], rim: R["signal-red"] });
+  body += logo("full", { x: 120, y: 98, cap: 14, fill: R.bone }).svg;
+  body += text(mono, raptor.kicker, { size: 17, tracking: 0.18, fill: R.ash, x: W - 120, y: 111, anchor: "end" }).svg;
+  body += raptorLogo(120, 196, 72);
+  const size = 54, y = 384;
+  const a = text(hankenBold, raptor.headline[0], { size, tracking: -0.02, fill: R.bone, x: 122, y });
+  const space = hankenBold.charToGlyph(" ").advanceWidth * (size / hankenBold.unitsPerEm);
+  body += a.svg + text(hankenBold, raptor.headline[1], { size, tracking: -0.02, fill: R["signal-red"], x: a.right + space, y }).svg;
   return svgDoc(W, H, body);
-}
-
-// Raptor link preview, 1200×630.
-function raptorCard() {
-  const w = 1200, h = 630, runH = 64, cap = 58, runW = runH * (96 / 46);
-  let body = `<rect width="${w}" height="${h}" fill="${C.void}"/>`;
-  body += planetLimb(w, h, { cx: w / 2, r: w * 1.3, top: h * 0.8 });
-  const total = runW + 28 + raptorWordmark(0, 0, cap, "").width, x0 = (w - total) / 2, cy = h * 0.4;
-  body += raptorRun(x0, cy - runH / 2, runH, raptor.red);
-  body += raptorWordmark(x0 + runW + 28, cy + cap / 2, cap, C.text).svg;
-  body += text(monoLight, raptor.tagline, { size: 24, tracking: 0.02, fill: C.muted, x: w / 2, y: cy + 90, anchor: "middle" }).svg;
-  const lw = logo("full", { cap: 11, fill: "" }).width;
-  body += logo("full", { x: (w - lw) / 2, y: h - 72, cap: 11, fill: C.muted }).svg;
-  return svgDoc(w, h, body);
 }
 
 // ---------------------------------------------------------------- output
@@ -232,11 +246,20 @@ out("social/discord-banner.svg", orgCard(960, 540, { scale: 0.75 }), 1920);
 out("social/og-card.svg", orgCard(1200, 630, { scale: 0.85 }), 2400);
 
 out("raptor/banner.svg", raptorBanner(), 3840);
-out("raptor/og-card.svg", raptorCard(), 2400);
-out("raptor/icon.svg", svgDoc(512, 512, clawTile(0, 0, 512, 112)), 1024);
+out("raptor/icon.svg", raptorIcon(512), 1024);
+out("raptor/mark.svg", raptorMark(512), 1024);
+out("raptor/logo-dark.svg", svgDoc(lockup.w * 4, lockup.h * 4, raptorLogo(0, 0, lockup.h * 4)), 2312);
+out("raptor/logo-light.svg", svgDoc(lockup.w * 4, lockup.h * 4, raptorLogo(0, 0, lockup.h * 4, R.graphite).replace(R["signal-red"], R["signal-red-daylight"])), 2312);
+// PNG previews of the official files copied from xena-studios/raptor.
+for (const f of ["logo-dark", "logo-light", "favicon"]) {
+  const svg = hexify(fs.readFileSync(path.join(ROOT, `raptor/official/${f}.svg`), "utf8"));
+  fs.writeFileSync(path.join(ROOT, `raptor/official/${f}.png`), new Resvg(svg, { fitTo: { mode: "width", value: f === "favicon" ? 512 : 1156 } }).render().asPng());
+}
 
 fs.mkdirSync(path.join(ROOT, "tokens"), { recursive: true });
 fs.writeFileSync(path.join(ROOT, "tokens/colors.json"), JSON.stringify(C, null, 2) + "\n");
 fs.writeFileSync(path.join(ROOT, "tokens/colors.css"), `:root {\n${Object.entries(C).map(([k, v]) => `  --xena-${k}: ${v};`).join("\n")}\n}\n`);
+fs.writeFileSync(path.join(ROOT, "tokens/raptor.json"), JSON.stringify(Object.fromEntries(Object.entries(raptorColors).map(([k, v]) => [k, { oklch: v.startsWith("oklch") ? v : null, hex: oklchHex(v) }])), null, 2) + "\n");
+fs.writeFileSync(path.join(ROOT, "tokens/raptor.css"), `:root {\n${Object.entries(raptorColors).map(([k, v]) => `  --raptor-${k}: ${v}; /* ${oklchHex(v)} */`).join("\n")}\n}\n`);
 
 console.log(`wrote ${written.length} svgs (+png)`);

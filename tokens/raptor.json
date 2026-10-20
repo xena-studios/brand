@@ -1,0 +1,78 @@
+{
+  "signal-red": {
+    "oklch": "oklch(0.66 0.19 25)",
+    "hex": "#F05653"
+  },
+  "signal-red-daylight": {
+    "oklch": "oklch(0.545 0.215 25)",
+    "hex": "#D01025"
+  },
+  "on-signal": {
+    "oklch": "oklch(0.17 0.03 25)",
+    "hex": "#1B0A09"
+  },
+  "ink": {
+    "oklch": "oklch(0.145 0.012 25)",
+    "hex": "#0F0808"
+  },
+  "ink-raised": {
+    "oklch": "oklch(0.185 0.013 25)",
+    "hex": "#181110"
+  },
+  "ink-sidebar": {
+    "oklch": "oklch(0.125 0.01 25)",
+    "hex": "#0A0505"
+  },
+  "ink-muted": {
+    "oklch": "oklch(0.225 0.014 25)",
+    "hex": "#221918"
+  },
+  "ink-rule": {
+    "oklch": "oklch(0.3 0.012 25)",
+    "hex": "#342C2B"
+  },
+  "bone": {
+    "oklch": "oklch(0.96 0.005 25)",
+    "hex": "#F5F0F0"
+  },
+  "ash": {
+    "oklch": "oklch(0.68 0.011 25)",
+    "hex": "#9F9695"
+  },
+  "daylight": {
+    "oklch": "oklch(0.975 0.004 25)",
+    "hex": "#F9F6F5"
+  },
+  "daylight-raised": {
+    "oklch": "oklch(0.955 0.006 25)",
+    "hex": "#F4EFEE"
+  },
+  "daylight-rule": {
+    "oklch": "oklch(0.88 0.01 25)",
+    "hex": "#DED5D4"
+  },
+  "graphite": {
+    "oklch": "oklch(0.18 0.018 25)",
+    "hex": "#190F0E"
+  },
+  "slate": {
+    "oklch": "oklch(0.46 0.013 25)",
+    "hex": "#5F5554"
+  },
+  "ok": {
+    "oklch": "oklch(0.8 0.16 150)",
+    "hex": "#66DA85"
+  },
+  "warn": {
+    "oklch": "oklch(0.82 0.15 80)",
+    "hex": "#F7B83D"
+  },
+  "danger": {
+    "oklch": "oklch(0.72 0.17 10)",
+    "hex": "#FB718C"
+  },
+  "terminal-ink": {
+    "oklch": null,
+    "hex": "#0A0C11"
+  }
+}

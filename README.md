@@ -257,6 +257,7 @@ In [`tokens/plugins.css`](tokens/plugins.css) (`--plugin-*`, plus `--plugin-<id>
 | GitHub org profile header (`.github`) | `social/x-header.png` |
 | X / Twitter header, Discord banner | `social/x-header.png`, `social/discord-banner.png` |
 | xenastudios.co favicon, link preview | synced into `xena-studios/website` by its `npm run brand:sync` |
+| docs.xenastudios.co logo, favicon, plugin icons | synced into `xena-studios/plugins` by `npm run brand:sync` in `docs/` |
 | Google Workspace header logo | `workspace/logo.png` |
 | Team profile photos | `people/<name>.png` |
 | Raptor README | `raptor/banner.png` |

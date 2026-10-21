@@ -77,7 +77,7 @@ Upload [`workspace/logo.png`](workspace/logo.png) (320×132, Google's maximum) i
 
 <img src="workspace/logo.png" width="160" alt="Workspace logo">
 
-It's the short **XENA** form on a `space` tile: users pick light or dark themes, so a transparent logo would vanish on one of them, and XENA STUDIOS is illegible at the ~40px height Gmail draws it.
+It's the short **XENA** form in black on a transparent background. Google frames the logo in white, so a dark tile looks like a box with a border; and XENA STUDIOS is illegible at the ~40px height Gmail draws it.
 
 ## Raptor
 

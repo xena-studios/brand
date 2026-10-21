@@ -253,9 +253,10 @@ out("raptor/mark.svg", raptorMark(512), 1024);
 out("raptor/logo-dark.svg", svgDoc(lockup.w * 4, lockup.h * 4, raptorLogo(0, 0, lockup.h * 4)), 2312);
 out("raptor/logo-light.svg", svgDoc(lockup.w * 4, lockup.h * 4, raptorLogo(0, 0, lockup.h * 4, R.graphite).replace(R["signal-red"], R["signal-red-daylight"])), 2312);
 // Google Workspace header logo (Admin console → Account → Personalization):
-// 320×132 max. XENA on a space tile so it reads on light and dark themes
-// alike; XENA STUDIOS is illegible at the ~40px height Gmail draws it.
-out("workspace/logo.svg", logoBox("short", { w: 320, h: 132, fill: C.text, bg: C.space, radius: 16, scaleW: 0.78, scaleH: 0.42 }), 320);
+// 320×132 max. Black XENA on transparent: Google frames the logo in white, so a
+// dark tile reads as a box with a border. XENA STUDIOS is illegible at the
+// ~40px height Gmail draws it. As large as the half-cap clear space allows.
+out("workspace/logo.svg", logoBox("short", { w: 320, h: 132, fill: "#0A0B10", scaleW: 0.86, scaleH: 0.5 }), 320);
 
 // The horizon on its own, no type: backgrounds for the website and anything else.
 out("scene/horizon.svg", svgDoc(2400, 900, `<rect width="2400" height="900" fill="${C.void}"/>` + planetLimb(2400, 900, { cx: 1200, r: 2400 * 1.3, top: 900 * 0.62 })), 2400);

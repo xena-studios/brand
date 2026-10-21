@@ -77,7 +77,6 @@ Every Xena graphic uses the same scene: a flat sky and one huge planet whose lim
 | `social/x-header` | 1500×500 | X / Twitter header |
 | `social/discord-banner` | 960×540 | Discord server banner |
 | `social/og-card` | 1200×630 | Link preview for xenastudios.co |
-| `social/docs-og` | 1200×630 | Link preview for docs.xenastudios.co |
 | `avatar/avatar` | 512×512 | GitHub, Modrinth and social avatars |
 | `avatar/favicon` | 64×64 | Favicon |
 | `scene/horizon` | 2400×900 | The horizon alone, no type: website and slide backgrounds |
@@ -255,6 +254,8 @@ In [`tokens/plugins.css`](tokens/plugins.css) (`--plugin-*`, plus `--plugin-<id>
 | `plugins/<id>/icon` | 512×512 | Modrinth project icon, GitHub repo avatar |
 | `plugins/<id>/banner` | 1920×600 (PNG @2×) | Top of the Modrinth description and the README |
 | `plugins/<id>/social` | 1280×640 | GitHub social preview |
+| `plugins/horizon` | 2400×900 | The family's stepped horizon alone, rim in all three accents: the docs' home page |
+| `social/docs-og` | 1200×630 | docs.xenastudios.co's link preview: the three icons and "Plugin docs" |
 
 ## Where each file goes
 

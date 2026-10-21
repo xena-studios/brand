@@ -412,6 +412,20 @@ function pluginsCard(W = 1280, H = 640) {
   return svgDoc(W, H, body);
 }
 
+// The plugin docs' link preview, in the family's look: the three icons, the
+// title and a line over the three-accent stepped horizon.
+function pluginDocsCard(W = 1200, H = 630) {
+  const s = 0.9, dy = (H - 600 * s) / 2, m = 120 * s, Y = (v) => dy + v * s;
+  let body = `<rect width="${W}" height="${H}" fill="${PC.bg}"/>` + blockHorizon(W, H, plugins.map((p) => p.accent), s);
+  body += logo("full", { x: m, y: Y(98), cap: 14 * s, fill: PC.text }).svg;
+  body += text(mono, "// PLUGIN DOCS", { size: 17 * s, tracking: 0.18, fill: PC.muted, x: W - m, y: Y(111), anchor: "end" }).svg;
+  const ts = Math.round(64 * s);
+  plugins.forEach((p, i) => { body += pluginTile(p, f(m + i * (ts + 14 * s)), f(Y(176)), ts, f(13 * s)); });
+  body += text(groteskBold, "Plugin docs", { size: 96 * s, tracking: -0.03, fill: PC.text, x: m, y: Y(340) }).svg;
+  body += text(groteskBold, "Setup, commands and config for xUtilities, zChat and xLimbo.", { size: 30 * s, tracking: -0.01, fill: PC.muted, x: m, y: Y(400) }).svg;
+  return svgDoc(W, H, body);
+}
+
 const repoCards = {
   brand: { kicker: "// BRAND", title: "Brand", lead: "Logos, colours and graphics for every Xena brand." },
   website: { kicker: "// WEBSITE", title: "xenastudios.co", lead: "The studio's website. Astro, served by Cloudflare." },
@@ -485,7 +499,9 @@ out("neoskript/social.svg", nsBanner(1280, 640, 0.9, false), 1280);
 // GitHub social previews (repo Settings → Social preview) and the docs' link preview.
 for (const [name, card] of Object.entries(repoCards)) out(`github/${name}.svg`, xenaCard(card), 1280);
 out("github/plugins.svg", pluginsCard(), 1280);
-out("social/docs-og.svg", xenaCard({ kicker: "// PLUGIN DOCS", title: "Plugin docs", lead: "xUtilities, zChat and xLimbo: setup, commands, config.", icons: true }, 1200, 630), 2400);
+out("social/docs-og.svg", pluginDocsCard(), 2400);
+// The family's horizon alone, rim in all three accents: the docs' home page.
+out("plugins/horizon.svg", svgDoc(2400, 900, `<rect width="2400" height="900" fill="${PC.bg}"/>` + blockHorizon(2400, 900, plugins.map((p) => p.accent), 1.5)), 2400);
 
 // PNG previews of the official files copied from xena-studios/raptor.
 for (const f of ["logo-dark", "logo-light", "favicon"]) {

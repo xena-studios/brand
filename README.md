@@ -160,9 +160,9 @@ NeoSkript is a fast, modern drop-in replacement for Skript, and a product with i
 
 <img src="neoskript/logo-dark.png" width="300" alt="NeoSkript logo"> &nbsp; <img src="neoskript/icon.png" width="64" alt="NeoSkript icon">
 
-- **The mark**: a script in three strokes. An event line ending in a colon (`on join:`), the indented line under it, and the cursor. It says *Skript* to anyone who has written one, without borrowing Skript's own logo.
-- **Full logo**: the mark in magenta beside the **NeoSkript** wordmark (Geist Bold, -0.03em tracking, outlined), the mark 1.2 × the cap height. Text-colour wordmark on dark, `ink` on light; the magenta switches to its Daylight value on light.
-- **Icon / avatar / favicon**: the mark in `night` on a magenta tile with 7/32 corners. It's the loudest icon Xena has on purpose: on Modrinth it sits among hundreds of Skript addons.
+- **The mark**: **`.sk`**, the Skript file extension, in Geist Bold. Every Skript user knows `.sk` means their scripts, so the icon says "runs your scripts" at a glance, which is the drop-in pitch. It never appears loose next to the wordmark; small, it lives on its tile.
+- **Icon / avatar / favicon**: `.sk` in `night` on a magenta tile with 7/32 corners. It's the loudest icon Xena has on purpose: on Modrinth it sits among hundreds of Skript addons. It stays readable down to 32px.
+- **Full logo**: the icon tile beside the **NeoSkript** wordmark (Geist Bold, -0.03em tracking, outlined), the tile 1.5 × the cap height. Text-colour wordmark on dark, `ink` on light; on light the tile switches to `magenta-daylight`. The `.sk` on the tile is always `night`.
 - **Name**: always **NeoSkript**, one word, capital N and S. Never "Neo Skript", "Neoskript" or "NS".
 - One flat colour per mark: no gradients, outlines or shadows.
 
@@ -196,9 +196,9 @@ In [`tokens/neoskript.css`](tokens/neoskript.css) (`--neoskript-*`) and [`tokens
 | `neoskript/social` | GitHub social preview, 1280×640 |
 | `neoskript/logo-dark`, `neoskript/logo-light` | Full logo for dark / light backgrounds |
 | `neoskript/icon` | Modrinth project icon, GitHub avatar, favicon (512) |
-| `neoskript/mark` | The mark alone, in magenta |
+| `neoskript/mark` | `.sk` alone, in magenta, for spots that already have the name |
 
-Colours, the mark's geometry and the copy are in [`scripts/neoskript-brand.mjs`](scripts/neoskript-brand.mjs).
+Colours, the mark and the copy are in [`scripts/neoskript-brand.mjs`](scripts/neoskript-brand.mjs).
 
 ## Plugins
 

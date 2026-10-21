@@ -10,7 +10,7 @@ import opentype from "opentype.js";
 import { Resvg } from "@resvg/resvg-js";
 import { clawPath, raptorPath, wordmarkPath, raptorColors, lockup } from "./raptor-brand.mjs";
 import { pluginColors as PC, plugins, glyphCells } from "./plugin-brand.mjs";
-import { neoskriptColors as NS, neoskript, mark as nsMarkBody, markBox } from "./neoskript-brand.mjs";
+import { neoskriptColors as NS, neoskript, markText } from "./neoskript-brand.mjs";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const FONT_DIR = path.join(os.homedir(), "Library/Fonts");
@@ -305,24 +305,25 @@ function pluginBanner(p, W = 1920, H = 600, s = W / 1920) {
 // NeoSkript keeps its own identity (scripts/neoskript-brand.mjs): Neo Magenta on
 // night, the script mark, and Geist. Xena frames it as it frames Raptor.
 
-// The mark with its ink top-left at (x, y), h tall.
-const nsMark = (x, y, h, fill, cursor = fill) => {
-  const k = h / markBox.h;
-  return `<g transform="translate(${f(x - markBox.x * k)} ${f(y - markBox.y * k)}) scale(${f(k * 1e4) / 1e4})">${nsMarkBody(fill, cursor)}</g>`;
-};
+// The .sk mark, ink-centred on (cx, cy), w wide.
+function nsMark(cx, cy, w, fill) {
+  const probe = text(geistBold, markText.str, { size: 100, tracking: markText.tracking, fill });
+  const size = (w / probe.width) * 100, t = text(geistBold, markText.str, { size, tracking: markText.tracking, fill, x: cx, anchor: "middle", y: 0 });
+  return t.svg.replace("<path ", `<path transform="translate(0 ${f(cy - (t.top + t.bottom) / 2)})" `);
+}
 
-// App icon / Modrinth icon / avatar: the mark in night on a magenta tile, 7/32 corners.
-const nsIcon = (size) => {
-  const h = size * 0.5, w = h * (markBox.w / markBox.h);
-  return svgDoc(size, size, `<rect width="${size}" height="${size}" rx="${f((size * 7) / 32)}" fill="${NS.magenta}"/>` +
-    nsMark((size - w) / 2, (size - h) / 2, h, NS.night));
-};
+// The icon: .sk in night on a magenta tile, 7/32 corners. App icon, Modrinth
+// icon, avatar, favicon; and, small, the logo's mark.
+const nsTile = (x, y, size, fg = NS.night, bg = NS.magenta) =>
+  `<rect x="${f(x)}" y="${f(y)}" width="${f(size)}" height="${f(size)}" rx="${f((size * 7) / 32)}" fill="${bg}"/>` +
+  nsMark(x + size / 2, y + size / 2, size * 0.62, fg);
+const nsIcon = (size) => svgDoc(size, size, nsTile(0, 0, size));
 
-// The logo: mark beside the NeoSkript wordmark, the mark 1.2 × the cap height.
+// The logo: the icon tile beside the NeoSkript wordmark, the tile 1.5 × the cap height.
 function nsLogo(x, y, cap, { word = NS.text, accent = NS.magenta } = {}) {
-  const size = cap / (capHeight(geistBold, 100) / 100), h = cap * 1.2, w = h * (markBox.w / markBox.h);
-  const t = text(geistBold, "NeoSkript", { x: x + w + cap * 0.42, y: y + (h + cap) / 2, size, tracking: -0.03, fill: word });
-  return { svg: nsMark(x, y, h, accent) + t.svg, width: t.right - x, height: h };
+  const size = cap / (capHeight(geistBold, 100) / 100), h = cap * 1.5;
+  const t = text(geistBold, "NeoSkript", { x: x + h + cap * 0.45, y: y + (h + cap) / 2, size, tracking: -0.03, fill: word });
+  return { svg: nsTile(x, y, h, NS.night, accent) + t.svg, width: t.right - x, height: h };
 }
 const nsLogoFile = (opts) => {
   const cap = 100, pad = cap / 2, l = nsLogo(pad, pad, cap, opts);
@@ -336,7 +337,7 @@ function nsBanner(W = 1920, H = 600, s = W / 1920, card = true) {
   body += planetLimb(W, H, { cx: W * 0.7, r: W * 1.25, top: H * 0.8, sky: NS.night, body: NS["night-raised"], rim: NS.magenta });
   body += logo("full", { x: m, y: Y(98), cap: 14 * s, fill: NS.text }).svg;
   body += text(mono, neoskript.kicker, { size: 17 * s, tracking: 0.18, fill: NS.muted, x: W - m, y: Y(111), anchor: "end" }).svg;
-  body += nsLogo(m, Y(198), 48 * s).svg;
+  body += nsLogo(m, Y(190), 46 * s).svg;
   const size = 54 * s, y = Y(384);
   const a = text(geistBold, neoskript.headline[0], { size, tracking: -0.025, fill: NS.text, x: m, y });
   const space = geistBold.charToGlyph(" ").advanceWidth * (size / geistBold.unitsPerEm);
@@ -415,7 +416,7 @@ for (const p of plugins) {
 // NeoSkript: icon (Modrinth, GitHub, favicon), small mark, dark/light logos,
 // README banner (1920×600 @2×) and GitHub social preview (1280×640).
 out("neoskript/icon.svg", nsIcon(512), 1024);
-out("neoskript/mark.svg", svgDoc(512, 512, nsMark(16, (512 - 480 * (markBox.h / markBox.w)) / 2, 480 * (markBox.h / markBox.w), NS.magenta)), 1024);
+out("neoskript/mark.svg", svgDoc(512, 512, nsMark(256, 256, 400, NS.magenta)), 1024);
 out("neoskript/logo-dark.svg", nsLogoFile({}), 2400);
 out("neoskript/logo-light.svg", nsLogoFile({ word: NS.ink, accent: NS["magenta-daylight"] }), 2400);
 out("neoskript/banner.svg", nsBanner(), 3840);

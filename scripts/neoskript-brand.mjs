@@ -16,14 +16,9 @@ export const neoskriptColors = {
   string: "#FFC2DD",           // string literals in code samples
 };
 
-// The mark, in a 64 × 64 box: an event line ending in a colon, the indented
-// line under it, and the cursor. A Skript script, being written.
-export const markBox = { x: 6, y: 9.4, w: 52, h: 44.6 };
-export const mark = (fill, cursor = fill) =>
-  `<rect x="6" y="10" width="34" height="10" rx="5" fill="${fill}"/>` +
-  `<circle cx="46" cy="12" r="2.6" fill="${fill}"/><circle cx="46" cy="18" r="2.6" fill="${fill}"/>` +
-  `<rect x="20" y="27" width="38" height="10" rx="5" fill="${fill}"/>` +
-  `<rect x="20" y="44" width="10" height="10" rx="1.5" fill="${cursor}"/>`;
+// The mark: ".sk", the Skript file extension, set in Geist Bold. It says "runs
+// your scripts" to every Skript user at a glance, which is the whole pitch.
+export const markText = { str: ".sk", tracking: -0.02 };
 
 export const neoskript = {
   kicker: "// SKRIPT, REBUILT",

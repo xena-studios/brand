@@ -1,5 +1,5 @@
 // Generates every Xena Studios brand asset from code: logos, avatar, social
-// graphics and Raptor's README banner. All type is converted to outlines so no
+// graphics, Raptor's README banner and the plugin family's icons and banners. All type is converted to outlines so no
 // font file ever ships (Ethnocentric's desktop EULA forbids redistribution).
 //
 //   npm run build
@@ -9,6 +9,7 @@ import os from "node:os";
 import opentype from "opentype.js";
 import { Resvg } from "@resvg/resvg-js";
 import { clawPath, raptorPath, wordmarkPath, raptorColors, lockup } from "./raptor-brand.mjs";
+import { pluginColors as PC, plugins, glyphCells } from "./plugin-brand.mjs";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const FONT_DIR = path.join(os.homedir(), "Library/Fonts");
@@ -19,6 +20,8 @@ const mono = fontFile(process.env.MONO ?? path.join(FONT_DIR, "JetBrainsMono-Reg
 const monoLight = fontFile(process.env.MONO_LIGHT ?? path.join(FONT_DIR, "JetBrainsMono-Light.ttf"));
 // Raptor's sans (OFL), static 700 instance from Google Fonts.
 const hankenBold = fontFile(process.env.HANKEN_BOLD ?? path.join(ROOT, ".local-fonts/HankenGrotesk-700.ttf"));
+// The plugin family's sans (OFL), static Bold from github.com/floriankarsten/space-grotesk.
+const groteskBold = fontFile(process.env.GROTESK_BOLD ?? path.join(ROOT, ".local-fonts/SpaceGrotesk-700.ttf"));
 
 // ---------------------------------------------------------------- tokens
 
@@ -220,6 +223,80 @@ function raptorBanner() {
   return svgDoc(W, H, body);
 }
 
+// ---------------------------------------------------------------- plugins
+// The plugin family (scripts/plugin-brand.mjs): a pixel glyph on a deepslate tile,
+// the name with its prefix letter in the accent, and Raptor's banner layout.
+
+const mix = (a, b, t) => "#" + [1, 3, 5].map((i) =>
+  Math.round(parseInt(a.slice(i, i + 2), 16) * (1 - t) + parseInt(b.slice(i, i + 2), 16) * t)
+    .toString(16).padStart(2, "0")).join("").toUpperCase();
+const tones = (a) => ({ light: mix(a, "#FFFFFF", 0.38), base: a, dark: mix(a, "#000000", 0.42), floor: mix(a, PC.bg, 0.45) });
+
+// The glyph at (x, y) in px-sized cells, over a hard drop shadow one cell down-right.
+function pluginGlyph(p, x, y, px) {
+  const cells = glyphCells(p.glyph), t = tones(p.accent);
+  let shadow = "", ink = "";
+  cells.forEach((row, gy) => row.forEach((c, gx) => {
+    if (!c) return;
+    if (c !== "floor") shadow += `<rect x="${x + (gx + 1) * px}" y="${y + (gy + 1) * px}" width="${px}" height="${px}"/>`;
+    ink += `<rect x="${x + gx * px}" y="${y + gy * px}" width="${px}" height="${px}" fill="${t[c]}"/>`;
+  }));
+  return `<g shape-rendering="crispEdges"><g fill="#000" opacity="0.35">${shadow}</g>${ink}</g>`;
+}
+
+// The icon tile: raised deepslate with a soft accent glow. Whole-pixel cells keep
+// small renders crisp; the 16-cell glyph is centred with 3 cells of margin.
+function pluginTile(p, x, y, size, radius = 0) {
+  const gid = id("pglow"), px = Math.max(1, Math.floor(size / 22)), off = Math.round((size - 16 * px) / 2);
+  return `<defs><radialGradient id="${gid}" cx="0.5" cy="0.45" r="0.65"><stop offset="0" stop-color="${p.accent}" stop-opacity="0.16"/><stop offset="1" stop-color="${p.accent}" stop-opacity="0"/></radialGradient></defs>` +
+    `<rect x="${x}" y="${y}" width="${size}" height="${size}" rx="${radius}" fill="${PC.raised}"/>` +
+    `<rect x="${x}" y="${y}" width="${size}" height="${size}" rx="${radius}" fill="url(#${gid})"/>` +
+    pluginGlyph(p, x + off, y + off, px);
+}
+
+// The name, prefix letter in the accent. Laid out as one word so kerning holds.
+function pluginName(p, x, y, size, fill = PC.text) {
+  const opts = { x, y, size, tracking: -0.02 };
+  const word = text(groteskBold, p.prefix + p.name, { ...opts, fill });
+  return text(groteskBold, p.prefix, { ...opts, fill: p.accent }).svg +
+    text(groteskBold, p.name, { ...opts, x: word.right, anchor: "end", fill }).svg;
+}
+
+// The horizon, same geometry as Raptor's, with its rim stepped into pixels.
+function blockHorizon(w, h, accent, s = 1) {
+  const cx = w * 0.7, r = w * 1.25, top = h * 0.8, cy = top + r, cell = Math.max(4, Math.round(8 * s));
+  const g = id("pbody"), b = id("pglow");
+  let body = "", rim = "";
+  for (let x = 0; x < w; x += cell) {
+    const yy = cy - Math.sqrt(Math.max(0, r * r - (x + cell / 2 - cx) ** 2)), row = Math.round(yy / 4) * 4;
+    if (row >= h) continue;
+    body += `<rect x="${x}" y="${row}" width="${cell}" height="${h - row}"/>`;
+    rim += `<rect x="${x}" y="${row}" width="${cell}" height="2"/>`;
+  }
+  return `<defs><linearGradient id="${g}" x1="0" y1="${f(top)}" x2="0" y2="${f(top + h * 0.5)}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${PC.raised}"/><stop offset="1" stop-color="${PC.bg}"/></linearGradient>` +
+    `<filter id="${b}" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="${f(h * 0.035)}"/></filter></defs>` +
+    `<circle cx="${f(cx)}" cy="${f(cy)}" r="${f(r)}" fill="none" stroke="${accent}" stroke-width="${f(h * 0.05)}" opacity="0.22" filter="url(#${b})"/>` +
+    `<g shape-rendering="crispEdges"><g fill="url(#${g})">${body}</g><g fill="${accent}" opacity="0.75">${rim}</g></g>`;
+}
+
+// Banner in Raptor's layout: XENA STUDIOS top-left, // kicker top-right, the
+// icon + name lockup, and a two-tone headline over the horizon. 1920×600 is the
+// Modrinth/README banner; other frames set the type scale `s` and centre it.
+function pluginBanner(p, W = 1920, H = 600, s = W / 1920) {
+  const dy = (H - 600 * s) / 2, m = 120 * s, Y = (v) => dy + v * s;
+  let body = `<rect width="${W}" height="${H}" fill="${PC.bg}"/>` + blockHorizon(W, H, p.accent, s);
+  body += logo("full", { x: m, y: Y(98), cap: 14 * s, fill: PC.text }).svg;
+  body += text(mono, p.kicker, { size: 17 * s, tracking: 0.18, fill: PC.muted, x: W - m, y: Y(111), anchor: "end" }).svg;
+  const ts = Math.round(80 * s);
+  body += pluginTile(p, f(m), f(Y(190)), ts, f(16 * s));
+  body += pluginName(p, m + ts + 26 * s, Y(251), 76 * s);
+  const size = 54 * s, y = Y(384);
+  const a = text(groteskBold, p.headline[0], { size, tracking: -0.02, fill: PC.text, x: m, y });
+  const space = groteskBold.charToGlyph(" ").advanceWidth * (size / groteskBold.unitsPerEm);
+  body += a.svg + text(groteskBold, p.headline[1], { size, tracking: -0.02, fill: p.accent, x: a.right + space, y }).svg;
+  return svgDoc(W, H, body);
+}
+
 // ---------------------------------------------------------------- output
 
 const written = [];
@@ -266,6 +343,15 @@ const people = { zachary: "Z" };
 for (const [name, ch] of Object.entries(people))
   out(`people/${name}.svg`, logoBox({ str: ch, tracking: 0 }, { w: 512, h: 512, fill: C.accent, bg: C.space, glow: C.accent, scaleH: 0.4, scaleW: 0.6 }), 1024);
 
+// The plugin family: Modrinth icon (512), README/Modrinth banner (1920×600 @2×)
+// and GitHub social preview (1280×640, GitHub's recommended size).
+for (const p of plugins) {
+  out(`plugins/${p.id}/icon.svg`, svgDoc(512, 512, pluginTile(p, 0, 0, 512)), 512);
+  out(`plugins/${p.id}/banner.svg`, pluginBanner(p), 3840);
+  // Link cards shrink this to ~500px wide, so the type runs near full width.
+  out(`plugins/${p.id}/social.svg`, pluginBanner(p, 1280, 640, 0.9), 1280);
+}
+
 // PNG previews of the official files copied from xena-studios/raptor.
 for (const f of ["logo-dark", "logo-light", "favicon"]) {
   const svg = hexify(fs.readFileSync(path.join(ROOT, `raptor/official/${f}.svg`), "utf8"));
@@ -277,5 +363,9 @@ fs.writeFileSync(path.join(ROOT, "tokens/colors.json"), JSON.stringify(C, null, 
 fs.writeFileSync(path.join(ROOT, "tokens/colors.css"), `:root {\n${Object.entries(C).map(([k, v]) => `  --xena-${k}: ${v};`).join("\n")}\n}\n`);
 fs.writeFileSync(path.join(ROOT, "tokens/raptor.json"), JSON.stringify(Object.fromEntries(Object.entries(raptorColors).map(([k, v]) => [k, { oklch: v.startsWith("oklch") ? v : null, hex: oklchHex(v) }])), null, 2) + "\n");
 fs.writeFileSync(path.join(ROOT, "tokens/raptor.css"), `:root {\n${Object.entries(raptorColors).map(([k, v]) => `  --raptor-${k}: ${v}; /* ${oklchHex(v)} */`).join("\n")}\n}\n`);
+
+const pluginTokens = { ...PC, ...Object.fromEntries(plugins.map((p) => [p.id, p.accent])) };
+fs.writeFileSync(path.join(ROOT, "tokens/plugins.json"), JSON.stringify(pluginTokens, null, 2) + "\n");
+fs.writeFileSync(path.join(ROOT, "tokens/plugins.css"), `:root {\n${Object.entries(pluginTokens).map(([k, v]) => `  --plugin-${k}: ${v};`).join("\n")}\n}\n`);
 
 console.log(`wrote ${written.length} svgs (+png)`);

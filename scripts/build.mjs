@@ -14,7 +14,13 @@ import { neoskriptColors as NS, neoskript, markText } from "./neoskript-brand.mj
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const FONT_DIR = path.join(os.homedir(), "Library/Fonts");
-const fontFile = (p) => opentype.parse(fs.readFileSync(p).buffer);
+const fontFile = (p) => {
+  if (!fs.existsSync(p)) {
+    console.error(`Missing font: ${p}\nSee "Build" in README.md for where each font comes from, or set its path with the env var.`);
+    process.exit(1);
+  }
+  return opentype.parse(fs.readFileSync(p).buffer);
+};
 
 const display = fontFile(process.env.ETHNOCENTRIC ?? path.join(ROOT, ".local-fonts/Ethnocentric-Regular.otf"));
 const mono = fontFile(process.env.MONO ?? path.join(FONT_DIR, "JetBrainsMono-Regular.ttf"));

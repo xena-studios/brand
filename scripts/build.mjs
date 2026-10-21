@@ -25,6 +25,8 @@ const fontFile = (p) => {
 const display = fontFile(process.env.ETHNOCENTRIC ?? path.join(ROOT, ".local-fonts/Ethnocentric-Regular.otf"));
 const mono = fontFile(process.env.MONO ?? path.join(FONT_DIR, "JetBrainsMono-Regular.ttf"));
 const monoLight = fontFile(process.env.MONO_LIGHT ?? path.join(FONT_DIR, "JetBrainsMono-Light.ttf"));
+// xenastudios.co's heading weight, for the studio's repo cards and the docs' link preview.
+const monoSemi = fontFile(process.env.MONO_SEMIBOLD ?? path.join(FONT_DIR, "JetBrainsMono-SemiBold.ttf"));
 // Raptor's sans (OFL), static 700 instance from Google Fonts.
 const hankenBold = fontFile(process.env.HANKEN_BOLD ?? path.join(ROOT, ".local-fonts/HankenGrotesk-700.ttf"));
 // The plugin family's sans (OFL), static Bold from github.com/floriankarsten/space-grotesk.
@@ -273,20 +275,27 @@ function pluginName(p, x, y, size, fill = PC.text) {
 }
 
 // The horizon, same geometry as Raptor's, with its rim stepped into pixels.
+// `accent` is one colour, or a list that splits the visible rim into equal bands
+// left to right (the whole family's card).
 function blockHorizon(w, h, accent, s = 1) {
   const cx = w * 0.7, r = w * 1.25, top = h * 0.8, cy = top + r, cell = Math.max(4, Math.round(8 * s));
-  const g = id("pbody"), b = id("pglow");
+  const g = id("pbody"), b = id("pglow"), accents = [accent].flat();
+  // Where the rim enters the frame: cx minus the chord half-width at the bottom edge.
+  const x0 = Math.max(0, cx - Math.sqrt(Math.max(0, r * r - (cy - h) ** 2)));
+  const band = (x) => accents[Math.min(accents.length - 1, Math.max(0, Math.floor(((x - x0) / (w - x0)) * accents.length)))];
   let body = "", rim = "";
   for (let x = 0; x < w; x += cell) {
     const yy = cy - Math.sqrt(Math.max(0, r * r - (x + cell / 2 - cx) ** 2)), row = Math.round(yy / 4) * 4;
     if (row >= h) continue;
     body += `<rect x="${x}" y="${row}" width="${cell}" height="${h - row}"/>`;
-    rim += `<rect x="${x}" y="${row}" width="${cell}" height="2"/>`;
+    rim += `<rect x="${x}" y="${row}" width="${cell}" height="2" fill="${band(x)}"/>`;
   }
+  const glow = accents.length === 1 ? accents[0] : `url(#${b}g)`;
   return `<defs><linearGradient id="${g}" x1="0" y1="${f(top)}" x2="0" y2="${f(top + h * 0.5)}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${PC.raised}"/><stop offset="1" stop-color="${PC.bg}"/></linearGradient>` +
+    (accents.length > 1 ? `<linearGradient id="${b}g" x1="0" y1="0" x2="${w}" y2="0" gradientUnits="userSpaceOnUse">${accents.map((a, i) => `<stop offset="${f(i / (accents.length - 1))}" stop-color="${a}"/>`).join("")}</linearGradient>` : "") +
     `<filter id="${b}" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="${f(h * 0.035)}"/></filter></defs>` +
-    `<circle cx="${f(cx)}" cy="${f(cy)}" r="${f(r)}" fill="none" stroke="${accent}" stroke-width="${f(h * 0.05)}" opacity="0.22" filter="url(#${b})"/>` +
-    `<g shape-rendering="crispEdges"><g fill="url(#${g})">${body}</g><g fill="${accent}" opacity="0.75">${rim}</g></g>`;
+    `<circle cx="${f(cx)}" cy="${f(cy)}" r="${f(r)}" fill="none" stroke="${glow}" stroke-width="${f(h * 0.05)}" opacity="0.22" filter="url(#${b})"/>` +
+    `<g shape-rendering="crispEdges"><g fill="url(#${g})">${body}</g><g opacity="0.75">${rim}</g></g>`;
 }
 
 // Banner in Raptor's layout: XENA STUDIOS top-left, // kicker top-right, the
@@ -365,6 +374,50 @@ function nsBanner(W = 1920, H = 600, s = W / 1920, card = true) {
   return svgDoc(W, H, body);
 }
 
+// ---------------------------------------------------------------- repo cards
+// GitHub social previews (1280×640) and the docs' link preview, in Raptor's
+// banner layout so every card in the org reads as one set.
+
+// The studio's own card, in xenastudios.co's look: XENA STUDIOS top-left, a //
+// kicker top-right, a JetBrains Mono SemiBold title, a lead, and optionally the
+// plugin icons, over the Ion Blue horizon.
+function xenaCard({ kicker, title, lead, icons = false }, W = 1280, H = 640) {
+  const s = 0.9, dy = (H - 600 * s) / 2, m = 120 * s, Y = (v) => dy + v * s;
+  let body = `<rect width="${W}" height="${H}" fill="${C.void}"/>`;
+  body += planetLimb(W, H, { cx: W * 0.7, r: W * 1.25, top: H * 0.8 });
+  body += logo("full", { x: m, y: Y(98), cap: 14 * s, fill: C.text }).svg;
+  body += text(mono, kicker, { size: 17 * s, tracking: 0.18, fill: C.muted, x: W - m, y: Y(111), anchor: "end" }).svg;
+  body += text(monoSemi, title, { size: 104 * s, tracking: -0.03, fill: C.text, x: m, y: Y(292) }).svg;
+  body += text(monoLight, lead, { size: 31 * s, tracking: 0, fill: C.muted, x: m, y: Y(372) }).svg;
+  if (icons) plugins.forEach((p, i) => { body += pluginTile(p, f(m + i * 80 * s), f(Y(410)), Math.round(64 * s), f(13 * s)); });
+  return svgDoc(W, H, body);
+}
+
+// The plugin family's card: all three names in a row, a lead, and the stepped
+// horizon with its rim split into the three accents.
+function pluginsCard(W = 1280, H = 640) {
+  const s = 0.9, dy = (H - 600 * s) / 2, m = 120 * s, Y = (v) => dy + v * s;
+  let body = `<rect width="${W}" height="${H}" fill="${PC.bg}"/>` + blockHorizon(W, H, plugins.map((p) => p.accent), s);
+  body += logo("full", { x: m, y: Y(98), cap: 14 * s, fill: PC.text }).svg;
+  body += text(mono, "// PLUGINS", { size: 17 * s, tracking: 0.18, fill: PC.muted, x: W - m, y: Y(111), anchor: "end" }).svg;
+  const ts = Math.round(64 * s), size = 50 * s;
+  let x = m;
+  for (const p of plugins) {
+    body += pluginTile(p, f(x), f(Y(196)), ts, f(13 * s));
+    body += pluginName(p, x + ts + 18 * s, Y(196) + ts / 2 + size * 0.36, size);
+    const w = text(groteskBold, p.prefix + p.name, { size, tracking: -0.02, fill: "" }).width;
+    x += ts + 18 * s + w + 52 * s;
+  }
+  body += text(groteskBold, "Small, fast plugins for Paper servers.", { size: 48 * s, tracking: -0.02, fill: PC.text, x: m, y: Y(384) }).svg;
+  return svgDoc(W, H, body);
+}
+
+const repoCards = {
+  brand: { kicker: "// BRAND", title: "Brand", lead: "Logos, colours and graphics for every Xena brand." },
+  website: { kicker: "// WEBSITE", title: "xenastudios.co", lead: "The studio's website. Astro, served by Cloudflare." },
+  dotgithub: { kicker: "// GITHUB", title: "Xena Studios", lead: ORG_TAGLINE },
+};
+
 // ---------------------------------------------------------------- output
 
 const written = [];
@@ -428,6 +481,11 @@ out("neoskript/logo-dark.svg", nsLogoFile({}), 2400);
 out("neoskript/logo-light.svg", nsLogoFile({ word: NS.ink, accent: NS["magenta-daylight"] }), 2400);
 out("neoskript/banner.svg", nsBanner(), 3840);
 out("neoskript/social.svg", nsBanner(1280, 640, 0.9, false), 1280);
+
+// GitHub social previews (repo Settings → Social preview) and the docs' link preview.
+for (const [name, card] of Object.entries(repoCards)) out(`github/${name}.svg`, xenaCard(card), 1280);
+out("github/plugins.svg", pluginsCard(), 1280);
+out("social/docs-og.svg", xenaCard({ kicker: "// PLUGIN DOCS", title: "Plugin docs", lead: "xUtilities, zChat and xLimbo: setup, commands, config.", icons: true }, 1200, 630), 2400);
 
 // PNG previews of the official files copied from xena-studios/raptor.
 for (const f of ["logo-dark", "logo-light", "favicon"]) {

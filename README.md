@@ -77,9 +77,16 @@ Every Xena graphic uses the same scene: a flat sky and one huge planet whose lim
 | `social/x-header` | 1500×500 | X / Twitter header |
 | `social/discord-banner` | 960×540 | Discord server banner |
 | `social/og-card` | 1200×630 | Link preview for xenastudios.co |
+| `social/docs-og` | 1200×630 | Link preview for docs.xenastudios.co |
 | `avatar/avatar` | 512×512 | GitHub, Modrinth and social avatars |
 | `avatar/favicon` | 64×64 | Favicon |
 | `scene/horizon` | 2400×900 | The horizon alone, no type: website and slide backgrounds |
+
+### Repo cards
+
+<img src="github/brand.png" width="420" alt="Brand repo card"> &nbsp; <img src="github/plugins.png" width="420" alt="Plugins repo card">
+
+Every repo in the org gets a 1280×640 GitHub social preview in Raptor's banner layout, so they read as one set: XENA STUDIOS top-left, a `//` kicker top-right, the title, a line, and the horizon. The studio's own repos (`brand`, `website`, `.github`) use xenastudios.co's look, with the title in JetBrains Mono SemiBold. Products use their own banners (`neoskript/social`). The `plugins` repo shows all three plugins, its stepped rim split into their accents. Upload them in each repo's **Settings → General → Social preview**; GitHub has no API for it.
 
 ## People
 
@@ -263,7 +270,8 @@ In [`tokens/plugins.css`](tokens/plugins.css) (`--plugin-*`, plus `--plugin-<id>
 | Raptor README | `raptor/banner.png` |
 | NeoSkript Modrinth icon / description banner | `neoskript/icon.png`, `neoskript/banner.png` |
 | Plugin Modrinth icon / description banner | `plugins/<id>/icon.png`, `plugins/<id>/banner.png` |
-| GitHub repo social preview (Settings → Social preview) | `neoskript/social.png`, `plugins/<id>/social.png` |
+| GitHub repo social preview (Settings → Social preview) | `github/brand.png`, `github/website.png`, `github/dotgithub.png` (the `.github` repo), `github/plugins.png`, `neoskript/social.png`; Raptor sets its own |
+| docs.xenastudios.co link preview | `social/docs-og.png`, synced into `xena-studios/plugins` |
 
 ## Build
 

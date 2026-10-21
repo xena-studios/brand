@@ -312,11 +312,12 @@ function nsMark(cx, cy, w, fill) {
   return t.svg.replace("<path ", `<path transform="translate(0 ${f(cy - (t.top + t.bottom) / 2)})" `);
 }
 
-// The icon: .sk in night on a magenta tile, 7/32 corners. App icon, Modrinth
-// icon, avatar, favicon; and, small, the logo's mark.
+// The icon: .sk in night on a magenta tile, built like Raptor's: 6/32 corners and
+// the letters nearly filling the tile. App icon, Modrinth icon, avatar, favicon;
+// and, small, the logo's mark.
 const nsTile = (x, y, size, fg = NS.night, bg = NS.magenta) =>
-  `<rect x="${f(x)}" y="${f(y)}" width="${f(size)}" height="${f(size)}" rx="${f((size * 7) / 32)}" fill="${bg}"/>` +
-  nsMark(x + size / 2, y + size / 2, size * 0.62, fg);
+  `<rect x="${f(x)}" y="${f(y)}" width="${f(size)}" height="${f(size)}" rx="${f((size * 6) / 32)}" fill="${bg}"/>` +
+  nsMark(x + size / 2, y + size / 2, size * 0.76, fg);
 const nsIcon = (size) => svgDoc(size, size, nsTile(0, 0, size));
 
 // The logo: the icon tile beside the NeoSkript wordmark, the tile 1.5 × the cap height.

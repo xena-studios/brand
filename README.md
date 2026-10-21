@@ -161,7 +161,7 @@ NeoSkript is a fast, modern drop-in replacement for Skript, and a product with i
 <img src="neoskript/logo-dark.png" width="300" alt="NeoSkript logo"> &nbsp; <img src="neoskript/icon.png" width="64" alt="NeoSkript icon">
 
 - **The mark**: **`.sk`**, the Skript file extension, in Geist Bold. Every Skript user knows `.sk` means their scripts, so the icon says "runs your scripts" at a glance, which is the drop-in pitch. It never appears loose next to the wordmark; small, it lives on its tile.
-- **Icon / avatar / favicon**: `.sk` in `night` on a magenta tile with 7/32 corners. It's the loudest icon Xena has on purpose: on Modrinth it sits among hundreds of Skript addons. It stays readable down to 32px.
+- **Icon / avatar / favicon**: `.sk` in `night` on a magenta tile, built like Raptor's icon: 6/32 corners, the letters nearly filling the tile. It's the loudest icon Xena has on purpose: on Modrinth it sits among hundreds of Skript addons. It stays readable down to 32px.
 - **Full logo**: the icon tile beside the **NeoSkript** wordmark (Geist Bold, -0.03em tracking, outlined), the tile 1.5 × the cap height. Text-colour wordmark on dark, `ink` on light; on light the tile switches to `magenta-daylight`. The `.sk` on the tile is always `night`.
 - **Name**: always **NeoSkript**, one word, capital N and S. Never "Neo Skript", "Neoskript" or "NS".
 - One flat colour per mark: no gradients, outlines or shadows.

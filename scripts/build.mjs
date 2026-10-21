@@ -56,7 +56,7 @@ const hexify = (svg) => svg.replace(/oklch\([^)]+\)/g, oklchHex);
 const R = Object.fromEntries(Object.entries(raptorColors).map(([k, v]) => [k, oklchHex(v)]));
 const raptor = {
   kicker: "// GAME SERVER PANEL",
-  headline: ["Your own game servers, ", "on your own machine."],
+  headline: ["Pterodactyl had ", "a good run."],
 };
 
 const ORG_TAGLINE = "Game server infrastructure, built in the open.";

@@ -1,5 +1,5 @@
 // Generates every Xena Studios brand asset from code: logos, avatar, social
-// graphics, Raptor's README banner and the plugin family's icons and banners. All type is converted to outlines so no
+// graphics, Raptor's and NeoSkript's marks and banners, and the plugin family. All type is converted to outlines so no
 // font file ever ships (Ethnocentric's desktop EULA forbids redistribution).
 //
 //   npm run build
@@ -10,6 +10,7 @@ import opentype from "opentype.js";
 import { Resvg } from "@resvg/resvg-js";
 import { clawPath, raptorPath, wordmarkPath, raptorColors, lockup } from "./raptor-brand.mjs";
 import { pluginColors as PC, plugins, glyphCells } from "./plugin-brand.mjs";
+import { neoskriptColors as NS, neoskript, mark as nsMarkBody, markBox } from "./neoskript-brand.mjs";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const FONT_DIR = path.join(os.homedir(), "Library/Fonts");
@@ -22,6 +23,9 @@ const monoLight = fontFile(process.env.MONO_LIGHT ?? path.join(FONT_DIR, "JetBra
 const hankenBold = fontFile(process.env.HANKEN_BOLD ?? path.join(ROOT, ".local-fonts/HankenGrotesk-700.ttf"));
 // The plugin family's sans (OFL), static Bold from github.com/floriankarsten/space-grotesk.
 const groteskBold = fontFile(process.env.GROTESK_BOLD ?? path.join(ROOT, ".local-fonts/SpaceGrotesk-700.ttf"));
+// NeoSkript's sans and code faces (OFL), static instances from github.com/vercel/geist-font.
+const geistBold = fontFile(process.env.GEIST_BOLD ?? path.join(ROOT, ".local-fonts/Geist-700.ttf"));
+const geistMono = fontFile(process.env.GEIST_MONO ?? path.join(ROOT, ".local-fonts/GeistMono-500.ttf"));
 
 // ---------------------------------------------------------------- tokens
 
@@ -297,6 +301,62 @@ function pluginBanner(p, W = 1920, H = 600, s = W / 1920) {
   return svgDoc(W, H, body);
 }
 
+// ---------------------------------------------------------------- neoskript
+// NeoSkript keeps its own identity (scripts/neoskript-brand.mjs): Neo Magenta on
+// night, the script mark, and Geist. Xena frames it as it frames Raptor.
+
+// The mark with its ink top-left at (x, y), h tall.
+const nsMark = (x, y, h, fill, cursor = fill) => {
+  const k = h / markBox.h;
+  return `<g transform="translate(${f(x - markBox.x * k)} ${f(y - markBox.y * k)}) scale(${f(k * 1e4) / 1e4})">${nsMarkBody(fill, cursor)}</g>`;
+};
+
+// App icon / Modrinth icon / avatar: the mark in night on a magenta tile, 7/32 corners.
+const nsIcon = (size) => {
+  const h = size * 0.5, w = h * (markBox.w / markBox.h);
+  return svgDoc(size, size, `<rect width="${size}" height="${size}" rx="${f((size * 7) / 32)}" fill="${NS.magenta}"/>` +
+    nsMark((size - w) / 2, (size - h) / 2, h, NS.night));
+};
+
+// The logo: mark beside the NeoSkript wordmark, the mark 1.2 × the cap height.
+function nsLogo(x, y, cap, { word = NS.text, accent = NS.magenta } = {}) {
+  const size = cap / (capHeight(geistBold, 100) / 100), h = cap * 1.2, w = h * (markBox.w / markBox.h);
+  const t = text(geistBold, "NeoSkript", { x: x + w + cap * 0.42, y: y + (h + cap) / 2, size, tracking: -0.03, fill: word });
+  return { svg: nsMark(x, y, h, accent) + t.svg, width: t.right - x, height: h };
+}
+const nsLogoFile = (opts) => {
+  const cap = 100, pad = cap / 2, l = nsLogo(pad, pad, cap, opts);
+  return svgDoc(f(l.width + pad * 2), f(l.height + pad * 2), l.svg);
+};
+
+// Banner in Raptor's layout, with a code card showing a script that runs unchanged.
+function nsBanner(W = 1920, H = 600, s = W / 1920, card = true) {
+  const dy = (H - 600 * s) / 2, m = 120 * s, Y = (v) => dy + v * s;
+  let body = `<rect width="${W}" height="${H}" fill="${NS.night}"/>`;
+  body += planetLimb(W, H, { cx: W * 0.7, r: W * 1.25, top: H * 0.8, sky: NS.night, body: NS["night-raised"], rim: NS.magenta });
+  body += logo("full", { x: m, y: Y(98), cap: 14 * s, fill: NS.text }).svg;
+  body += text(mono, neoskript.kicker, { size: 17 * s, tracking: 0.18, fill: NS.muted, x: W - m, y: Y(111), anchor: "end" }).svg;
+  body += nsLogo(m, Y(198), 48 * s).svg;
+  const size = 54 * s, y = Y(384);
+  const a = text(geistBold, neoskript.headline[0], { size, tracking: -0.025, fill: NS.text, x: m, y });
+  const space = geistBold.charToGlyph(" ").advanceWidth * (size / geistBold.unitsPerEm);
+  body += a.svg + text(geistBold, neoskript.headline[1], { size, tracking: -0.025, fill: NS.magenta, x: a.right + space, y }).svg;
+  if (card) {
+    const cw = 620 * s, cx = W - m - cw, cy = Y(176), ch = 150 * s;
+    body += `<rect x="${f(cx)}" y="${f(cy)}" width="${f(cw)}" height="${f(ch)}" rx="${f(16 * s)}" fill="${NS["night-raised"]}" stroke="${NS["night-rule"]}" stroke-width="2"/>`;
+    body += text(mono, neoskript.sample.file, { x: cx + 30 * s, y: cy + 36 * s, size: 15 * s, tracking: 0.08, fill: NS.muted }).svg;
+    neoskript.sample.lines.forEach((line, i) => {
+      let lx = cx + 30 * s;
+      const ly = cy + (80 + i * 40) * s, adv = geistMono.charToGlyph(" ").advanceWidth * ((24 * s) / geistMono.unitsPerEm);
+      for (const [str, c] of line) {
+        if (str.trim()) body += text(geistMono, str.trimStart(), { x: lx + (str.length - str.trimStart().length) * adv, y: ly, size: 24 * s, fill: NS[c] }).svg;
+        lx += str.length * adv;
+      }
+    });
+  }
+  return svgDoc(W, H, body);
+}
+
 // ---------------------------------------------------------------- output
 
 const written = [];
@@ -352,6 +412,15 @@ for (const p of plugins) {
   out(`plugins/${p.id}/social.svg`, pluginBanner(p, 1280, 640, 0.9), 1280);
 }
 
+// NeoSkript: icon (Modrinth, GitHub, favicon), small mark, dark/light logos,
+// README banner (1920×600 @2×) and GitHub social preview (1280×640).
+out("neoskript/icon.svg", nsIcon(512), 1024);
+out("neoskript/mark.svg", svgDoc(512, 512, nsMark(16, (512 - 480 * (markBox.h / markBox.w)) / 2, 480 * (markBox.h / markBox.w), NS.magenta)), 1024);
+out("neoskript/logo-dark.svg", nsLogoFile({}), 2400);
+out("neoskript/logo-light.svg", nsLogoFile({ word: NS.ink, accent: NS["magenta-daylight"] }), 2400);
+out("neoskript/banner.svg", nsBanner(), 3840);
+out("neoskript/social.svg", nsBanner(1280, 640, 0.9, false), 1280);
+
 // PNG previews of the official files copied from xena-studios/raptor.
 for (const f of ["logo-dark", "logo-light", "favicon"]) {
   const svg = hexify(fs.readFileSync(path.join(ROOT, `raptor/official/${f}.svg`), "utf8"));
@@ -364,6 +433,8 @@ fs.writeFileSync(path.join(ROOT, "tokens/colors.css"), `:root {\n${Object.entrie
 fs.writeFileSync(path.join(ROOT, "tokens/raptor.json"), JSON.stringify(Object.fromEntries(Object.entries(raptorColors).map(([k, v]) => [k, { oklch: v.startsWith("oklch") ? v : null, hex: oklchHex(v) }])), null, 2) + "\n");
 fs.writeFileSync(path.join(ROOT, "tokens/raptor.css"), `:root {\n${Object.entries(raptorColors).map(([k, v]) => `  --raptor-${k}: ${v}; /* ${oklchHex(v)} */`).join("\n")}\n}\n`);
 
+fs.writeFileSync(path.join(ROOT, "tokens/neoskript.json"), JSON.stringify(NS, null, 2) + "\n");
+fs.writeFileSync(path.join(ROOT, "tokens/neoskript.css"), `:root {\n${Object.entries(NS).map(([k, v]) => `  --neoskript-${k}: ${v};`).join("\n")}\n}\n`);
 const pluginTokens = { ...PC, ...Object.fromEntries(plugins.map((p) => [p.id, p.accent])) };
 fs.writeFileSync(path.join(ROOT, "tokens/plugins.json"), JSON.stringify(pluginTokens, null, 2) + "\n");
 fs.writeFileSync(path.join(ROOT, "tokens/plugins.css"), `:root {\n${Object.entries(pluginTokens).map(([k, v]) => `  --plugin-${k}: ${v};`).join("\n")}\n}\n`);

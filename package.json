@@ -1,7 +1,7 @@
 {
   "name": "xena-brand",
   "version": "1.0.0",
-  "description": "Xena Studios brand system",
+  "description": "Xena Studios brand system: the studio, Raptor, NeoSkript and the plugin family",
   "scripts": {
     "build": "node scripts/build.mjs"
   },

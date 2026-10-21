@@ -63,6 +63,14 @@ Every Xena graphic uses the same scene: a flat `void` sky and one huge planet wh
 | `avatar/favicon` | 64×64 | Favicon |
 | `scene/horizon` | 2400×900 | The horizon alone, no type: website and slide backgrounds |
 
+## People
+
+Team profile photos (Google account, GitHub, Discord) use the avatar's style with the person's initial: Ion Blue on a `space` tile. They're square; Google and Discord crop them to a circle. Add someone to `people` in `scripts/build.mjs` and rebuild.
+
+| File | Person |
+|---|---|
+| [`people/zachary.png`](people/zachary.png) | Zachary, Founder |
+
 ## Google Workspace
 
 Upload [`workspace/logo.png`](workspace/logo.png) (320×132, Google's maximum) in the Admin console under **Account → Account settings → Personalization → Logo → Custom logo**. It shows at the top of Gmail, Calendar and Drive, and can take up to 3 days to appear.

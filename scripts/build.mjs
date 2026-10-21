@@ -125,9 +125,11 @@ export const logos = {
 
 const CAP = capHeight(display, 100) / 100;
 
-// Draws a logo with its ink top-left at (x, y) and the given cap height.
+// Draws a logo (a `logos` key, or any { str, tracking }) with its ink top-left
+// at (x, y) and the given cap height.
 function logo(key, { x = 0, y = 0, cap, fill }) {
-  const t = text(display, logos[key].str, { size: cap / CAP, tracking: logos[key].tracking, fill, x, y: y + cap });
+  const { str, tracking } = logos[key] ?? key;
+  const t = text(display, str, { size: cap / CAP, tracking, fill, x, y: y + cap });
   return { svg: t.svg, width: t.width };
 }
 
@@ -241,13 +243,6 @@ for (const k of Object.keys(logos)) {
 out("avatar/avatar.svg", avatar(512), 1024);
 out("avatar/favicon.svg", avatar(64, 12), 64);
 
-// Google Workspace header logo (Admin console → Account → Personalization):
-// 320×132 max. XENA on a space tile so it reads on light and dark themes
-// alike; XENA STUDIOS is illegible at the ~40px height Gmail draws it.
-out("workspace/logo.svg", logoBox("short", { w: 320, h: 132, fill: C.text, bg: C.space, radius: 16, scaleW: 0.78, scaleH: 0.42 }), 320);
-
-// The horizon on its own, no type: backgrounds for the website and anything else.
-out("scene/horizon.svg", svgDoc(2400, 900, `<rect width="2400" height="900" fill="${C.void}"/>` + planetLimb(2400, 900, { cx: 1200, r: 2400 * 1.3, top: 900 * 0.62 })), 2400);
 out("social/x-header.svg", orgCard(1500, 500), 3000);
 out("social/discord-banner.svg", orgCard(960, 540, { scale: 0.75 }), 1920);
 out("social/og-card.svg", orgCard(1200, 630, { scale: 0.85 }), 2400);
@@ -257,6 +252,19 @@ out("raptor/icon.svg", raptorIcon(512), 1024);
 out("raptor/mark.svg", raptorMark(512), 1024);
 out("raptor/logo-dark.svg", svgDoc(lockup.w * 4, lockup.h * 4, raptorLogo(0, 0, lockup.h * 4)), 2312);
 out("raptor/logo-light.svg", svgDoc(lockup.w * 4, lockup.h * 4, raptorLogo(0, 0, lockup.h * 4, R.graphite).replace(R["signal-red"], R["signal-red-daylight"])), 2312);
+// Google Workspace header logo (Admin console → Account → Personalization):
+// 320×132 max. XENA on a space tile so it reads on light and dark themes
+// alike; XENA STUDIOS is illegible at the ~40px height Gmail draws it.
+out("workspace/logo.svg", logoBox("short", { w: 320, h: 132, fill: C.text, bg: C.space, radius: 16, scaleW: 0.78, scaleH: 0.42 }), 320);
+
+// The horizon on its own, no type: backgrounds for the website and anything else.
+out("scene/horizon.svg", svgDoc(2400, 900, `<rect width="2400" height="900" fill="${C.void}"/>` + planetLimb(2400, 900, { cx: 1200, r: 2400 * 1.3, top: 900 * 0.62 })), 2400);
+// Team profile photos (Google account, GitHub, Discord): the person's initial
+// in the avatar's style. Square; Google crops to a circle, which the glyph clears.
+const people = { zachary: "Z" };
+for (const [name, ch] of Object.entries(people))
+  out(`people/${name}.svg`, logoBox({ str: ch, tracking: 0 }, { w: 512, h: 512, fill: C.accent, bg: C.space, glow: C.accent, scaleH: 0.4, scaleW: 0.6 }), 1024);
+
 // PNG previews of the official files copied from xena-studios/raptor.
 for (const f of ["logo-dark", "logo-light", "favicon"]) {
   const svg = hexify(fs.readFileSync(path.join(ROOT, `raptor/official/${f}.svg`), "utf8"));

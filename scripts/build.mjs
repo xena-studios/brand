@@ -381,8 +381,8 @@ function nsBanner(W = 1920, H = 600, s = W / 1920, card = true) {
 // The studio's own card, in xenastudios.co's look: XENA STUDIOS top-left, a //
 // kicker top-right, a JetBrains Mono SemiBold title, a lead, and optionally the
 // plugin icons, over the Ion Blue horizon.
-function xenaCard({ kicker, title, lead, icons = false }, W = 1280, H = 640) {
-  const s = 0.9, dy = (H - 600 * s) / 2, m = 120 * s, Y = (v) => dy + v * s;
+function xenaCard({ kicker, title, lead, icons = false }, W = 1280, H = 640, s = 0.9) {
+  const dy = (H - 600 * s) / 2, m = 120 * s, Y = (v) => dy + v * s;
   let body = `<rect width="${W}" height="${H}" fill="${C.void}"/>`;
   body += planetLimb(W, H, { cx: W * 0.7, r: W * 1.25, top: H * 0.8 });
   body += logo("full", { x: m, y: Y(98), cap: 14 * s, fill: C.text }).svg;
@@ -395,8 +395,8 @@ function xenaCard({ kicker, title, lead, icons = false }, W = 1280, H = 640) {
 
 // The plugin family's card: all three names in a row, a lead, and the stepped
 // horizon with its rim split into the three accents.
-function pluginsCard(W = 1280, H = 640) {
-  const s = 0.9, dy = (H - 600 * s) / 2, m = 120 * s, Y = (v) => dy + v * s;
+function pluginsCard(W = 1280, H = 640, s = 0.9) {
+  const dy = (H - 600 * s) / 2, m = 120 * s, Y = (v) => dy + v * s;
   let body = `<rect width="${W}" height="${H}" fill="${PC.bg}"/>` + blockHorizon(W, H, plugins.map((p) => p.accent), s);
   body += logo("full", { x: m, y: Y(98), cap: 14 * s, fill: PC.text }).svg;
   body += text(mono, "// PLUGINS", { size: 17 * s, tracking: 0.18, fill: PC.muted, x: W - m, y: Y(111), anchor: "end" }).svg;
@@ -502,6 +502,11 @@ out("github/plugins.svg", pluginsCard(), 1280);
 out("social/docs-og.svg", pluginDocsCard(), 2400);
 // The family's horizon alone, rim in all three accents: the docs' home page.
 out("plugins/horizon.svg", svgDoc(2400, 900, `<rect width="2400" height="900" fill="${PC.bg}"/>` + blockHorizon(2400, 900, plugins.map((p) => p.accent), 1.5)), 2400);
+
+// README banners for the same repos, in Raptor's and NeoSkript's banner size
+// (1920×600 @2×), so every README in the org opens the same way.
+for (const [name, card] of Object.entries(repoCards)) out(`github/${name}-banner.svg`, xenaCard(card, 1920, 600, 1), 3840);
+out("github/plugins-banner.svg", pluginsCard(1920, 600, 1), 3840);
 
 // PNG previews of the official files copied from xena-studios/raptor.
 for (const f of ["logo-dark", "logo-light", "favicon"]) {

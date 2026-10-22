@@ -1,6 +1,6 @@
-# Xena Studios — Brand
+![Xena Studios brand. XENA STUDIOS and the title "Brand" over the Ion Blue planet horizon, with "Logos, colours and graphics for every Xena brand."](github/brand-banner.png)
 
-![Xena Studios](social/x-header.png)
+**Logos, colours and graphics for every Xena brand.**
 
 The Xena Studios identity, and the identities of everything Xena makes. Every file here is generated from code by [`scripts/build.mjs`](scripts/build.mjs).
 
@@ -271,6 +271,7 @@ In [`tokens/plugins.css`](tokens/plugins.css) (`--plugin-*`, plus `--plugin-<id>
 | Raptor README | `raptor/banner.png` |
 | NeoSkript Modrinth icon / description banner | `neoskript/icon.png`, `neoskript/banner.png` |
 | Plugin Modrinth icon / description banner | `plugins/<id>/icon.png`, `plugins/<id>/banner.png` |
+| README banner (top of the README) | `raptor/banner.png`, `neoskript/banner.png`, `github/plugins-banner.png`, `github/website-banner.png`, `github/dotgithub-banner.png` (the `.github` repo), `github/brand-banner.png` (this README); each repo keeps its copy at `.github/assets/banner.png` |
 | GitHub repo social preview (Settings → Social preview) | `github/brand.png`, `github/website.png`, `github/dotgithub.png` (the `.github` repo), `github/plugins.png`, `neoskript/social.png`; Raptor sets its own |
 | docs.xenastudios.co link preview | `social/docs-og.png`, synced into `xena-studios/plugins` |
 

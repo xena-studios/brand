@@ -414,8 +414,8 @@ function pluginsCard(W = 1280, H = 640, s = 0.9) {
 
 // The plugin docs' link preview, in the family's look: the three icons, the
 // title and a line over the three-accent stepped horizon.
-function pluginDocsCard(W = 1200, H = 630) {
-  const s = 0.9, dy = (H - 600 * s) / 2, m = 120 * s, Y = (v) => dy + v * s;
+function pluginDocsCard(W = 1200, H = 630, s = 0.9) {
+  const dy = (H - 600 * s) / 2, m = 120 * s, Y = (v) => dy + v * s;
   let body = `<rect width="${W}" height="${H}" fill="${PC.bg}"/>` + blockHorizon(W, H, plugins.map((p) => p.accent), s);
   body += logo("full", { x: m, y: Y(98), cap: 14 * s, fill: PC.text }).svg;
   body += text(mono, "// PLUGIN DOCS", { size: 17 * s, tracking: 0.18, fill: PC.muted, x: W - m, y: Y(111), anchor: "end" }).svg;
@@ -507,6 +507,7 @@ out("plugins/horizon.svg", svgDoc(2400, 900, `<rect width="2400" height="900" fi
 // (1920×600 @2×), so every README in the org opens the same way.
 for (const [name, card] of Object.entries(repoCards)) out(`github/${name}-banner.svg`, xenaCard(card, 1920, 600, 1), 3840);
 out("github/plugins-banner.svg", pluginsCard(1920, 600, 1), 3840);
+out("github/plugin-docs-banner.svg", pluginDocsCard(1920, 600, 1), 3840);
 
 // PNG previews of the official files copied from xena-studios/raptor.
 for (const f of ["logo-dark", "logo-light", "favicon"]) {

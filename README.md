@@ -271,7 +271,7 @@ In [`tokens/plugins.css`](tokens/plugins.css) (`--plugin-*`, plus `--plugin-<id>
 | Raptor README | `raptor/banner.png` |
 | NeoSkript Modrinth icon / description banner | `neoskript/icon.png`, `neoskript/banner.png` |
 | Plugin Modrinth icon / description banner | `plugins/<id>/icon.png`, `plugins/<id>/banner.png` |
-| README banner (top of the README) | `raptor/banner.png`, `neoskript/banner.png`, `github/plugins-banner.png`, `github/website-banner.png`, `github/dotgithub-banner.png` (the `.github` repo), `github/brand-banner.png` (this README); each repo keeps its copy at `.github/assets/banner.png` |
+| README banner (top of the README) | `raptor/banner.png`, `neoskript/banner.png`, `github/plugins-banner.png`, `github/website-banner.png`, `github/dotgithub-banner.png` (the `.github` repo), `github/brand-banner.png` (this README); each repo keeps its copy at `.github/assets/banner.png`. In the plugins repo, each plugin's folder and `docs/` have their own: `plugins/<id>/banner.png` and `github/plugin-docs-banner.png` |
 | GitHub repo social preview (Settings → Social preview) | `github/brand.png`, `github/website.png`, `github/dotgithub.png` (the `.github` repo), `github/plugins.png`, `neoskript/social.png`; Raptor sets its own |
 | docs.xenastudios.co link preview | `social/docs-og.png`, synced into `xena-studios/plugins` |
 

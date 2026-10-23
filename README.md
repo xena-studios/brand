@@ -227,9 +227,9 @@ Xena's small Minecraft plugins share one family identity, endorsed by XENA STUDI
 
 | Plugin | Accent | Glyph | Headline | Modrinth summary |
 |---|---|---|---|---|
-| **xUtilities** | `#F5B83D` amber | wrench | Every command you need. *None you don't.* | Every command you need, none you don't: gamemodes, fly, heal, /back, workstations and your own link commands, each one toggleable. For Paper and Folia. |
-| **zChat** | `#5EE08A` green | chat bubble | Format your chat. *Keep it clean.* | Group-based chat formatting with a filter, cooldown and chat mute, rendered once per message so it costs next to nothing. For Paper and Folia. |
-| **xLimbo** | `#B48CFF` violet | block over a glass floor | Never drop *a player again.* | A fallback server for your network. When the main server goes down, players wait in a safe void world instead of being kicked, then hop back with /join. |
+| **xUtilities** | `#F5B83D` amber | wrench | Every command you need. *None you don't.* | Every command you need, none you don't: gamemodes, flight, heal, /back, workstation menus, and link commands like /discord that you write yourself. Every command can be switched off. For Paper and Folia. |
+| **zChat** | `#5EE08A` green | chat bubble | Format your chat. *Keep it clean.* | A chat format per rank, a filter that's hard to dodge, cooldowns, mentions and private messages. Each message is drawn once, however many players see it. For Paper and Folia. |
+| **xLimbo** | `#B48CFF` violet | block over a glass floor | Never drop *a player again.* | Your network's fallback server. When the main server goes down, players wait in a safe void world instead of being disconnected, then go back with /join, or on their own once it's up. For Paper. |
 
 ### Colour
 
@@ -303,3 +303,11 @@ The build is deterministic: running it twice changes nothing. Commit the generat
 CI can't run the build, because Ethnocentric can't be in the repo, so run `npm run check` before opening a pull request. CI runs `npm run verify` ([`check.yml`](.github/workflows/check.yml)), which `main` requires, and CodeQL over the scripts ([`codeql.yml`](.github/workflows/codeql.yml)).
 
 `raptor/official/` isn't generated: it's copied by hand from `xena-studios/raptor` (`docs-site/src/assets/logo-dark.svg` and `logo-light.svg`, `site/public/favicon.svg` and `site/public/og.png`). Refresh it whenever Raptor's site or docs change their logos or link preview.
+
+## Changes
+
+`main` takes changes only through pull requests, and the `check` job has to pass. Run `npm run check` first, and commit the regenerated files with the change that produced them. Commit messages follow [Conventional Commits](https://www.conventionalcommits.org): `feat:` for a new or changed asset, `fix:`, `docs:`, `build:`, `ci:`. The repos that use these files copy them in with their own `brand:sync`, so a change here reaches them only when they sync.
+
+## Licence
+
+All rights reserved. The logos, graphics, tokens and scripts here are © Xena Studios, and the names and marks identify Xena's projects; they aren't licensed for other use. The fonts aren't in the repo: Ethnocentric appears only as outlines, as Typodermic's desktop licence allows, and Archivo, Hanken Grotesk, Space Grotesk, Geist, Geist Mono and JetBrains Mono are under the [SIL Open Font License](https://openfontlicense.org).

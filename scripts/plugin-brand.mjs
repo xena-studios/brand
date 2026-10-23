@@ -103,18 +103,18 @@ export const plugins = [
     id: "xutilities", prefix: "x", name: "Utilities", accent: "#F5B83D", glyph: "wrench",
     kicker: "// UTILITY PLUGIN",
     headline: ["Every command you need. ", "None you don't."],
-    summary: "Every command you need, none you don't: gamemodes, fly, heal, /back, workstations and your own link commands, each one toggleable. For Paper and Folia.",
+    summary: "Every command you need, none you don't: gamemodes, flight, heal, /back, workstation menus, and link commands like /discord that you write yourself. Every command can be switched off. For Paper and Folia.",
   },
   {
     id: "zchat", prefix: "z", name: "Chat", accent: "#5EE08A", glyph: "bubble",
     kicker: "// CHAT PLUGIN",
     headline: ["Format your chat. ", "Keep it clean."],
-    summary: "Group-based chat formatting with a filter, cooldown and chat mute, rendered once per message so it costs next to nothing. For Paper and Folia.",
+    summary: "A chat format per rank, a filter that's hard to dodge, cooldowns, mentions and private messages. Each message is drawn once, however many players see it. For Paper and Folia.",
   },
   {
     id: "xlimbo", prefix: "x", name: "Limbo", accent: "#B48CFF", glyph: "block",
     kicker: "// FALLBACK SERVER",
     headline: ["Never drop ", "a player again."],
-    summary: "A fallback server for your network. When the main server goes down, players wait in a safe void world instead of being kicked, then hop back with /join.",
+    summary: "Your network's fallback server. When the main server goes down, players wait in a safe void world instead of being disconnected, then go back with /join, or on their own once it's up. For Paper.",
   },
 ];

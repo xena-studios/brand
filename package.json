@@ -9,7 +9,8 @@
   },
   "scripts": {
     "build": "node scripts/build.mjs",
-    "check": "node scripts/build.mjs && git diff --exit-code --stat -- . ':!package-lock.json'"
+    "check": "node scripts/build.mjs && git diff --exit-code --stat -- . ':!package-lock.json'",
+    "verify": "node scripts/verify.mjs"
   },
   "repository": {
     "type": "git",

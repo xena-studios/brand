@@ -295,8 +295,11 @@ Needs Node 20.11 or newer.
 npm install
 npm run build    # regenerate every asset
 npm run check    # rebuild, and fail if any committed file is out of date
+npm run verify   # no fonts needed: every SVG renders and has its PNG, tokens parse, the README's files exist
 ```
 
 The build is deterministic: running it twice changes nothing. Commit the generated files with the change that produced them.
+
+CI can't run the build, because Ethnocentric can't be in the repo, so run `npm run check` before opening a pull request. CI runs `npm run verify` ([`check.yml`](.github/workflows/check.yml)), which `main` requires, and CodeQL over the scripts ([`codeql.yml`](.github/workflows/codeql.yml)).
 
 `raptor/official/` isn't generated: it's copied by hand from `xena-studios/raptor` (`docs-site/src/assets/logo-dark.svg` and `logo-light.svg`, `site/public/favicon.svg` and `site/public/og.png`). Refresh it whenever Raptor's site or docs change their logos or link preview.

@@ -79,6 +79,7 @@ Every Xena graphic uses the same scene: a flat sky and one huge planet whose lim
 | `social/og-card` | 1200×630 | Link preview for xenastudios.co |
 | `avatar/avatar` | 512×512 | GitHub, Modrinth and social avatars |
 | `avatar/favicon` | 64×64 | Favicon |
+| `avatar/apple-touch-icon` | 180×180 (PNG only) | iOS home-screen icon for xenastudios.co |
 | `scene/horizon` | 2400×900 | The horizon alone, no type: website and slide backgrounds |
 
 ### Repo cards
@@ -264,7 +265,7 @@ In [`tokens/plugins.css`](tokens/plugins.css) (`--plugin-*`, plus `--plugin-<id>
 | GitHub org avatar, Modrinth org icon | `avatar/avatar.png` |
 | GitHub org profile header (`.github`) | `social/x-header.png` |
 | X / Twitter header, Discord banner | `social/x-header.png`, `social/discord-banner.png` |
-| xenastudios.co favicon, link preview | synced into `xena-studios/website` by its `npm run brand:sync` |
+| xenastudios.co favicon, iOS icon, link preview | synced into `xena-studios/website` by its `npm run brand:sync` |
 | docs.xenastudios.co logo, favicon, plugin icons | synced into `xena-studios/plugins` by `npm run brand:sync` in `docs/` |
 | Google Workspace header logo | `workspace/logo.png` |
 | Team profile photos | `people/<name>.png` |

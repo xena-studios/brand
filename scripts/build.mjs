@@ -454,6 +454,9 @@ for (const k of Object.keys(logos)) {
 
 out("avatar/avatar.svg", avatar(512), 1024);
 out("avatar/favicon.svg", avatar(64, 12), 64);
+// The iOS home-screen icon: the avatar at the 180px iOS asks for, square and
+// opaque (iOS rounds the corners itself). PNG only: its SVG is avatar.svg.
+fs.writeFileSync(path.join(ROOT, "avatar/apple-touch-icon.png"), new Resvg(avatar(512), { fitTo: { mode: "width", value: 180 }, font: { loadSystemFonts: false } }).render().asPng());
 
 out("social/x-header.svg", orgCard(1500, 500), 3000);
 out("social/discord-banner.svg", orgCard(960, 540, { scale: 0.75 }), 1920);

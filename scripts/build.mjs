@@ -19,7 +19,10 @@ const fontFile = (p) => {
     console.error(`Missing font: ${p}\nSee "Build" in README.md for where each font comes from, or set its path with the env var.`);
     process.exit(1);
   }
-  return opentype.parse(fs.readFileSync(p).buffer);
+  // Copy out the file's own bytes: a small file's Buffer can sit inside Node's
+  // shared pool, whose ArrayBuffer holds other data too.
+  const b = fs.readFileSync(p);
+  return opentype.parse(b.buffer.slice(b.byteOffset, b.byteOffset + b.length));
 };
 
 const display = fontFile(process.env.ETHNOCENTRIC ?? path.join(ROOT, ".local-fonts/Ethnocentric-Regular.otf"));

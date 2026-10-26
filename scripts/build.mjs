@@ -1,5 +1,5 @@
 // Generates every Xena Studios brand asset from code: logos, avatar, social
-// graphics, Raptor's and NeoSkript's marks and banners, and the plugin family. All type is converted to outlines so no
+// graphics, Raptor's, NeoSkript's and MostWanted's marks and banners, and the plugin family. All type is converted to outlines so no
 // font file ever ships (Ethnocentric's desktop EULA forbids redistribution).
 //
 //   npm run build
@@ -11,6 +11,7 @@ import { Resvg } from "@resvg/resvg-js";
 import { clawPath, raptorPath, wordmarkPath, raptorColors, lockup } from "./raptor-brand.mjs";
 import { pluginColors as PC, plugins, glyphCells } from "./plugin-brand.mjs";
 import { neoskriptColors as NS, neoskript, markText } from "./neoskript-brand.mjs";
+import { mostwantedColors as MW, mostwanted } from "./mostwanted-brand.mjs";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const FONT_DIR = path.join(os.homedir(), "Library/Fonts");
@@ -19,7 +20,10 @@ const fontFile = (p) => {
     console.error(`Missing font: ${p}\nSee "Build" in README.md for where each font comes from, or set its path with the env var.`);
     process.exit(1);
   }
-  return opentype.parse(fs.readFileSync(p).buffer);
+  // Copy out the file's own bytes: a small file's Buffer can sit inside Node's
+  // shared pool, whose ArrayBuffer holds other data too.
+  const b = fs.readFileSync(p);
+  return opentype.parse(b.buffer.slice(b.byteOffset, b.byteOffset + b.length));
 };
 
 const display = fontFile(process.env.ETHNOCENTRIC ?? path.join(ROOT, ".local-fonts/Ethnocentric-Regular.otf"));
@@ -34,6 +38,8 @@ const groteskBold = fontFile(process.env.GROTESK_BOLD ?? path.join(ROOT, ".local
 // NeoSkript's sans and code faces (OFL), static instances from github.com/vercel/geist-font.
 const geistBold = fontFile(process.env.GEIST_BOLD ?? path.join(ROOT, ".local-fonts/Geist-700.ttf"));
 const geistMono = fontFile(process.env.GEIST_MONO ?? path.join(ROOT, ".local-fonts/GeistMono-500.ttf"));
+// MostWanted's display face (OFL), Lilita One from github.com/google/fonts (ofl/lilitaone).
+const lilita = fontFile(process.env.LILITA ?? path.join(ROOT, ".local-fonts/LilitaOne-400.ttf"));
 
 // ---------------------------------------------------------------- tokens
 
@@ -374,6 +380,59 @@ function nsBanner(W = 1920, H = 600, s = W / 1920, card = true) {
   return svgDoc(W, H, body);
 }
 
+// ---------------------------------------------------------------- mostwanted
+// MostWanted keeps its own identity (scripts/mostwanted-brand.mjs): Desert Orange
+// on dusk, the pixel MOSTWANTED wordmark and MW monogram, Lilita One, and the
+// pixel desert at sunset, which is its horizon. Xena frames it with the XENA
+// STUDIOS endorsement and the // kicker, as it frames Raptor and NeoSkript.
+
+// Official artwork as an embedded image, w wide, top-left at (x, y).
+function mwArt(art, x, y, w) {
+  const h = (w * art.h) / art.w;
+  const data = fs.readFileSync(path.join(ROOT, art.file)).toString("base64");
+  return { svg: `<image x="${f(x)}" y="${f(y)}" width="${f(w)}" height="${f(h)}" href="data:image/png;base64,${data}"/>`, h };
+}
+
+// The icon: the MW monogram on a raised dusk tile with a soft orange glow, 6/32
+// corners. Server icon, Discord, socials, favicon.
+function mwIcon(size, radius = (size * 6) / 32) {
+  const gid = id("mwglow"), w = size * 0.8, art = mwArt(mostwanted.monogram, 0, 0, w);
+  return svgDoc(size, size,
+    `<defs><radialGradient id="${gid}" cx="0.5" cy="0.5" r="0.6"><stop offset="0" stop-color="${MW.orange}" stop-opacity="0.22"/><stop offset="1" stop-color="${MW.orange}" stop-opacity="0"/></radialGradient></defs>` +
+    `<rect width="${size}" height="${size}" rx="${f(radius)}" fill="${MW["dusk-raised"]}"/>` +
+    `<rect width="${size}" height="${size}" rx="${f(radius)}" fill="url(#${gid})"/>` +
+    mwArt(mostwanted.monogram, (size - w) / 2, (size - art.h) / 2, w).svg);
+}
+
+// MostWanted's horizon: the pixel desert at sunset, scaled to cover W × H,
+// blurred, and darkened toward the edges so type on it stays readable.
+function mwDesert(W, H, s) {
+  const d = mostwanted.desert, scale = Math.max(W / d.w, H / d.h), w = d.w * scale, h = d.h * scale;
+  const blur = id("mwblur"), shade = id("mwshade"), data = fs.readFileSync(path.join(ROOT, d.file)).toString("base64");
+  return `<defs><filter id="${blur}" x="0" y="0" width="100%" height="100%"><feGaussianBlur stdDeviation="${f((7 * W) / 1280)}" edgeMode="duplicate"/></filter>` +
+    `<radialGradient id="${shade}" cx="0.5" cy="0.45" r="0.75"><stop offset="0.35" stop-color="${MW.dusk}" stop-opacity="0.1"/><stop offset="1" stop-color="${MW.dusk}" stop-opacity="0.72"/></radialGradient></defs>` +
+    `<rect width="${W}" height="${H}" fill="${MW.dusk}"/>` +
+    `<image x="${f((W - w) / 2)}" y="${f((H - h) / 2)}" width="${f(w)}" height="${f(h)}" preserveAspectRatio="none" filter="url(#${blur})" href="data:image/png;base64,${data}"/>` +
+    `<rect width="${W}" height="${H}" fill="url(#${shade})"/>`;
+}
+
+// Banner: XENA STUDIOS top-left and the // kicker top-right as on every Xena
+// banner, then MostWanted's own key art: the wordmark centred on the blurred
+// desert, with the tagline under it in Lilita One.
+function mwBanner(W = 1920, H = 600, s = W / 1920) {
+  const dy = (H - 600 * s) / 2, m = 120 * s, Y = (v) => dy + v * s;
+  let body = mwDesert(W, H, s);
+  body += logo("full", { x: m, y: Y(98), cap: 14 * s, fill: MW.text }).svg;
+  body += text(mono, mostwanted.kicker, { size: 17 * s, tracking: 0.18, fill: MW.text, x: W - m, y: Y(111), anchor: "end" }).svg;
+  const ww = 1100 * s;
+  body += mwArt(mostwanted.wordmark, (W - ww) / 2, Y(232), ww).svg;
+  // A soft dusk shadow keeps the tagline readable over the bright sand.
+  const shadow = id("mwshadow");
+  body += `<defs><filter id="${shadow}" x="-10%" y="-50%" width="120%" height="200%"><feDropShadow dx="0" dy="${f(3 * s)}" stdDeviation="${f(6 * s)}" flood-color="${MW.dusk}" flood-opacity="0.75"/></filter></defs>`;
+  body += `<g filter="url(#${shadow})">` + text(lilita, mostwanted.tagline, { size: 44 * s, tracking: 0.01, fill: MW.text, x: W / 2, y: Y(460), anchor: "middle" }).svg + "</g>";
+  return svgDoc(W, H, body);
+}
+
 // ---------------------------------------------------------------- repo cards
 // GitHub social previews (1280×640) and the docs' link preview, in Raptor's
 // banner layout so every card in the org reads as one set.
@@ -512,6 +571,14 @@ for (const [name, card] of Object.entries(repoCards)) out(`github/${name}-banner
 out("github/plugins-banner.svg", pluginsCard(1920, 600, 1), 3840);
 out("github/plugin-docs-banner.svg", pluginDocsCard(1920, 600, 1), 3840);
 
+// MostWanted: icon (server icon, socials, favicon), README banner (1920×600 @2×)
+// and GitHub social preview (1280×640). The wordmark, monogram and key art are
+// the official files in mostwanted/official/.
+out("mostwanted/icon.svg", mwIcon(512), 1024);
+out("mostwanted/favicon.svg", mwIcon(64, 12), 64);
+out("mostwanted/banner.svg", mwBanner(), 3840);
+out("mostwanted/social.svg", mwBanner(1280, 640, 0.9), 1280);
+
 // PNG previews of the official files copied from xena-studios/raptor.
 for (const f of ["logo-dark", "logo-light", "favicon"]) {
   const svg = hexify(fs.readFileSync(path.join(ROOT, `raptor/official/${f}.svg`), "utf8"));
@@ -526,6 +593,8 @@ fs.writeFileSync(path.join(ROOT, "tokens/raptor.css"), `:root {\n${Object.entrie
 
 fs.writeFileSync(path.join(ROOT, "tokens/neoskript.json"), JSON.stringify(NS, null, 2) + "\n");
 fs.writeFileSync(path.join(ROOT, "tokens/neoskript.css"), `:root {\n${Object.entries(NS).map(([k, v]) => `  --neoskript-${k}: ${v};`).join("\n")}\n}\n`);
+fs.writeFileSync(path.join(ROOT, "tokens/mostwanted.json"), JSON.stringify(MW, null, 2) + "\n");
+fs.writeFileSync(path.join(ROOT, "tokens/mostwanted.css"), `:root {\n${Object.entries(MW).map(([k, v]) => `  --mostwanted-${k}: ${v};`).join("\n")}\n}\n`);
 const pluginTokens = { ...PC, ...Object.fromEntries(plugins.map((p) => [p.id, p.accent])) };
 fs.writeFileSync(path.join(ROOT, "tokens/plugins.json"), JSON.stringify(pluginTokens, null, 2) + "\n");
 fs.writeFileSync(path.join(ROOT, "tokens/plugins.css"), `:root {\n${Object.entries(pluginTokens).map(([k, v]) => `  --plugin-${k}: ${v};`).join("\n")}\n}\n`);

@@ -6,7 +6,7 @@ The Xena Studios identity, and the identities of everything Xena makes. Every fi
 
 - [Architecture](#architecture)
 - **Xena Studios**: [Logo](#logo) · [Colour](#colour) · [Typography](#typography) · [Horizon](#horizon) · [People](#people) · [Google Workspace](#google-workspace)
-- **Products**: [Raptor](#raptor) · [NeoSkript](#neoskript)
+- **Products**: [Raptor](#raptor) · [NeoSkript](#neoskript) · [MostWanted](#mostwanted)
 - **Plugin family**: [Plugins](#plugins)
 - [Where each file goes](#where-each-file-goes) · [Build](#build)
 
@@ -17,10 +17,10 @@ Three tiers. Each keeps its own look, and Xena ties them together with the same 
 | Tier | Members | Identity |
 |---|---|---|
 | **Studio** | Xena Studios | Type only, Ion Blue on deep space. |
-| **Products** | Raptor, NeoSkript | A full brand each (mark, colour, type), endorsed by XENA STUDIOS. For platforms with their own docs, community and roadmap. |
+| **Products** | Raptor, NeoSkript, MostWanted | A full brand each (mark, colour, type), endorsed by XENA STUDIOS. For platforms and games with their own docs, community and roadmap. |
 | **Plugin family** | xUtilities, zChat, xLimbo, and future small plugins | One shared system, with a pixel glyph and an accent per plugin. For small, single-purpose plugins. |
 
-Every brand gets its own accent, and no two share one: Ion Blue (Xena), Signal Red (Raptor), Neo Magenta (NeoSkript), and amber, green and violet (the plugins). A new product or plugin picks a colour that isn't taken.
+Every brand gets its own accent, and no two share one: Ion Blue (Xena), Signal Red (Raptor), Neo Magenta (NeoSkript), Desert Orange (MostWanted), and amber, green and violet (the plugins). A new product or plugin picks a colour that isn't taken.
 
 ## Logo
 
@@ -70,7 +70,7 @@ JetBrains Mono is the one face every brand shares: the uppercase `//` kicker on 
 
 ## Horizon
 
-Every Xena graphic uses the same scene: a flat sky and one huge planet whose limb arcs across the bottom. Nothing else, no stars. Products draw it in their own colours (Raptor: Ink sky, Signal Red limb; NeoSkript: night sky, magenta limb), and the plugin family steps its rim into pixels.
+Every Xena graphic uses the same scene: a flat sky and one huge planet whose limb arcs across the bottom. Nothing else, no stars. Products draw it in their own colours (Raptor: Ink sky, Signal Red limb; NeoSkript: night sky, magenta limb), and the plugin family steps its rim into pixels. MostWanted, a game, draws its horizon as its own key art: the pixel desert with the sun on the horizon.
 
 | File | Size | Use |
 |---|---|---|
@@ -207,6 +207,64 @@ In [`tokens/neoskript.css`](tokens/neoskript.css) (`--neoskript-*`) and [`tokens
 
 Colours, the mark and the copy are in [`scripts/neoskript-brand.mjs`](scripts/neoskript-brand.mjs).
 
+## MostWanted
+
+![MostWanted](mostwanted/banner.png)
+
+MostWanted is Xena's Jailbreak-style cops vs. prisoners Minecraft server, for Java and Bedrock: break out, rob the town, stay ahead of the guards. It's a product with its own identity, Desert Orange on dusk; Xena supplies the XENA STUDIOS endorsement and the `//` kicker. The server's code and design docs are in [`xena-studios/mostwanted`](https://github.com/xena-studios/mostwanted).
+
+**Tagline:** Cops vs. prisoners on Java & Bedrock.
+
+**Summary:** A Jailbreak-style cops vs. prisoners Minecraft server, for Java and Bedrock. Break out, rob the town, and stay ahead of the guards.
+
+### Marks
+
+<img src="mostwanted/official/wordmark.png" width="420" alt="MOSTWANTED wordmark"> &nbsp; <img src="mostwanted/icon.png" width="96" alt="MostWanted icon">
+
+- **Wordmark**: **MOSTWANTED** in chunky Minecraft-style block letters, lit from the top in bands (sand → amber → burnt orange), a `clay` extruded bottom face and a thick black outline. It's pixel artwork, not a font: use the official file, never retype it.
+- **Monogram**: **MW** in the same style, for square and small spots: the icon, the Minecraft server-list icon, avatars, the favicon.
+- **Icon**: the monogram on a `dusk-raised` tile with a soft orange glow, 6/32 corners.
+- **The look**: the pixel desert at sunset, blurred, with the wordmark centred on top. It's MostWanted's horizon, and its banners, website hero and listings all use it.
+- **Name**: always **MostWanted**, one word, capital M and W. Handles and the domain add MC: `mostwantedmc`, mostwantedmc.com. In listings, pair it with "Minecraft" ("MostWanted, a cops vs. prisoners Minecraft server"): "Most Wanted" alone is a crowded search.
+
+### Colour
+
+| Token | Hex | Role |
+|---|---|---|
+| `orange` | `#FF9933` | The one accent: buttons, highlights |
+| `orange-daylight` | `#B34700` | Orange text on light backgrounds |
+| `dusk` | `#150D09` | Page / banner background |
+| `dusk-raised` | `#21150F` | Cards, icon tile |
+| `dusk-rule` | `#3B2A20` | Borders |
+| `text` | `#FBF4EC` | Text on dark |
+| `muted` | `#B8A797` | Secondary text, kickers |
+| `ink` | `#1C110B` | Text on light, text on orange |
+| `sand-light` | `#FBF6F0` | Light backgrounds |
+| `sand`, `amber`, `burnt`, `clay` | `#EEBD3B`, `#E29020`, `#C46002`, `#893500` | The wordmark's bands, for illustration only, never text |
+
+In [`tokens/mostwanted.css`](tokens/mostwanted.css) (`--mostwanted-*`) and [`tokens/mostwanted.json`](tokens/mostwanted.json). Neutrals are tinted toward orange. Black text on `orange` reads at about 9:1; `orange` text on white doesn't, so use `orange-daylight` there.
+
+In the game itself, colours come from a 24-hue palette chosen to survive Bedrock's 16 colours; see [the game's brand doc](https://github.com/xena-studios/mostwanted/blob/main/docs/09-brand.md).
+
+### Type
+
+- **Lilita One** for taglines and headlines on graphics: chunky and round, to sit next to the block wordmark.
+- **JetBrains Mono** for the uppercase `//` kicker, as across Xena.
+
+### Files
+
+| File | Use |
+|---|---|
+| `mostwanted/banner` | README banner, 1920×600 (PNG @2×) |
+| `mostwanted/social` | GitHub social preview, 1280×640 |
+| `mostwanted/icon` | Avatar, Discord, store (512) |
+| `mostwanted/favicon` | Favicon (64) |
+| `mostwanted/official/wordmark.png`, `monogram.png` | The logos, verbatim |
+| `mostwanted/official/desert.png` | The pixel desert, unblurred |
+| `mostwanted/official/key-art.png` | The wordmark on the blurred desert, 1920×1080: website hero, Minehut listing, thumbnails |
+
+Colours and copy are in [`scripts/mostwanted-brand.mjs`](scripts/mostwanted-brand.mjs). `mostwanted/official/` isn't generated here: it's copied from `xena-studios/mostwanted` (`brand/source/` and `brand/out/key-art-1920x1080.png`), whose own script builds the game's key art, icons and 64×64 server icon. Refresh it when those change.
+
 ## Plugins
 
 ![xUtilities](plugins/xutilities/banner.png)
@@ -270,10 +328,11 @@ In [`tokens/plugins.css`](tokens/plugins.css) (`--plugin-*`, plus `--plugin-<id>
 | Google Workspace header logo | `workspace/logo.png` |
 | Team profile photos | `people/<name>.png` |
 | Raptor README | `raptor/banner.png` |
+| MostWanted README, avatar, favicon | `mostwanted/banner.png`, `mostwanted/icon.png`, `mostwanted/favicon.png` |
 | NeoSkript Modrinth icon / description banner | `neoskript/icon.png`, `neoskript/banner.png` |
 | Plugin Modrinth icon / description banner | `plugins/<id>/icon.png`, `plugins/<id>/banner.png` |
 | README banner (top of the README) | `raptor/banner.png`, `neoskript/banner.png`, `github/plugins-banner.png`, `github/website-banner.png`, `github/dotgithub-banner.png` (the `.github` repo), `github/brand-banner.png` (this README); each repo keeps its copy at `.github/assets/banner.png`. In the plugins repo, each plugin's folder and `docs/` have their own: `plugins/<id>/banner.png` and `github/plugin-docs-banner.png` |
-| GitHub repo social preview (Settings → Social preview) | `github/brand.png`, `github/website.png`, `github/dotgithub.png` (the `.github` repo), `github/plugins.png`, `neoskript/social.png`; Raptor sets its own |
+| GitHub repo social preview (Settings → Social preview) | `github/brand.png`, `github/website.png`, `github/dotgithub.png` (the `.github` repo), `github/plugins.png`, `neoskript/social.png`, `mostwanted/social.png`; Raptor sets its own |
 | docs.xenastudios.co link preview | `social/docs-og.png`, synced into `xena-studios/plugins` |
 
 ## Build
@@ -286,8 +345,9 @@ Every asset is generated by [`scripts/build.mjs`](scripts/build.mjs). Fonts go i
 | `HankenGrotesk-700.ttf` | Hanken Grotesk Bold (OFL) | Google Fonts, static instance |
 | `SpaceGrotesk-700.ttf` | Space Grotesk Bold (OFL) | github.com/floriankarsten/space-grotesk, `fonts/ttf/static` |
 | `Geist-700.ttf`, `GeistMono-500.ttf` | Geist Bold, Geist Mono Medium (OFL) | github.com/vercel/geist-font |
+| `LilitaOne-400.ttf` | Lilita One (OFL) | github.com/google/fonts, `ofl/lilitaone` |
 
-JetBrains Mono Regular and Light are read from `~/Library/Fonts`. Override any path with `ETHNOCENTRIC=`, `MONO=`, `MONO_LIGHT=`, `HANKEN_BOLD=`, `GROTESK_BOLD=`, `GEIST_BOLD=` or `GEIST_MONO=`.
+JetBrains Mono Regular and Light are read from `~/Library/Fonts`. Override any path with `ETHNOCENTRIC=`, `MONO=`, `MONO_LIGHT=`, `HANKEN_BOLD=`, `GROTESK_BOLD=`, `GEIST_BOLD=`, `GEIST_MONO=` or `LILITA=`.
 
 Needs Node 20.11 or newer.
 
@@ -302,7 +362,7 @@ The build is deterministic: running it twice changes nothing. Commit the generat
 
 CI can't run the build, because Ethnocentric can't be in the repo, so run `npm run check` before opening a pull request. CI runs `npm run verify` ([`check.yml`](.github/workflows/check.yml)), which `main` requires, and CodeQL over the scripts ([`codeql.yml`](.github/workflows/codeql.yml)).
 
-`raptor/official/` isn't generated: it's copied by hand from `xena-studios/raptor` (`docs-site/src/assets/logo-dark.svg` and `logo-light.svg`, `site/public/favicon.svg` and `site/public/og.png`). Refresh it whenever Raptor's site or docs change their logos or link preview.
+`raptor/official/` and `mostwanted/official/` aren't generated. `raptor/official/` is copied by hand from `xena-studios/raptor` (`docs-site/src/assets/logo-dark.svg` and `logo-light.svg`, `site/public/favicon.svg` and `site/public/og.png`). Refresh it whenever Raptor's site or docs change their logos or link preview.
 
 ## Changes
 
@@ -310,4 +370,4 @@ CI can't run the build, because Ethnocentric can't be in the repo, so run `npm r
 
 ## Licence
 
-All rights reserved. The logos, graphics, tokens and scripts here are © Xena Studios, and the names and marks identify Xena's projects; they aren't licensed for other use. The fonts aren't in the repo: Ethnocentric appears only as outlines, as Typodermic's desktop licence allows, and Archivo, Hanken Grotesk, Space Grotesk, Geist, Geist Mono and JetBrains Mono are under the [SIL Open Font License](https://openfontlicense.org).
+All rights reserved. The logos, graphics, tokens and scripts here are © Xena Studios, and the names and marks identify Xena's projects; they aren't licensed for other use. The fonts aren't in the repo: Ethnocentric appears only as outlines, as Typodermic's desktop licence allows, and Archivo, Hanken Grotesk, Space Grotesk, Geist, Geist Mono, Lilita One and JetBrains Mono are under the [SIL Open Font License](https://openfontlicense.org).

@@ -630,7 +630,7 @@ out("mostwanted/social.svg", mwBanner(1280, 640, 0.9), 1280);
 // PNG previews of the official files copied from xena-studios/raptor.
 for (const f of ["logo-dark", "logo-light", "favicon"]) {
   const svg = hexify(fs.readFileSync(path.join(ROOT, `raptor/official/${f}.svg`), "utf8"));
-  fs.writeFileSync(path.join(ROOT, `raptor/official/${f}.png`), new Resvg(svg, { fitTo: { mode: "width", value: f === "favicon" ? 512 : 1156 } }).render().asPng());
+  fs.writeFileSync(path.join(ROOT, `raptor/official/${f}.png`), new Resvg(svg, { fitTo: { mode: "width", value: f === "favicon" ? 512 : 1156 }, font: { loadSystemFonts: false } }).render().asPng());
 }
 
 fs.mkdirSync(path.join(ROOT, "tokens"), { recursive: true });

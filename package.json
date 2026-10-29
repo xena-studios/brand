@@ -4,13 +4,15 @@
   "description": "Xena Studios brand system: the studio, Raptor, NeoSkript, MostWanted and the plugin family",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@12.16.1",
   "engines": {
-    "node": ">=20.11"
+    "node": ">=24"
   },
   "scripts": {
-    "build": "node scripts/build.mjs",
-    "check": "node scripts/build.mjs && git diff --exit-code --stat -- . ':!package-lock.json'",
-    "verify": "node scripts/verify.mjs"
+    "build": "node scripts/build.ts",
+    "check": "node scripts/build.ts && git diff --exit-code --stat -- . ':!pnpm-lock.yaml'",
+    "typecheck": "tsc",
+    "verify": "tsc && node scripts/verify.ts"
   },
   "repository": {
     "type": "git",
@@ -23,6 +25,8 @@
   "homepage": "https://github.com/xena-studios/brand#readme",
   "devDependencies": {
     "@resvg/resvg-js": "^2.6.2",
-    "opentype.js": "^2.0.0"
+    "@types/node": "^24.19.2",
+    "opentype.js": "^2.0.0",
+    "typescript": "^7.0.2"
   }
 }

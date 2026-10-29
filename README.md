@@ -2,7 +2,7 @@
 
 **Logos, colours and graphics for every Xena brand.**
 
-The Xena Studios identity, and the identities of everything Xena makes. Every file here is generated from code by [`scripts/build.mjs`](scripts/build.mjs).
+The Xena Studios identity, and the identities of everything Xena makes. Every file here is generated from code by [`scripts/build.ts`](scripts/build.ts).
 
 - [Architecture](#architecture)
 - **Xena Studios**: [Logo](#logo) · [Colour](#colour) · [Typography](#typography) · [Horizon](#horizon) · [People](#people) · [Google Workspace](#google-workspace)
@@ -90,7 +90,7 @@ Every repo in the org gets a 1280×640 GitHub social preview in Raptor's banner 
 
 ## People
 
-Team profile photos (Google account, GitHub, Discord) use the avatar's style with the person's initial: Ion Blue on a `space` tile. They're square; Google and Discord crop them to a circle. Add someone to `people` in `scripts/build.mjs` and rebuild.
+Team profile photos (Google account, GitHub, Discord) use the avatar's style with the person's initial: Ion Blue on a `space` tile. They're square; Google and Discord crop them to a circle. Add someone to `people` in `scripts/build.ts` and rebuild.
 
 | File | Person |
 |---|---|
@@ -151,7 +151,7 @@ The full set, including Daylight and state colours (`ok`, `warn`, `danger`), is 
 | `raptor/mark` | Small claw R mark |
 | `raptor/official/` | Verbatim copies from the Raptor repo: docs logos, favicon, and the site's `og.png` link preview |
 
-The paths and tokens are vendored in [`scripts/raptor-brand.mjs`](scripts/raptor-brand.mjs) from `web/src/lib/brand.ts` and `docs/DESIGN.md`. If Raptor's marks or colours change, update that file, refresh `raptor/official/`, and rebuild.
+The paths and tokens are vendored in [`scripts/raptor-brand.ts`](scripts/raptor-brand.ts) from `web/src/lib/brand.ts` and `docs/DESIGN.md`. If Raptor's marks or colours change, update that file, refresh `raptor/official/`, and rebuild.
 
 ## NeoSkript
 
@@ -205,7 +205,7 @@ In [`tokens/neoskript.css`](tokens/neoskript.css) (`--neoskript-*`) and [`tokens
 | `neoskript/icon` | Modrinth project icon, GitHub avatar, favicon (512) |
 | `neoskript/mark` | `.sk` alone, in magenta, for spots that already have the name |
 
-Colours, the mark and the copy are in [`scripts/neoskript-brand.mjs`](scripts/neoskript-brand.mjs).
+Colours, the mark and the copy are in [`scripts/neoskript-brand.ts`](scripts/neoskript-brand.ts).
 
 ## MostWanted
 
@@ -263,7 +263,7 @@ In the game itself, colours come from a 24-hue palette chosen to survive Bedrock
 | `mostwanted/official/desert.png` | The pixel desert, unblurred |
 | `mostwanted/official/key-art.png` | The wordmark on the blurred desert, 1920×1080: website hero, Minehut listing, thumbnails |
 
-Colours and copy are in [`scripts/mostwanted-brand.mjs`](scripts/mostwanted-brand.mjs). `mostwanted/official/` isn't generated here: it's copied from `xena-studios/mostwanted` (`brand/source/` and `brand/out/key-art-1920x1080.png`), whose own script builds the game's key art, icons and 64×64 server icon. Refresh it when those change.
+Colours and copy are in [`scripts/mostwanted-brand.ts`](scripts/mostwanted-brand.ts). `mostwanted/official/` isn't generated here: it's copied from `xena-studios/mostwanted` (`brand/source/` and `brand/out/key-art-1920x1080.png`), whose own script builds the game's key art, icons and 64×64 server icon. Refresh it when those change.
 
 ## Plugins
 
@@ -279,7 +279,7 @@ Xena's small Minecraft plugins share one family identity, endorsed by XENA STUDI
 - **Name**: the prefix letter in the plugin's accent, the rest in `text`, Space Grotesk Bold. The lowercase prefix stays: xUtilities, zChat, xLimbo.
 - **Banner**: Raptor's layout. XENA STUDIOS top-left, the `//` kicker top-right, the icon + name lockup, a two-tone headline ending in the accent, and the horizon with its rim stepped into pixels.
 - **One accent per plugin**, never one another brand uses.
-- **Adding a plugin**: draw a 16×16 glyph and pick an unused accent in [`scripts/plugin-brand.mjs`](scripts/plugin-brand.mjs), then rebuild.
+- **Adding a plugin**: draw a 16×16 glyph and pick an unused accent in [`scripts/plugin-brand.ts`](scripts/plugin-brand.ts), then rebuild.
 
 ### Lineup
 
@@ -323,13 +323,13 @@ In [`tokens/plugins.css`](tokens/plugins.css) (`--plugin-*`, plus `--plugin-<id>
 | GitHub org avatar, Modrinth org icon | `avatar/avatar.png` |
 | GitHub org profile header (`.github`) | `social/x-header.png` |
 | X / Twitter header, Discord banner | `social/x-header.png`, `social/discord-banner.png` |
-| xenastudios.co favicon, iOS icon, link preview | synced into `xena-studios/website` by its `npm run brand:sync` |
-| docs.xenastudios.co logo, favicon, plugin icons | synced into `xena-studios/plugins` by `npm run brand:sync` in `docs/` |
+| xenastudios.co favicon, iOS icon, link preview | synced into `xena-studios/website` by its `pnpm brand:sync` |
+| docs.xenastudios.co logo, favicon, plugin icons | synced into `xena-studios/plugins` by `pnpm brand:sync` in `docs/` |
 | Google Workspace header logo | `workspace/logo.png` |
 | Team profile photos | `people/<name>.png` |
 | Raptor README | `raptor/banner.png` |
 | MostWanted README, avatar, favicon | `mostwanted/banner.png` (as `.github/assets/banner.png` in `xena-studios/mostwanted`), `mostwanted/icon.png`, `mostwanted/favicon.png` |
-| MostWanted on xenastudios.co | `mostwanted/official/wordmark.png` and `key-art.png`, synced into `xena-studios/website` by its `npm run brand:sync` |
+| MostWanted on xenastudios.co | `mostwanted/official/wordmark.png` and `key-art.png`, synced into `xena-studios/website` by its `pnpm brand:sync` |
 | MostWanted on the org profile (`.github`) | `mostwanted/official/wordmark.png`, as `profile/assets/mostwanted-logo.png` |
 | NeoSkript Modrinth icon / description banner | `neoskript/icon.png`, `neoskript/banner.png` |
 | Plugin Modrinth icon / description banner | `plugins/<id>/icon.png`, `plugins/<id>/banner.png` |
@@ -339,7 +339,7 @@ In [`tokens/plugins.css`](tokens/plugins.css) (`--plugin-*`, plus `--plugin-<id>
 
 ## Build
 
-Every asset is generated by [`scripts/build.mjs`](scripts/build.mjs). Fonts go in `.local-fonts/`, which git ignores; every letter in the output is outlined, so no font file ever ships.
+Every asset is generated by [`scripts/build.ts`](scripts/build.ts). Fonts go in `.local-fonts/`, which git ignores; every letter in the output is outlined, so no font file ever ships.
 
 | File in `.local-fonts/` | Face | Source |
 |---|---|---|
@@ -351,24 +351,27 @@ Every asset is generated by [`scripts/build.mjs`](scripts/build.mjs). Fonts go i
 
 JetBrains Mono Regular and Light are read from `~/Library/Fonts`. Override any path with `ETHNOCENTRIC=`, `MONO=`, `MONO_LIGHT=`, `HANKEN_BOLD=`, `GROTESK_BOLD=`, `GEIST_BOLD=`, `GEIST_MONO=` or `LILITA=`.
 
-Needs Node 20.11 or newer.
+Needs Node 24 or newer and pnpm.
 
 ```sh
-npm install
-npm run build    # regenerate every asset
-npm run check    # rebuild, and fail if any committed file is out of date
-npm run verify   # no fonts needed: every SVG renders and has its PNG, tokens parse, the README's files exist
+pnpm install
+pnpm build       # regenerate every asset
+pnpm check       # rebuild, and fail if any committed file is out of date
+pnpm typecheck   # type-check the scripts
+pnpm verify      # no fonts needed: the type check, then every SVG renders and has its PNG, tokens parse, the README's files exist
 ```
+
+The scripts are TypeScript that Node runs directly, stripping the types, so there's no compile step. They keep to the syntax Node can strip (no enums, namespaces or constructor parameter properties; `tsconfig.json` enforces it) and import each other by their `.ts` names. opentype.js ships no types, so [`types/opentype.d.ts`](types/opentype.d.ts) declares the parts the build uses.
 
 The build is deterministic: running it twice changes nothing. Commit the generated files with the change that produced them.
 
-CI can't run the build, because Ethnocentric can't be in the repo, so run `npm run check` before opening a pull request. CI runs `npm run verify` ([`check.yml`](.github/workflows/check.yml)), which `main` requires, and CodeQL over the scripts ([`codeql.yml`](.github/workflows/codeql.yml)).
+CI can't run the build, because Ethnocentric can't be in the repo, so run `pnpm check` before opening a pull request. CI runs `pnpm verify` ([`check.yml`](.github/workflows/check.yml)), which `main` requires, and CodeQL over the scripts ([`codeql.yml`](.github/workflows/codeql.yml)).
 
 `raptor/official/` and `mostwanted/official/` aren't generated. `raptor/official/` is copied by hand from `xena-studios/raptor` (`docs-site/src/assets/logo-dark.svg` and `logo-light.svg`, `site/public/favicon.svg` and `site/public/og.png`). Refresh it whenever Raptor's site or docs change their logos or link preview.
 
 ## Changes
 
-`main` takes changes only through pull requests, and the `check` job has to pass. Run `npm run check` first, and commit the regenerated files with the change that produced them. Commit messages follow [Conventional Commits](https://www.conventionalcommits.org): `feat:` for a new or changed asset, `fix:`, `docs:`, `build:`, `ci:`. The repos that use these files copy them in with their own `brand:sync`, so a change here reaches them only when they sync.
+`main` takes changes only through pull requests, and the `check` job has to pass. Run `pnpm check` first, and commit the regenerated files with the change that produced them. Commit messages follow [Conventional Commits](https://www.conventionalcommits.org): `feat:` for a new or changed asset, `fix:`, `docs:`, `build:`, `ci:`. The repos that use these files copy them in with their own `brand:sync`, so a change here reaches them only when they sync.
 
 ## Licence
 

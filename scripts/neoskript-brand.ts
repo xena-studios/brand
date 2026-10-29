@@ -20,7 +20,15 @@ export const neoskriptColors = {
 // your scripts" to every Skript user at a glance, which is the whole pitch.
 export const markText = { str: ".sk", tracking: -0.02 };
 
-export const neoskript = {
+export type NeoskriptColor = keyof typeof neoskriptColors;
+
+export const neoskript: {
+  kicker: string;
+  headline: [string, string];
+  summary: string;
+  // Each line is a run of [text, colour] pairs.
+  sample: { file: string; lines: [string, NeoskriptColor][][] };
+} = {
   kicker: "// SKRIPT, REBUILT",
   headline: ["Keep your scripts. ", "Lose the lag."],
   summary: "A fast, modern drop-in replacement for Skript. Your .sk scripts run unchanged, only faster. For Paper and Folia.",

@@ -2,20 +2,20 @@
 // graphics, Raptor's, NeoSkript's and MostWanted's marks and banners, and the plugin family. All type is converted to outlines so no
 // font file ever ships (Ethnocentric's desktop EULA forbids redistribution).
 //
-//   npm run build
+//   pnpm build
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
-import opentype from "opentype.js";
+import opentype, { type Font, type PathCommand } from "opentype.js";
 import { Resvg } from "@resvg/resvg-js";
-import { clawPath, raptorPath, wordmarkPath, raptorColors, lockup } from "./raptor-brand.mjs";
-import { pluginColors as PC, plugins, glyphCells } from "./plugin-brand.mjs";
-import { neoskriptColors as NS, neoskript, markText } from "./neoskript-brand.mjs";
-import { mostwantedColors as MW, mostwanted } from "./mostwanted-brand.mjs";
+import { clawPath, raptorPath, wordmarkPath, raptorColors, lockup } from "./raptor-brand.ts";
+import { pluginColors as PC, plugins, glyphCells, type Plugin } from "./plugin-brand.ts";
+import { neoskriptColors as NS, neoskript, markText } from "./neoskript-brand.ts";
+import { mostwantedColors as MW, mostwanted, type Art } from "./mostwanted-brand.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const FONT_DIR = path.join(os.homedir(), "Library/Fonts");
-const fontFile = (p) => {
+const fontFile = (p: string): Font => {
   if (!fs.existsSync(p)) {
     console.error(`Missing font: ${p}\nSee "Build" in README.md for where each font comes from, or set its path with the env var.`);
     process.exit(1);
@@ -51,7 +51,7 @@ export const C = {
 
 // oklch() → #rrggbb, so Raptor's DESIGN.md tokens render anywhere (resvg,
 // image editors) while the oklch values stay the source of truth.
-function oklchHex(v) {
+function oklchHex(v: string): string {
   const m = v.match(/oklch\(([\d.]+) ([\d.]+) ([\d.]+)\)/);
   if (!m) return v.toUpperCase();
   const [L, Ch, h] = [+m[1], +m[2], (+m[3] * Math.PI) / 180];
@@ -70,7 +70,7 @@ function oklchHex(v) {
     return Math.round(x * 255).toString(16).padStart(2, "0");
   }).join("").toUpperCase();
 }
-const hexify = (svg) => svg.replace(/oklch\([^)]+\)/g, oklchHex);
+const hexify = (svg: string) => svg.replace(/oklch\([^)]+\)/g, oklchHex);
 
 // Raptor keeps its own identity (docs/DESIGN.md in xena-studios/raptor):
 // Signal Red on warm Ink, the raptor + RAPTOR lockup, and the claw R.
@@ -84,10 +84,10 @@ const ORG_TAGLINE = "Game server infrastructure, built in the open.";
 
 // ---------------------------------------------------------------- type
 
-const f = (n) => +n.toFixed(2);
+const f = (n: number) => +n.toFixed(2);
 
 // opentype.js 2.0's toPathData emits NaN for some coordinates; serialise ourselves.
-const pathData = (cmds) => cmds.map((c) =>
+const pathData = (cmds: PathCommand[]) => cmds.map((c) =>
   c.type === "Z" ? "Z" :
   c.type === "Q" ? `Q${f(c.x1)} ${f(c.y1)} ${f(c.x)} ${f(c.y)}` :
   c.type === "C" ? `C${f(c.x1)} ${f(c.y1)} ${f(c.x2)} ${f(c.y2)} ${f(c.x)} ${f(c.y)}` :
@@ -95,8 +95,17 @@ const pathData = (cmds) => cmds.map((c) =>
 
 // Lays out `str` glyph by glyph (kerning + tracking in em) and aligns by ink
 // bounds, so optical edges line up regardless of sidebearings.
-function text(font, str, { x = 0, y = 0, size, tracking = 0, anchor = "start", fill }) {
-  const build = (ox) => {
+interface TextOptions {
+  x?: number;
+  y?: number;
+  size: number;
+  tracking?: number;
+  anchor?: "start" | "middle" | "end";
+  fill: string;
+}
+
+function text(font: Font, str: string, { x = 0, y = 0, size, tracking = 0, anchor = "start", fill }: TextOptions) {
+  const build = (ox: number) => {
     // Direct cmap lookup: opentype.js chokes on some GSUB lookups, and this
     // is plain ASCII that needs no shaping.
     const glyphs = [...str].map((c) => font.charToGlyph(c));
@@ -107,10 +116,10 @@ function text(font, str, { x = 0, y = 0, size, tracking = 0, anchor = "start", f
       // Draw at the origin and translate ourselves: opentype.js emits NaN
       // control points for some TrueType glyphs at fractional offsets.
       for (const c of g.getPath(0, 0, size).commands) {
-        const t = { ...c };
+        const t: Record<string, string | number> = { ...c };
         for (const k of ["x", "x1", "x2"]) if (typeof t[k] === "number") t[k] += cx;
         for (const k of ["y", "y1", "y2"]) if (typeof t[k] === "number") t[k] += y;
-        p.commands.push(t);
+        p.commands.push(t as PathCommand);
       }
       cx += g.advanceWidth * scale;
       if (i < glyphs.length - 1) cx += font.getKerningValue(g, glyphs[i + 1]) * scale + tracking * size;
@@ -127,7 +136,7 @@ function text(font, str, { x = 0, y = 0, size, tracking = 0, anchor = "start", f
   };
 }
 
-const capHeight = (font, size) => {
+const capHeight = (font: Font, size: number) => {
   const bb = font.charToGlyph("X").getPath(0, 0, size).getBoundingBox();
   return -bb.y1;
 };
@@ -136,9 +145,11 @@ const capHeight = (font, size) => {
 // Type-only identity: three Ethnocentric lockups, no symbol.
 
 let uid = 0;
-const id = (p) => `${p}${++uid}`;
+const id = (p: string) => `${p}${++uid}`;
 
-export const logos = {
+interface Lockup { str: string; tracking: number }
+
+export const logos: Record<"full" | "short" | "x", Lockup & { file: string }> = {
   full: { str: "XENA STUDIOS", tracking: 0.04, file: "xena-studios" },
   short: { str: "XENA", tracking: 0.06, file: "xena" },
   x: { str: "X", tracking: 0, file: "x" },
@@ -148,17 +159,30 @@ const CAP = capHeight(display, 100) / 100;
 
 // Draws a logo (a `logos` key, or any { str, tracking }) with its ink top-left
 // at (x, y) and the given cap height.
-function logo(key, { x = 0, y = 0, cap, fill }) {
-  const { str, tracking } = logos[key] ?? key;
+type LogoKey = keyof typeof logos;
+
+function logo(key: LogoKey | Lockup, { x = 0, y = 0, cap, fill }: { x?: number; y?: number; cap: number; fill: string }) {
+  const { str, tracking } = typeof key === "string" ? logos[key] : key;
   const t = text(display, str, { size: cap / CAP, tracking, fill, x, y: y + cap });
   return { svg: t.svg, width: t.width };
 }
 
 // Cap height that fits `key` inside w × h.
-const fitCap = (key, w, h) => Math.min(h, (w / logo(key, { cap: 100, fill: "" }).width) * 100);
+const fitCap = (key: LogoKey | Lockup, w: number, h: number) => Math.min(h, (w / logo(key, { cap: 100, fill: "" }).width) * 100);
 
 // Logo centred in a w × h box (optionally filled).
-function logoBox(key, { w, h, fill, bg, radius = 0, glow, scaleW = 0.72, scaleH = 0.42 }) {
+interface LogoBoxOptions {
+  w: number;
+  h: number;
+  fill: string;
+  bg?: string;
+  radius?: number;
+  glow?: string;
+  scaleW?: number;
+  scaleH?: number;
+}
+
+function logoBox(key: LogoKey | Lockup, { w, h, fill, bg, radius = 0, glow, scaleW = 0.72, scaleH = 0.42 }: LogoBoxOptions) {
   const cap = fitCap(key, w * scaleW, h * scaleH);
   const lw = logo(key, { cap, fill: "" }).width, gid = id("glow");
   return svgDoc(f(w), f(h),
@@ -169,7 +193,7 @@ function logoBox(key, { w, h, fill, bg, radius = 0, glow, scaleW = 0.72, scaleH 
 }
 
 // Transparent export with clear space of half the cap height on every side.
-function logoFile(key, fill) {
+function logoFile(key: LogoKey, fill: string) {
   const cap = 100, pad = cap / 2, lw = logo(key, { cap, fill }).width;
   return svgDoc(f(lw + pad * 2), cap + pad * 2, logo(key, { x: pad, y: pad, cap, fill }).svg);
 }
@@ -180,16 +204,16 @@ const avatar = (size = 512, radius = 0) => logoBox("x", { w: size, h: size, fill
 // ---------------------------------------------------------------- raptor
 
 // The favicon / app icon: claw R in on-signal Ink on a Signal Red tile, 6/32 corners.
-const raptorIcon = (size) => svgDoc(size, size,
+const raptorIcon = (size: number) => svgDoc(size, size,
   `<rect width="${size}" height="${size}" rx="${f((size * 6) / 32)}" fill="${R["signal-red"]}"/>` +
   `<path d="${clawPath}" transform="translate(${f((size * 1.76) / 32)} ${f((size * 25.6) / 32)}) scale(${f(((size / 32) * 0.028) * 1e5) / 1e5})" fill-rule="evenodd" fill="${R["on-signal"]}"/>`);
 
 // The small mark: claw R alone in Signal Red (logo.tsx's Logo).
-const raptorMark = (size) => svgDoc(size, size,
+const raptorMark = (size: number) => svgDoc(size, size,
   `<path d="${clawPath}" transform="translate(${f((size * -0.9) / 32)} ${f((size * 28.3) / 32)}) scale(${f(((size / 32) * 0.0335) * 1e5) / 1e5})" fill-rule="evenodd" fill="${R["signal-red"]}"/>`);
 
 // The full logo, raptor beside RAPTOR, at height h with its top-left at (x, y).
-const raptorLogo = (x, y, h, word = R.bone) => {
+const raptorLogo = (x: number, y: number, h: number, word = R.bone) => {
   const s = h / lockup.h;
   return `<g transform="translate(${f(x)} ${f(y)}) scale(${f(s * 1e4) / 1e4})">` +
     `<path transform="translate(0 -3)" fill-rule="evenodd" fill="${R["signal-red"]}" d="${raptorPath}"/>` +
@@ -199,7 +223,9 @@ const raptorLogo = (x, y, h, word = R.bone) => {
 // ---------------------------------------------------------------- scenery
 
 // The horizon: a huge planet whose Ion Blue limb arcs across the bottom of the frame.
-function planetLimb(w, h, { cx = w * 0.62, r = w * 1.1, top = h * 0.74, sky = C.void, body = C.surface, rim = C.accent } = {}) {
+interface LimbOptions { cx?: number; r?: number; top?: number; sky?: string; body?: string; rim?: string }
+
+function planetLimb(w: number, h: number, { cx = w * 0.62, r = w * 1.1, top = h * 0.74, sky = C.void, body = C.surface, rim = C.accent }: LimbOptions = {}) {
   const cy = top + r;
   const g = id("limb"), b = id("glow");
   return `<defs><linearGradient id="${g}" x1="0" y1="${f(top)}" x2="0" y2="${f(top + h * 0.5)}" gradientUnits="userSpaceOnUse">` +
@@ -212,11 +238,11 @@ function planetLimb(w, h, { cx = w * 0.62, r = w * 1.1, top = h * 0.74, sky = C.
 
 // ---------------------------------------------------------------- compositions
 
-const svgDoc = (w, h, body) =>
+const svgDoc = (w: number, h: number, body: string) =>
   `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${body}</svg>`;
 
 // Org graphics: XENA STUDIOS and the tagline over the horizon.
-function orgCard(w, h, { scale = 1 } = {}) {
+function orgCard(w: number, h: number, { scale = 1 } = {}) {
   let body = `<rect width="${w}" height="${h}" fill="${C.void}"/>`;
   body += planetLimb(w, h, { cx: w / 2, r: w * 1.3, top: h * 0.78 });
   const cap = 44 * scale, lw = logo("full", { cap, fill: "" }).width, cy = h * 0.42;
@@ -242,16 +268,16 @@ function raptorBanner() {
 }
 
 // ---------------------------------------------------------------- plugins
-// The plugin family (scripts/plugin-brand.mjs): a pixel glyph on a deepslate tile,
+// The plugin family (scripts/plugin-brand.ts): a pixel glyph on a deepslate tile,
 // the name with its prefix letter in the accent, and Raptor's banner layout.
 
-const mix = (a, b, t) => "#" + [1, 3, 5].map((i) =>
+const mix = (a: string, b: string, t: number) => "#" + [1, 3, 5].map((i) =>
   Math.round(parseInt(a.slice(i, i + 2), 16) * (1 - t) + parseInt(b.slice(i, i + 2), 16) * t)
     .toString(16).padStart(2, "0")).join("").toUpperCase();
-const tones = (a) => ({ light: mix(a, "#FFFFFF", 0.38), base: a, dark: mix(a, "#000000", 0.42), floor: mix(a, PC.bg, 0.45) });
+const tones = (a: string) => ({ light: mix(a, "#FFFFFF", 0.38), base: a, dark: mix(a, "#000000", 0.42), floor: mix(a, PC.bg, 0.45) });
 
 // The glyph at (x, y) in px-sized cells, over a hard drop shadow one cell down-right.
-function pluginGlyph(p, x, y, px) {
+function pluginGlyph(p: Plugin, x: number, y: number, px: number) {
   const cells = glyphCells(p.glyph), t = tones(p.accent);
   let shadow = "", ink = "";
   cells.forEach((row, gy) => row.forEach((c, gx) => {
@@ -264,7 +290,7 @@ function pluginGlyph(p, x, y, px) {
 
 // The icon tile: raised deepslate with a soft accent glow. Whole-pixel cells keep
 // small renders crisp; the 16-cell glyph is centred with 3 cells of margin.
-function pluginTile(p, x, y, size, radius = 0) {
+function pluginTile(p: Plugin, x: number, y: number, size: number, radius = 0) {
   const gid = id("pglow"), px = Math.max(1, Math.floor(size / 22)), off = Math.round((size - 16 * px) / 2);
   return `<defs><radialGradient id="${gid}" cx="0.5" cy="0.45" r="0.65"><stop offset="0" stop-color="${p.accent}" stop-opacity="0.16"/><stop offset="1" stop-color="${p.accent}" stop-opacity="0"/></radialGradient></defs>` +
     `<rect x="${x}" y="${y}" width="${size}" height="${size}" rx="${radius}" fill="${PC.raised}"/>` +
@@ -273,7 +299,7 @@ function pluginTile(p, x, y, size, radius = 0) {
 }
 
 // The name, prefix letter in the accent. Laid out as one word so kerning holds.
-function pluginName(p, x, y, size, fill = PC.text) {
+function pluginName(p: Plugin, x: number, y: number, size: number, fill = PC.text) {
   const opts = { x, y, size, tracking: -0.02 };
   const word = text(groteskBold, p.prefix + p.name, { ...opts, fill });
   return text(groteskBold, p.prefix, { ...opts, fill: p.accent }).svg +
@@ -283,12 +309,12 @@ function pluginName(p, x, y, size, fill = PC.text) {
 // The horizon, same geometry as Raptor's, with its rim stepped into pixels.
 // `accent` is one colour, or a list that splits the visible rim into equal bands
 // left to right (the whole family's card).
-function blockHorizon(w, h, accent, s = 1) {
+function blockHorizon(w: number, h: number, accent: string | string[], s = 1) {
   const cx = w * 0.7, r = w * 1.25, top = h * 0.8, cy = top + r, cell = Math.max(4, Math.round(8 * s));
   const g = id("pbody"), b = id("pglow"), accents = [accent].flat();
   // Where the rim enters the frame: cx minus the chord half-width at the bottom edge.
   const x0 = Math.max(0, cx - Math.sqrt(Math.max(0, r * r - (cy - h) ** 2)));
-  const band = (x) => accents[Math.min(accents.length - 1, Math.max(0, Math.floor(((x - x0) / (w - x0)) * accents.length)))];
+  const band = (x: number) => accents[Math.min(accents.length - 1, Math.max(0, Math.floor(((x - x0) / (w - x0)) * accents.length)))];
   let body = "", rim = "";
   for (let x = 0; x < w; x += cell) {
     const yy = cy - Math.sqrt(Math.max(0, r * r - (x + cell / 2 - cx) ** 2)), row = Math.round(yy / 4) * 4;
@@ -307,8 +333,8 @@ function blockHorizon(w, h, accent, s = 1) {
 // Banner in Raptor's layout: XENA STUDIOS top-left, // kicker top-right, the
 // icon + name lockup, and a two-tone headline over the horizon. 1920×600 is the
 // Modrinth/README banner; other frames set the type scale `s` and centre it.
-function pluginBanner(p, W = 1920, H = 600, s = W / 1920) {
-  const dy = (H - 600 * s) / 2, m = 120 * s, Y = (v) => dy + v * s;
+function pluginBanner(p: Plugin, W = 1920, H = 600, s = W / 1920) {
+  const dy = (H - 600 * s) / 2, m = 120 * s, Y = (v: number) => dy + v * s;
   let body = `<rect width="${W}" height="${H}" fill="${PC.bg}"/>` + blockHorizon(W, H, p.accent, s);
   body += logo("full", { x: m, y: Y(98), cap: 14 * s, fill: PC.text }).svg;
   body += text(mono, p.kicker, { size: 17 * s, tracking: 0.18, fill: PC.muted, x: W - m, y: Y(111), anchor: "end" }).svg;
@@ -323,11 +349,11 @@ function pluginBanner(p, W = 1920, H = 600, s = W / 1920) {
 }
 
 // ---------------------------------------------------------------- neoskript
-// NeoSkript keeps its own identity (scripts/neoskript-brand.mjs): Neo Magenta on
+// NeoSkript keeps its own identity (scripts/neoskript-brand.ts): Neo Magenta on
 // night, the script mark, and Geist. Xena frames it as it frames Raptor.
 
 // The .sk mark, ink-centred on (cx, cy), w wide.
-function nsMark(cx, cy, w, fill) {
+function nsMark(cx: number, cy: number, w: number, fill: string) {
   const probe = text(geistBold, markText.str, { size: 100, tracking: markText.tracking, fill });
   const size = (w / probe.width) * 100, t = text(geistBold, markText.str, { size, tracking: markText.tracking, fill, x: cx, anchor: "middle", y: 0 });
   return t.svg.replace("<path ", `<path transform="translate(0 ${f(cy - (t.top + t.bottom) / 2)})" `);
@@ -336,25 +362,27 @@ function nsMark(cx, cy, w, fill) {
 // The icon: .sk in night on a magenta tile, built like Raptor's: 6/32 corners and
 // the letters nearly filling the tile. App icon, Modrinth icon, avatar, favicon;
 // and, small, the logo's mark.
-const nsTile = (x, y, size, fg = NS.night, bg = NS.magenta) =>
+const nsTile = (x: number, y: number, size: number, fg = NS.night, bg = NS.magenta) =>
   `<rect x="${f(x)}" y="${f(y)}" width="${f(size)}" height="${f(size)}" rx="${f((size * 6) / 32)}" fill="${bg}"/>` +
   nsMark(x + size / 2, y + size / 2, size * 0.76, fg);
-const nsIcon = (size) => svgDoc(size, size, nsTile(0, 0, size));
+const nsIcon = (size: number) => svgDoc(size, size, nsTile(0, 0, size));
 
 // The logo: the icon tile beside the NeoSkript wordmark, the tile 1.5 × the cap height.
-function nsLogo(x, y, cap, { word = NS.text, accent = NS.magenta } = {}) {
+interface NsLogoOptions { word?: string; accent?: string }
+
+function nsLogo(x: number, y: number, cap: number, { word = NS.text, accent = NS.magenta }: NsLogoOptions = {}) {
   const size = cap / (capHeight(geistBold, 100) / 100), h = cap * 1.5;
   const t = text(geistBold, "NeoSkript", { x: x + h + cap * 0.45, y: y + (h + cap) / 2, size, tracking: -0.03, fill: word });
   return { svg: nsTile(x, y, h, NS.night, accent) + t.svg, width: t.right - x, height: h };
 }
-const nsLogoFile = (opts) => {
+const nsLogoFile = (opts: NsLogoOptions) => {
   const cap = 100, pad = cap / 2, l = nsLogo(pad, pad, cap, opts);
   return svgDoc(f(l.width + pad * 2), f(l.height + pad * 2), l.svg);
 };
 
 // Banner in Raptor's layout, with a code card showing a script that runs unchanged.
 function nsBanner(W = 1920, H = 600, s = W / 1920, card = true) {
-  const dy = (H - 600 * s) / 2, m = 120 * s, Y = (v) => dy + v * s;
+  const dy = (H - 600 * s) / 2, m = 120 * s, Y = (v: number) => dy + v * s;
   let body = `<rect width="${W}" height="${H}" fill="${NS.night}"/>`;
   body += planetLimb(W, H, { cx: W * 0.7, r: W * 1.25, top: H * 0.8, sky: NS.night, body: NS["night-raised"], rim: NS.magenta });
   body += logo("full", { x: m, y: Y(98), cap: 14 * s, fill: NS.text }).svg;
@@ -381,13 +409,13 @@ function nsBanner(W = 1920, H = 600, s = W / 1920, card = true) {
 }
 
 // ---------------------------------------------------------------- mostwanted
-// MostWanted keeps its own identity (scripts/mostwanted-brand.mjs): Desert Orange
+// MostWanted keeps its own identity (scripts/mostwanted-brand.ts): Desert Orange
 // on dusk, the pixel MOSTWANTED wordmark and MW monogram, Lilita One, and the
 // pixel desert at sunset, which is its horizon. Xena frames it with the XENA
 // STUDIOS endorsement and the // kicker, as it frames Raptor and NeoSkript.
 
 // Official artwork as an embedded image, w wide, top-left at (x, y).
-function mwArt(art, x, y, w) {
+function mwArt(art: Art, x: number, y: number, w: number) {
   const h = (w * art.h) / art.w;
   const data = fs.readFileSync(path.join(ROOT, art.file)).toString("base64");
   return { svg: `<image x="${f(x)}" y="${f(y)}" width="${f(w)}" height="${f(h)}" href="data:image/png;base64,${data}"/>`, h };
@@ -395,7 +423,7 @@ function mwArt(art, x, y, w) {
 
 // The icon: the MW monogram on a raised dusk tile with a soft orange glow, 6/32
 // corners. Server icon, Discord, socials, favicon.
-function mwIcon(size, radius = (size * 6) / 32) {
+function mwIcon(size: number, radius = (size * 6) / 32) {
   const gid = id("mwglow"), w = size * 0.8, art = mwArt(mostwanted.monogram, 0, 0, w);
   return svgDoc(size, size,
     `<defs><radialGradient id="${gid}" cx="0.5" cy="0.5" r="0.6"><stop offset="0" stop-color="${MW.orange}" stop-opacity="0.22"/><stop offset="1" stop-color="${MW.orange}" stop-opacity="0"/></radialGradient></defs>` +
@@ -406,7 +434,7 @@ function mwIcon(size, radius = (size * 6) / 32) {
 
 // MostWanted's horizon: the pixel desert at sunset, scaled to cover W × H,
 // blurred, and darkened toward the edges so type on it stays readable.
-function mwDesert(W, H, s) {
+function mwDesert(W: number, H: number, s: number) {
   const d = mostwanted.desert, scale = Math.max(W / d.w, H / d.h), w = d.w * scale, h = d.h * scale;
   const blur = id("mwblur"), shade = id("mwshade"), data = fs.readFileSync(path.join(ROOT, d.file)).toString("base64");
   return `<defs><filter id="${blur}" x="0" y="0" width="100%" height="100%"><feGaussianBlur stdDeviation="${f((7 * W) / 1280)}" edgeMode="duplicate"/></filter>` +
@@ -420,7 +448,7 @@ function mwDesert(W, H, s) {
 // banner, then MostWanted's own key art: the wordmark centred on the blurred
 // desert, with the tagline under it in Lilita One.
 function mwBanner(W = 1920, H = 600, s = W / 1920) {
-  const dy = (H - 600 * s) / 2, m = 120 * s, Y = (v) => dy + v * s;
+  const dy = (H - 600 * s) / 2, m = 120 * s, Y = (v: number) => dy + v * s;
   let body = mwDesert(W, H, s);
   body += logo("full", { x: m, y: Y(98), cap: 14 * s, fill: MW.text }).svg;
   body += text(mono, mostwanted.kicker, { size: 17 * s, tracking: 0.18, fill: MW.text, x: W - m, y: Y(111), anchor: "end" }).svg;
@@ -440,8 +468,10 @@ function mwBanner(W = 1920, H = 600, s = W / 1920) {
 // The studio's own card, in xenastudios.co's look: XENA STUDIOS top-left, a //
 // kicker top-right, a JetBrains Mono SemiBold title, a lead, and optionally the
 // plugin icons, over the Ion Blue horizon.
-function xenaCard({ kicker, title, lead, icons = false }, W = 1280, H = 640, s = 0.9) {
-  const dy = (H - 600 * s) / 2, m = 120 * s, Y = (v) => dy + v * s;
+interface Card { kicker: string; title: string; lead: string; icons?: boolean }
+
+function xenaCard({ kicker, title, lead, icons = false }: Card, W = 1280, H = 640, s = 0.9) {
+  const dy = (H - 600 * s) / 2, m = 120 * s, Y = (v: number) => dy + v * s;
   let body = `<rect width="${W}" height="${H}" fill="${C.void}"/>`;
   body += planetLimb(W, H, { cx: W * 0.7, r: W * 1.25, top: H * 0.8 });
   body += logo("full", { x: m, y: Y(98), cap: 14 * s, fill: C.text }).svg;
@@ -455,7 +485,7 @@ function xenaCard({ kicker, title, lead, icons = false }, W = 1280, H = 640, s =
 // The plugin family's card: all three names in a row, a lead, and the stepped
 // horizon with its rim split into the three accents.
 function pluginsCard(W = 1280, H = 640, s = 0.9) {
-  const dy = (H - 600 * s) / 2, m = 120 * s, Y = (v) => dy + v * s;
+  const dy = (H - 600 * s) / 2, m = 120 * s, Y = (v: number) => dy + v * s;
   let body = `<rect width="${W}" height="${H}" fill="${PC.bg}"/>` + blockHorizon(W, H, plugins.map((p) => p.accent), s);
   body += logo("full", { x: m, y: Y(98), cap: 14 * s, fill: PC.text }).svg;
   body += text(mono, "// PLUGINS", { size: 17 * s, tracking: 0.18, fill: PC.muted, x: W - m, y: Y(111), anchor: "end" }).svg;
@@ -474,7 +504,7 @@ function pluginsCard(W = 1280, H = 640, s = 0.9) {
 // The plugin docs' link preview, in the family's look: the three icons, the
 // title and a line over the three-accent stepped horizon.
 function pluginDocsCard(W = 1200, H = 630, s = 0.9) {
-  const dy = (H - 600 * s) / 2, m = 120 * s, Y = (v) => dy + v * s;
+  const dy = (H - 600 * s) / 2, m = 120 * s, Y = (v: number) => dy + v * s;
   let body = `<rect width="${W}" height="${H}" fill="${PC.bg}"/>` + blockHorizon(W, H, plugins.map((p) => p.accent), s);
   body += logo("full", { x: m, y: Y(98), cap: 14 * s, fill: PC.text }).svg;
   body += text(mono, "// PLUGIN DOCS", { size: 17 * s, tracking: 0.18, fill: PC.muted, x: W - m, y: Y(111), anchor: "end" }).svg;
@@ -485,7 +515,7 @@ function pluginDocsCard(W = 1200, H = 630, s = 0.9) {
   return svgDoc(W, H, body);
 }
 
-const repoCards = {
+const repoCards: Record<string, Card> = {
   brand: { kicker: "// BRAND", title: "Brand", lead: "Logos, colours and graphics for every Xena brand." },
   website: { kicker: "// WEBSITE", title: "xenastudios.co", lead: "The studio's website. Astro, served by Cloudflare." },
   dotgithub: { kicker: "// GITHUB", title: "Xena Studios", lead: ORG_TAGLINE },
@@ -493,8 +523,8 @@ const repoCards = {
 
 // ---------------------------------------------------------------- output
 
-const written = [];
-function out(rel, svg, pngWidth) {
+const written: string[] = [];
+function out(rel: string, svg: string, pngWidth: number) {
   const file = path.join(ROOT, rel);
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, svg);
@@ -503,7 +533,7 @@ function out(rel, svg, pngWidth) {
   fs.writeFileSync(file.replace(/\.svg$/, ".png"), png);
 }
 
-for (const k of Object.keys(logos)) {
+for (const k of Object.keys(logos) as LogoKey[]) {
   const name = logos[k].file, w = k === "x" ? 1024 : 2400;
   out(`logo/${name}.svg`, logoFile(k, C.text), w);
   out(`logo/${name}-blue.svg`, logoFile(k, C.accent), w);
@@ -536,7 +566,7 @@ out("workspace/logo.svg", logoBox("short", { w: 320, h: 132, fill: "#0A0B10", sc
 out("scene/horizon.svg", svgDoc(2400, 900, `<rect width="2400" height="900" fill="${C.void}"/>` + planetLimb(2400, 900, { cx: 1200, r: 2400 * 1.3, top: 900 * 0.62 })), 2400);
 // Team profile photos (Google account, GitHub, Discord): the person's initial
 // in the avatar's style. Square; Google crops to a circle, which the glyph clears.
-const people = { zachary: "Z" };
+const people: Record<string, string> = { zachary: "Z" };
 for (const [name, ch] of Object.entries(people))
   out(`people/${name}.svg`, logoBox({ str: ch, tracking: 0 }, { w: 512, h: 512, fill: C.accent, bg: C.space, glow: C.accent, scaleH: 0.4, scaleW: 0.6 }), 1024);
 

@@ -2,7 +2,7 @@
 
 **Logos, colours and graphics for every Xena brand.**
 
-The Xena Studios identity, and the identities of everything Xena makes. Every file here is generated from code by [`scripts/build.ts`](scripts/build.ts).
+The Xena Studios identity, and the identities of everything Xena makes. Every file here is generated from code by [`scripts/build.ts`](scripts/build.ts), except the official files copied from Raptor and MostWanted (`raptor/official/`, `mostwanted/official/`).
 
 - [Architecture](#architecture)
 - **Xena Studios**: [Logo](#logo) · [Colour](#colour) · [Typography](#typography) · [Horizon](#horizon) · [People](#people) · [Google Workspace](#google-workspace)
@@ -62,9 +62,9 @@ Available as [`tokens/colors.css`](tokens/colors.css) (`--xena-*`) and [`tokens/
 | Role | Face | Notes |
 |---|---|---|
 | Logo / display | **Ethnocentric** (Typodermic) | Caps only, always outlined |
-| Taglines, labels | **JetBrains Mono** Light / Regular | Taglines in Light, labels in Regular with wide tracking |
+| Taglines, labels | **JetBrains Mono** Light / Regular / SemiBold | Taglines in Light, labels in Regular with wide tracking, the studio's repo-card titles in SemiBold |
 
-JetBrains Mono is the one face every brand shares: the uppercase `//` kicker on every banner is set in it. Each product and the plugin family add their own sans (see [Raptor](#raptor), [NeoSkript](#neoskript), [Plugins](#plugins)).
+JetBrains Mono is the one face every brand shares: the uppercase `//` kicker on every banner is set in it. Each product and the plugin family add their own face (see [Raptor](#raptor), [NeoSkript](#neoskript), [MostWanted](#mostwanted), [Plugins](#plugins)).
 
 **Ethnocentric licence.** The free Typodermic desktop licence covers logos and outlined images only. It does not allow webfonts, shipping the font in apps or sites, or sharing the font file. So the font is **not** in this repo, and every Ethnocentric letter in these files is a vector path. If live Ethnocentric text is ever needed on a website, buy a webfont licence from Typodermic first.
 
@@ -74,10 +74,10 @@ Every Xena graphic uses the same scene: a flat sky and one huge planet whose lim
 
 | File | Size | Use |
 |---|---|---|
-| `social/x-header` | 1500×500 | X / Twitter header |
-| `social/discord-banner` | 960×540 | Discord server banner |
-| `social/og-card` | 1200×630 | Link preview for xenastudios.co |
-| `avatar/avatar` | 512×512 | GitHub, Modrinth and social avatars |
+| `social/x-header` | 1500×500 (PNG @2×) | X / Twitter header |
+| `social/discord-banner` | 960×540 (PNG @2×) | Discord server banner |
+| `social/og-card` | 1200×630 (PNG @2×) | Link preview for xenastudios.co |
+| `avatar/avatar` | 512×512 (PNG @2×) | GitHub, Modrinth and social avatars |
 | `avatar/favicon` | 64×64 | Favicon |
 | `avatar/apple-touch-icon` | 180×180 (PNG only) | iOS home-screen icon for xenastudios.co |
 | `scene/horizon` | 2400×900 | The horizon alone, no type: website and slide backgrounds |
@@ -86,7 +86,7 @@ Every Xena graphic uses the same scene: a flat sky and one huge planet whose lim
 
 <img src="github/brand.png" width="420" alt="Brand repo card"> &nbsp; <img src="github/plugins.png" width="420" alt="Plugins repo card">
 
-Every repo in the org gets a 1280×640 GitHub social preview in Raptor's banner layout, so they read as one set: XENA STUDIOS top-left, a `//` kicker top-right, the title, a line, and the horizon. The studio's own repos (`brand`, `website`, `.github`) use xenastudios.co's look, with the title in JetBrains Mono SemiBold. Products use their own banners (`neoskript/social`). The `plugins` repo shows all three plugins, its stepped rim split into their accents. Upload them in each repo's **Settings → General → Social preview**; GitHub has no API for it.
+Every repo in the org gets a 1280×640 GitHub social preview in Raptor's banner layout, so they read as one set: XENA STUDIOS top-left, a `//` kicker top-right, the title, a line, and the horizon. The studio's own repos (`brand`, `website`, `.github`) use xenastudios.co's look, with the title in JetBrains Mono SemiBold. Products use their own banners (`neoskript/social`, `mostwanted/social`); Raptor's preview is made in its own repo, from its site's screenshots. The `plugins` repo shows all three plugins, its stepped rim split into their accents. Upload them in each repo's **Settings → General → Social preview**; GitHub has no API for it.
 
 ## People
 
@@ -314,7 +314,7 @@ In [`tokens/plugins.css`](tokens/plugins.css) (`--plugin-*`, plus `--plugin-<id>
 | `plugins/<id>/banner` | 1920×600 (PNG @2×) | Top of the Modrinth description and the README |
 | `plugins/<id>/social` | 1280×640 | GitHub social preview |
 | `plugins/horizon` | 2400×900 | The family's stepped horizon alone, rim in all three accents: the docs' home page |
-| `social/docs-og` | 1200×630 | docs.xenastudios.co's link preview: the three icons and "Plugin docs" |
+| `social/docs-og` | 1200×630 (PNG @2×) | docs.xenastudios.co's link preview: the three icons and "Plugin docs" |
 
 ## Where each file goes
 
@@ -322,8 +322,9 @@ In [`tokens/plugins.css`](tokens/plugins.css) (`--plugin-*`, plus `--plugin-<id>
 |---|---|
 | GitHub org avatar, Modrinth org icon | `avatar/avatar.png` |
 | GitHub org profile header (`.github`) | `social/x-header.png` |
+| Product logos and plugin icons on the org profile (`.github`) | `raptor/logo-dark.png`, `raptor/logo-light.png`, `neoskript/logo-dark.png`, `neoskript/logo-light.png`, `plugins/<id>/icon.png`, as `profile/assets/<name>-logo-<dark/light>.png` and `profile/assets/<id>-icon.png` |
 | X / Twitter header, Discord banner | `social/x-header.png`, `social/discord-banner.png` |
-| xenastudios.co favicon, iOS icon, link preview | synced into `xena-studios/website` by its `pnpm brand:sync` |
+| xenastudios.co favicon, iOS icon, link preview, logos, horizon, product marks and plugin icons | synced into `xena-studios/website` by its `pnpm brand:sync` |
 | docs.xenastudios.co logo, favicon, plugin icons | synced into `xena-studios/plugins` by `pnpm brand:sync` in `docs/` |
 | Google Workspace header logo | `workspace/logo.png` |
 | Team profile photos | `people/<name>.png` |
@@ -349,7 +350,7 @@ Every asset is generated by [`scripts/build.ts`](scripts/build.ts). Fonts go in 
 | `Geist-700.ttf`, `GeistMono-500.ttf` | Geist Bold, Geist Mono Medium (OFL) | github.com/vercel/geist-font |
 | `LilitaOne-400.ttf` | Lilita One (OFL) | github.com/google/fonts, `ofl/lilitaone` |
 
-JetBrains Mono Regular and Light are read from `~/Library/Fonts`. Override any path with `ETHNOCENTRIC=`, `MONO=`, `MONO_LIGHT=`, `HANKEN_BOLD=`, `GROTESK_BOLD=`, `GEIST_BOLD=`, `GEIST_MONO=` or `LILITA=`.
+JetBrains Mono Regular, Light and SemiBold are read from `~/Library/Fonts`. Override any path with `ETHNOCENTRIC=`, `MONO=`, `MONO_LIGHT=`, `MONO_SEMIBOLD=`, `HANKEN_BOLD=`, `GROTESK_BOLD=`, `GEIST_BOLD=`, `GEIST_MONO=` or `LILITA=`.
 
 Needs Node 24 or newer and pnpm.
 
@@ -363,7 +364,7 @@ pnpm verify      # no fonts needed: the type check, then every SVG renders and h
 
 The scripts are TypeScript that Node runs directly, stripping the types, so there's no compile step. They keep to the syntax Node can strip (no enums, namespaces or constructor parameter properties; `tsconfig.json` enforces it) and import each other by their `.ts` names. opentype.js ships no types, so [`types/opentype.d.ts`](types/opentype.d.ts) declares the parts the build uses.
 
-The build is deterministic: running it twice changes nothing. Commit the generated files with the change that produced them.
+The build is deterministic: running it twice changes nothing. Each SVG's ids start with its own path, so a file changes only when its own graphic does. Commit the generated files with the change that produced them.
 
 CI can't run the build, because Ethnocentric can't be in the repo, so run `pnpm check` before opening a pull request. CI runs `pnpm verify` ([`check.yml`](.github/workflows/check.yml)), which `main` requires, and CodeQL over the scripts ([`codeql.yml`](.github/workflows/codeql.yml)).
 
@@ -371,7 +372,7 @@ CI can't run the build, because Ethnocentric can't be in the repo, so run `pnpm 
 
 ## Changes
 
-`main` takes changes only through pull requests, and the `check` job has to pass. Run `pnpm check` first, and commit the regenerated files with the change that produced them. Commit messages follow [Conventional Commits](https://www.conventionalcommits.org): `feat:` for a new or changed asset, `fix:`, `docs:`, `build:`, `ci:`. The repos that use these files copy them in with their own `brand:sync`, so a change here reaches them only when they sync.
+`main` takes changes only through pull requests, and the `check` job has to pass. Run `pnpm check` first, and commit the regenerated files with the change that produced them. Commit messages follow [Conventional Commits](https://www.conventionalcommits.org): `feat:` for a new or changed asset, `fix:`, `docs:`, `build:`, `ci:`. The website and the plugin docs copy these files in with their own `pnpm brand:sync`; the other repos' banners and the org profile's images are copied by hand. A change here reaches them only when they copy it.
 
 ## Licence
 

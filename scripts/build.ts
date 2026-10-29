@@ -523,9 +523,27 @@ const repoCards: Record<string, Card> = {
 
 // ---------------------------------------------------------------- output
 
+// Renames every id in a file after the file itself (github/brand.svg's glow is
+// "github-brand-glow"). The ids id() hands out count across the whole build, so
+// without this, adding one graphic renumbers every file after it, and the sites
+// that inline these SVGs get changes that change nothing. Prefixing with the
+// file keeps ids unique when several are inlined on one page.
+function scopeIds(rel: string, svg: string) {
+  const slug = rel.replace(/\.svg$/, "").replace(/[^a-z0-9]+/gi, "-").toLowerCase();
+  const seen = new Map<string, number>();
+  const rename = new Map<string, string>();
+  for (const [, old] of svg.matchAll(/ id="([^"]+)"/g)) {
+    const base = `${slug}-${old.replace(/\d+/g, "")}`, n = (seen.get(base) ?? 0) + 1;
+    seen.set(base, n);
+    rename.set(old, n === 1 ? base : `${base}-${n}`);
+  }
+  return svg.replace(/( id="|url\(#|href="#)([^")]+)/g, (m, pre: string, old: string) => rename.has(old) ? pre + rename.get(old) : m);
+}
+
 const written: string[] = [];
 function out(rel: string, svg: string, pngWidth: number) {
   const file = path.join(ROOT, rel);
+  svg = scopeIds(rel, svg);
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, svg);
   written.push(rel);
@@ -612,7 +630,7 @@ out("mostwanted/social.svg", mwBanner(1280, 640, 0.9), 1280);
 // PNG previews of the official files copied from xena-studios/raptor.
 for (const f of ["logo-dark", "logo-light", "favicon"]) {
   const svg = hexify(fs.readFileSync(path.join(ROOT, `raptor/official/${f}.svg`), "utf8"));
-  fs.writeFileSync(path.join(ROOT, `raptor/official/${f}.png`), new Resvg(svg, { fitTo: { mode: "width", value: f === "favicon" ? 512 : 1156 } }).render().asPng());
+  fs.writeFileSync(path.join(ROOT, `raptor/official/${f}.png`), new Resvg(svg, { fitTo: { mode: "width", value: f === "favicon" ? 512 : 1156 }, font: { loadSystemFonts: false } }).render().asPng());
 }
 
 fs.mkdirSync(path.join(ROOT, "tokens"), { recursive: true });

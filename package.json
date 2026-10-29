@@ -10,7 +10,7 @@
   },
   "scripts": {
     "build": "node scripts/build.ts",
-    "check": "node scripts/build.ts && git diff --exit-code --stat -- . ':!pnpm-lock.yaml'",
+    "check": "node scripts/build.ts && git diff --exit-code --stat -- . ':!pnpm-lock.yaml' && git ls-files --others --exclude-standard | (! grep .)",
     "typecheck": "tsc",
     "verify": "tsc && node scripts/verify.ts"
   },

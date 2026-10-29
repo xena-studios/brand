@@ -1,10 +1,10 @@
 // Checks what CI can without the fonts the build needs (Ethnocentric is
-// licensed and never in the repo, so `npm run check` only runs locally):
-// every SVG renders and has its PNG beside it, every PNG is a PNG, every token
-// file parses, every script compiles, and every file the README shows or links
-// to exists.
+// licensed and never in the repo, so `pnpm check` only runs locally): every
+// SVG renders and has its PNG beside it, every PNG is a PNG, every token file
+// parses, and every file the README shows or links to exists. `pnpm verify`
+// type-checks the scripts first.
 //
-//   npm run verify
+//   pnpm verify
 import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
@@ -12,7 +12,7 @@ import { Resvg } from "@resvg/resvg-js";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const tracked = execFileSync("git", ["-C", ROOT, "ls-files"], { encoding: "utf8" }).trim().split("\n");
-const problems = [];
+const problems: string[] = [];
 const PNG = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
 
 for (const file of tracked) {
@@ -21,7 +21,7 @@ for (const file of tracked) {
     try {
       new Resvg(fs.readFileSync(full, "utf8"), { fitTo: { mode: "width", value: 64 }, font: { loadSystemFonts: false } }).render();
     } catch (e) {
-      problems.push(`${file}: doesn't render (${e.message})`);
+      problems.push(`${file}: doesn't render (${(e as Error).message})`);
     }
     if (!tracked.includes(file.replace(/\.svg$/, ".png"))) problems.push(`${file}: no PNG beside it`);
   } else if (file.endsWith(".png")) {
@@ -30,13 +30,7 @@ for (const file of tracked) {
     try {
       JSON.parse(fs.readFileSync(full, "utf8"));
     } catch (e) {
-      problems.push(`${file}: invalid JSON (${e.message})`);
-    }
-  } else if (file.endsWith(".mjs")) {
-    try {
-      execFileSync(process.execPath, ["--check", full], { stdio: "pipe" });
-    } catch (e) {
-      problems.push(`${file}: doesn't compile\n${e.stderr}`);
+      problems.push(`${file}: invalid JSON (${(e as Error).message})`);
     }
   }
 }

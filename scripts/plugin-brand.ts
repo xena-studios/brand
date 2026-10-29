@@ -11,7 +11,7 @@ export const pluginColors = {
 // 16×16 glyphs, "#" = filled. Shading is derived: light on top/left edges, dark on
 // bottom/right, enclosed holes dark. A grid of letters sets faces by hand instead
 // (t = light, b = base, d = dark, f = floor).
-const glyphs = {
+const glyphs: Record<string, string[]> = {
   wrench: [
     "................",
     "........###.....",
@@ -70,23 +70,36 @@ const glyphs = {
 };
 
 const N = 16;
-const FACES = { t: "light", b: "base", d: "dark", f: "floor" };
+const FACES: Record<string, Cell> = { t: "light", b: "base", d: "dark", f: "floor" };
+
+export type Cell = "light" | "base" | "dark" | "floor";
+
+export interface Plugin {
+  id: string;
+  prefix: string;
+  name: string;
+  accent: string;
+  glyph: string;
+  kicker: string;
+  headline: [string, string];
+  summary: string;
+}
 
 // Grid of null | "light" | "base" | "dark" | "floor".
-export function glyphCells(name) {
+export function glyphCells(name: string): (Cell | null)[][] {
   const rows = glyphs[name];
   if (rows.some((r) => /[tbdf]/.test(r))) return rows.map((r) => [...r].map((c) => FACES[c] ?? null));
   const on = rows.map((r) => [...r].map((c) => c === "#"));
   // Empty cells reachable from the border are outside; enclosed ones are holes.
-  const out = on.map((r) => r.map(() => false)), q = [];
+  const out = on.map((r) => r.map(() => false)), q: [number, number][] = [];
   for (let i = 0; i < N; i++) q.push([i, 0], [i, N - 1], [0, i], [N - 1, i]);
   while (q.length) {
-    const [x, y] = q.pop();
+    const [x, y] = q.pop()!;
     if (x < 0 || y < 0 || x >= N || y >= N || out[y][x] || on[y][x]) continue;
     out[y][x] = true;
     q.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
   }
-  const solid = (x, y) => x >= 0 && y >= 0 && x < N && y < N && !out[y][x];
+  const solid = (x: number, y: number) => x >= 0 && y >= 0 && x < N && y < N && !out[y][x];
   return on.map((row, y) => row.map((filled, x) => {
     if (out[y][x]) return null;
     if (!filled) return "dark";
@@ -98,7 +111,7 @@ export function glyphCells(name) {
 
 // Each plugin: name (prefix letter in the accent), glyph, the banner's // kicker and
 // two-tone headline, and the Modrinth summary (the line under the name in search).
-export const plugins = [
+export const plugins: Plugin[] = [
   {
     id: "xutilities", prefix: "x", name: "Utilities", accent: "#F5B83D", glyph: "wrench",
     kicker: "// UTILITY PLUGIN",

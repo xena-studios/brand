@@ -8,6 +8,9 @@
 // Desert Orange on dusk. The accent stays clear of Ion Blue, Signal Red, Neo
 // Magenta and the plugin family's amber, green and violet. Neutrals are tinted
 // toward orange (hue 30).
+// An official image and its pixel size.
+export interface Art { file: string; w: number; h: number }
+
 export const mostwantedColors = {
   orange: "#FF9933",           // the one accent: headline, horizon, buttons
   "orange-daylight": "#B34700", // orange text on light backgrounds (5.1:1 on sand-light)
@@ -25,7 +28,14 @@ export const mostwantedColors = {
   clay: "#893500",
 };
 
-export const mostwanted = {
+export const mostwanted: {
+  kicker: string;
+  tagline: string;
+  summary: string;
+  wordmark: Art;
+  monogram: Art;
+  desert: Art;
+} = {
   kicker: "// MINECRAFT SERVER",
   // Says what the server is, for people who've never heard of it.
   tagline: "Cops vs. prisoners on Java & Bedrock",

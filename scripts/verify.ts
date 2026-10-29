@@ -1,7 +1,7 @@
 // Checks what CI can without the fonts the build needs (Ethnocentric is
 // licensed and never in the repo, so `pnpm check` only runs locally): every
 // SVG renders and has its PNG beside it, every PNG is a PNG, every token file
-// parses, and every file the README shows or links to exists. `pnpm verify`
+// parses, and every file the README shows, links to or names exists. `pnpm verify`
 // type-checks the scripts first.
 //
 //   pnpm verify
@@ -42,8 +42,20 @@ for (const ref of new Set(refs)) {
   if (!tracked.includes(ref)) problems.push(`README.md: ${ref} doesn't exist`);
 }
 
+// Paths the README names in code spans, in this repo's own folders (other repos'
+// paths, like Raptor's `site/public/og.png`, start elsewhere). A name without an
+// extension stands for its SVG and PNG, `<id>` and `*` for any name, and a
+// trailing slash for a folder.
+const dirs = new Set(tracked.map((f) => f.split("/")[0]).filter((d) => d !== ".github"));
+const spans = [...readme.matchAll(/`([^`\s]+\/[^`\s]*)`/g)].map((m) => m[1]).filter((s) => dirs.has(s.split("/")[0]));
+for (const span of new Set(spans)) {
+  const re = span.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/<[^>]+>|\*/g, "[^/]*");
+  const match = new RegExp(span.endsWith("/") ? `^${re}.+` : `^${re}(\\.(svg|png))?$`);
+  if (!tracked.some((f) => match.test(f))) problems.push(`README.md: \`${span}\` matches no file`);
+}
+
 if (problems.length) {
   console.error(problems.join("\n"));
   process.exit(1);
 }
-console.log(`verified ${tracked.length} files and ${new Set(refs).size} README references`);
+console.log(`verified ${tracked.length} files, ${new Set(refs).size} README links and ${new Set(spans).size} README paths`);

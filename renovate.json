@@ -1,4 +1,12 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["local>xena-studios/.github:renovate-config"]
+  "extends": ["local>xena-studios/.github:renovate-config"],
+  "packageRules": [
+    {
+      "description": "Third-party actions run with the repo's secrets, so they're pinned to a commit (CodeQL flags tags, which can be moved); Renovate keeps the pins current. GitHub's own actions stay on tags.",
+      "matchManagers": ["github-actions"],
+      "matchPackageNames": ["!actions/**", "!github/**"],
+      "pinDigests": true
+    }
+  ]
 }

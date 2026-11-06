@@ -1,7 +1,7 @@
 // Checks what CI can without the fonts the build needs (Ethnocentric is
 // licensed and never in the repo, so `pnpm check` only runs locally): every
 // SVG renders and has its PNG beside it, every PNG is a PNG, every token file
-// parses, and every file the README shows, links to or names exists. `pnpm verify`
+// parses, and every file the README and docs/ show, link to or name exists. `pnpm verify`
 // type-checks the scripts first.
 //
 //   pnpm verify
@@ -35,27 +35,37 @@ for (const file of tracked) {
   }
 }
 
-// Local files the README shows (<img src>, ![]()) or links to ([](path)).
-const readme = fs.readFileSync(path.join(ROOT, "README.md"), "utf8");
-const refs = [...readme.matchAll(/(?:\]\(|src=")([^)"#\s]+)/g)].map((m) => m[1]).filter((r) => !/^[a-z]+:/.test(r));
-for (const ref of new Set(refs)) {
-  if (!tracked.includes(ref)) problems.push(`README.md: ${ref} doesn't exist`);
-}
-
-// Paths the README names in code spans, in this repo's own folders (other repos'
-// paths, like Raptor's `site/public/og.png`, start elsewhere). A name without an
-// extension stands for its SVG and PNG, `<id>` and `*` for any name, and a
-// trailing slash for a folder.
+// The README and the guides in docs/: every local file they show (<img src>,
+// ![]()) or link to ([](path)) exists, resolved from the doc's own folder. A
+// link ending in a slash is a folder.
+const docs = tracked.filter((f) => f === "README.md" || /^docs\/[^/]+\.md$/.test(f));
+// Paths the docs name in code spans, from the repo root, in this repo's own
+// folders (other repos' paths, like Raptor's `site/public/og.png`, start
+// elsewhere). A name without an extension stands for its SVG and PNG, `<id>`
+// and `*` for any name, and a trailing slash for a folder.
 const dirs = new Set(tracked.map((f) => f.split("/")[0]).filter((d) => d !== ".github"));
-const spans = [...readme.matchAll(/`([^`\s]+\/[^`\s]*)`/g)].map((m) => m[1]).filter((s) => dirs.has(s.split("/")[0]));
-for (const span of new Set(spans)) {
-  const re = span.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/<[^>]+>|\*/g, "[^/]*");
-  const match = new RegExp(span.endsWith("/") ? `^${re}.+` : `^${re}(\\.(svg|png))?$`);
-  if (!tracked.some((f) => match.test(f))) problems.push(`README.md: \`${span}\` matches no file`);
+let links = 0;
+let paths = 0;
+for (const doc of docs) {
+  const text = fs.readFileSync(path.join(ROOT, doc), "utf8");
+  const refs = [...text.matchAll(/(?:\]\(|src=")([^)"#\s]+)/g)].map((m) => m[1]).filter((r) => !/^[a-z]+:/.test(r));
+  for (const ref of new Set(refs)) {
+    const target = path.posix.join(path.posix.dirname(doc), ref);
+    const found = ref.endsWith("/") ? tracked.some((f) => f.startsWith(target)) : tracked.includes(target);
+    if (!found) problems.push(`${doc}: ${ref} doesn't exist`);
+  }
+  const spans = [...text.matchAll(/`([^`\s]+\/[^`\s]*)`/g)].map((m) => m[1]).filter((s) => dirs.has(s.split("/")[0]));
+  for (const span of new Set(spans)) {
+    const re = span.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/<[^>]+>|\*/g, "[^/]*");
+    const match = new RegExp(span.endsWith("/") ? `^${re}.+` : `^${re}(\\.(svg|png))?$`);
+    if (!tracked.some((f) => match.test(f))) problems.push(`${doc}: \`${span}\` matches no file`);
+  }
+  links += new Set(refs).size;
+  paths += new Set(spans).size;
 }
 
 if (problems.length) {
   console.error(problems.join("\n"));
   process.exit(1);
 }
-console.log(`verified ${tracked.length} files, ${new Set(refs).size} README links and ${new Set(spans).size} README paths`);
+console.log(`verified ${tracked.length} files, and ${links} links and ${paths} paths in ${docs.length} docs`);

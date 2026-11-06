@@ -3,7 +3,7 @@ name: Check
 # The build needs fonts that can't be in the repo (Ethnocentric is licensed),
 # so CI can't rebuild and diff like `pnpm check` does locally. It checks the
 # rest on every pull request: the scripts type-check, every SVG renders and has
-# its PNG, tokens parse, and the README's images and links exist. main requires it.
+# its PNG, tokens parse, and the docs' images and links exist. main requires it.
 on:
   push:
     branches: [main]

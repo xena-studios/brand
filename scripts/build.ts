@@ -17,7 +17,7 @@ const ROOT = path.resolve(import.meta.dirname, "..");
 const FONT_DIR = path.join(os.homedir(), "Library/Fonts");
 const fontFile = (p: string): Font => {
   if (!fs.existsSync(p)) {
-    console.error(`Missing font: ${p}\nSee "Build" in README.md for where each font comes from, or set its path with the env var.`);
+    console.error(`Missing font: ${p}\nSee docs/building.md for where each font comes from, or set its path with the env var.`);
     process.exit(1);
   }
   // Copy out the file's own bytes: a small file's Buffer can sit inside Node's

@@ -38,7 +38,7 @@ Each repo keeps its banner at `.github/assets/banner.png`.
 
 ## Social previews
 
-Upload in each repo under **Settings → General → Social preview**.
+Upload in each repo under **Settings → General → Social preview**. GitHub has no API for this, so it's always by hand.
 
 | Repo | File |
 |---|---|

@@ -2,7 +2,7 @@
 
 ![Raptor](../raptor/banner.png)
 
-Signal Red on warm Ink ("The Console"). Raptor's identity comes from [its design doc](https://github.com/xena-studios/raptor/blob/main/docs/DESIGN.md); Xena only adds the horizon and the XENA STUDIOS endorsement.
+Signal Red on warm Ink ("The Console"). Raptor's identity comes from [its design doc](https://github.com/xena-studios/raptor/blob/main/docs/DESIGN.md); Xena only adds the horizon and the XENA STUDIOS endorsement. Raptor is at [raptorpanel.net](https://raptorpanel.net), and open source under AGPL-3.0 in [xena-studios/raptor](https://github.com/xena-studios/raptor).
 
 ## Marks
 

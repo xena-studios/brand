@@ -2,7 +2,7 @@
 
 ![NeoSkript](../neoskript/banner.png)
 
-Neo Magenta on night. Xena adds the horizon and the XENA STUDIOS endorsement.
+Neo Magenta on night. Xena adds the horizon and the XENA STUDIOS endorsement. NeoSkript is in public beta, at [neoskript.dev](https://neoskript.dev), and open source under GPL-3.0-only in [xena-studios/neoskript](https://github.com/xena-studios/neoskript).
 
 - **Headline:** Keep your scripts. *Lose the lag.* (They run unchanged, and they run faster.)
 - **Summary:** A fast, modern drop-in replacement for Skript. Your .sk scripts run unchanged, only faster. For Paper and Folia.

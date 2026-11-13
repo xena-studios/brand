@@ -2,9 +2,9 @@
 
 ![Airfields](../airfields/banner.png)
 
-Airfields Gold on a high-altitude night. Xena adds the XENA STUDIOS endorsement, the `//` kicker and the horizon. The game itself is in xena-studios/airfields (private).
+Airfields Gold on a high-altitude night. Xena adds the XENA STUDIOS endorsement, the `//` kicker and the horizon. The game itself is in xena-studios/airfields (private, proprietary), at airfieldsmc.com; its resource pack is public at [xena-studios/airfields-pack](https://github.com/xena-studios/airfields-pack).
 
-- **Tagline:** Sky-mining PvP on Java & Bedrock.
+- **Tagline:** Sky-mining PvP on Java & Bedrock. A season can add its own line: winter's is *Mine the frozen sky. Forge your gear. Rule the islands.*
 - **Summary:** A sky-mining PvP Minecraft server for Java and Bedrock. Mine floating islands, fight ore mobs, forge your gear and hold KOTH.
 - **Name:** always **Airfields**, one word with a capital A. Handles and the domain add MC (`airfieldsmc`, airfieldsmc.com). In listings, pair it with what it is: *Airfields — Sky-Mining PvP*.
 
@@ -15,7 +15,7 @@ Airfields Gold on a high-altitude night. Xena adds the XENA STUDIOS endorsement,
 - **Wordmark:** **AIRFIELDS** in block title lettering, like a game's title screen: chunky letters on a grid, a gold face lit from above (pale at the top, deep gold at the foot), bevelled edges, a deep brown extrusion under the baseline and one thick maroon outline around it all. The letters lean out slightly toward the bottom. It's lettering drawn on a grid, not a font, so **always use the file and never retype it**.
 - **Monogram:** **AF** in the same lettering, for small and square spots.
 - **The A's emblem:** the A has a square counter like the R and a plain face. Each season can cut its emblem into it in the same bevelled style (winter keeps the plain A). Never put a creeper or any other Minecraft mark in it.
-- **Icon:** the monogram standing on a small horizon, on a `sky-raised` tile with a soft gold glow, 6/32 corners. It clears Discord's circle crop. At 64px and below (the favicon, the Minecraft server list) the monogram fills the tile, drops its bevels and emblem, and the horizon drops out.
+- **Icon:** the monogram standing on a small horizon, on a `sky-raised` tile with a soft gold glow, 6/32 corners. It clears Discord's circle crop. At 64px and below (the favicon) the monogram fills the tile, drops its bevels and emblem, and the horizon drops out. The Minecraft server list uses the game's own icon instead: the season's monogram on a clear background (`airfields/official/server-icon.png`).
 - **Clear space:** the exported files include it. **Minimum size:** the wordmark 160px wide, the icon 16px.
 - **Don't** recolour the gold or the outline, add a second outline, redraw the letters, or put a season's emblem on the permanent files.
 
@@ -60,7 +60,7 @@ Blocky snow piled on top of every letter (with a few drips), the plain A, a navy
 
 It's pixel art drawn by code, pixel by pixel, in [`scripts/airfields-scene.ts`](../scripts/airfields-scene.ts): a 320×180 canvas (stepped sky bands with ordered dithering, stars, a crescent moon, aurora curtains, cloud billows, the islands, falling snow), scaled up with nearest neighbour so every art pixel stays a square. Show it with `image-rendering: pixelated` when the browser scales it. The key art blurs it under the wordmark, as MostWanted's does; the winter banner and social preview use the same blurred scene.
 
-**The layers:** the same scene split by depth into twelve transparent PNGs in `airfields/themes/winter/layers/`, each the full 320×180 at 1×: the sky (with the stars and the moon's halo), the aurora, the moon, three cloud banks (far, mid, near), the far islands (netherite, diamond, KOTH), the mid islands (iron, coal), the gold island, the hub, and the falling snow in two (far and near). Stacked back to front they make exactly `scene-320x180.png`; the build checks it. [`layers.json`](../airfields/themes/winter/layers/layers.json) lists them in order with a `depth` from 0 (the sky) to 1 (the nearest snow), for a site that moves them apart: parallax, islands bobbing, clouds drifting, snow falling. Move them in whole art pixels so the pixels stay square, keep the movement slow and small, and show the flat scene with no motion when the viewer asks for reduced motion.
+**The layers:** the same scene split by depth into twelve transparent PNGs in `airfields/themes/winter/layers/`, each the full 320×180 at 1×: the sky (with the stars and the moon's halo), the aurora, the moon, three cloud banks (far, mid, near), the far islands (netherite, diamond, KOTH), the mid islands (iron, coal), the gold island, the hub, and the falling snow in two (far and near). Stacked back to front they make exactly `scene-320x180.png`; the build checks it. [`layers.json`](../airfields/themes/winter/layers/layers.json) lists them in order with a `depth` from 0 (the sky) to 1 (the nearest snow), for a site that wants to move them apart: parallax, islands bobbing, clouds drifting, snow falling. airfieldsmc.com shows the flat scene today, so they're optional. Move them in whole art pixels so the pixels stay square, keep the movement slow and small, and show the flat scene with no motion when the viewer asks for reduced motion.
 
 | Token | Hex | Role |
 |---|---|---|
@@ -78,10 +78,10 @@ To add a season: add a theme to `themes` (copy winter's: `sky`, `body`, `rim`, `
 | File | Use |
 |---|---|
 | `airfields/wordmark` | The wordmark, transparent |
-| `airfields/monogram` | The A, transparent |
+| `airfields/monogram` | AF, transparent |
 | `airfields/icon` | Avatar, Discord, store (512) |
 | `airfields/favicon` | Favicon (64) |
-| `airfields/server-icon` | The Minecraft server list's `server-icon.png` (64×64, square) |
+| `airfields/server-icon` | The monogram on the tile at 64×64. The game ships `official/server-icon.png` instead |
 | `airfields/banner` | README banner (1920×600) |
 | `airfields/social` | GitHub social preview (1280×640) |
 | `airfields/themes/<id>/` | The season's wordmark, monogram, icon, server icon, banner and social preview |
@@ -91,6 +91,10 @@ To add a season: add a theme to `themes` (copy winter's: `sky`, `body`, `rim`, `
 | `airfields/themes/winter/banner-scene.png` | A wide band of it (3840×1200, 12×): headers and banners with no logo |
 | `airfields/themes/winter/key-art.png` | Key art (1920×1080): the winter wordmark over the blurred scene. Site hero, listings, thumbnails, Discord |
 | `airfields/themes/winter/scene.json` | Where the bright stars are, in 1× pixels, for a site that makes them twinkle |
-| `airfields/themes/winter/layers/` | The scene in twelve depth layers at 1×, transparent, and `layers.json` (their order and depth), for a site that animates it |
+| `airfields/themes/winter/layers/` | The scene in twelve depth layers at 1×, transparent, and `layers.json` (their order and depth), for a site that animates it (optional) |
+| `airfields/official/server-icon.png` | The server-list icon the game ships: the season's AF on a clear background (64×64) |
+| `airfields/official/pack-wordmark.png` | The in-game pixel wordmark from the resource pack (167×32) |
 
 Colours and copy are in [`scripts/airfields-brand.ts`](../scripts/airfields-brand.ts), the lettering in [`scripts/airfields-logo.ts`](../scripts/airfields-logo.ts) and the scene in [`scripts/airfields-scene.ts`](../scripts/airfields-scene.ts). `pnpm build:airfields` rebuilds only these files and needs only Figtree and JetBrains Mono (see [Building](building.md#fonts)).
+
+`airfields/official/` isn't built here: it's copied from the game repo (`brand/out/server-icon.png` and `pack/logo/wordmark.png`). The game also draws its own README banner, Discord banners, link previews and site art (such as winter's spruce and snowcaps) from these files, in its `brand/` and `website/`. Refresh `official/` when those change.

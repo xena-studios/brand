@@ -11,7 +11,7 @@
 // - a deep brown extrusion hangs under the baseline, narrowing toward the back;
 // - one thick maroon outline wraps the whole solid.
 //
-// A season can cut an emblem into the A (winter: a snowflake). The permanent A
+// A season can cut an emblem into the A (snowflake below is an example). The permanent A
 // has a plain face. Returns SVG markup with its top-left at (0, 0).
 
 // Measured from the owner's artwork, in face heights (the face is 10 rows tall).
@@ -40,7 +40,7 @@ const L = logoColors;
 // The letters, row by row: # is face. Cut-outs and counters are drawn as the
 // owner drew them (the R's notch, the D's clipped corners).
 const GLYPHS: Record<string, string[]> = {
-  A: ["#######", "#######", "#######", "#######", "#######", "#######", "#######", "###.###", "###.###", "###.###"],
+  A: ["#######", "#######", "###.###", "###.###", "#######", "#######", "###.###", "###.###", "###.###", "###.###"],
   I: Array(10).fill("###"),
   R: ["#######", "#######", "###.###", "###.###", "######.", "#######", "###.###", "###.###", "###.###", "###.###"],
   F: ["#######", "#######", "###....", "###....", "#######", "#######", "###....", "###....", "###....", "###...."],
@@ -54,7 +54,7 @@ const GLYPHS: Record<string, string[]> = {
 export type Rect = [x0: number, y0: number, x1: number, y1: number];
 
 /**
- * Winter's emblem: a blocky snowflake cut into the A, in quarter-cells about the
+ * An example emblem: a blocky snowflake cut into the A, in quarter-cells about the
  * A's centre: an upright cross two quarter-cells thick, a diagonal cross in
  * chunky overlapping steps, a nub across each upright tip, and a square hub.
  */

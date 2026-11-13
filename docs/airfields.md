@@ -14,7 +14,7 @@ Airfields Gold on a high-altitude night. Xena adds the XENA STUDIOS endorsement,
 
 - **Wordmark:** **AIRFIELDS** in block title lettering, like a game's title screen: chunky letters on a grid, a gold face lit from above (pale at the top, deep gold at the foot), bevelled edges, a deep brown extrusion under the baseline and one thick maroon outline around it all. The letters lean out slightly toward the bottom. It's lettering drawn on a grid, not a font, so **always use the file and never retype it**.
 - **Monogram:** **AF** in the same lettering, for small and square spots.
-- **The A's emblem:** the permanent A has a plain face. Each season can cut its emblem into it in the same bevelled style (winter: a snowflake). Never put a creeper or any other Minecraft mark in it.
+- **The A's emblem:** the A has a square counter like the R and a plain face. Each season can cut its emblem into it in the same bevelled style (winter keeps the plain A). Never put a creeper or any other Minecraft mark in it.
 - **Icon:** the monogram standing on a small horizon, on a `sky-raised` tile with a soft gold glow, 6/32 corners. It clears Discord's circle crop. At 64px and below (the favicon, the Minecraft server list) the monogram fills the tile, drops its bevels and emblem, and the horizon drops out.
 - **Clear space:** the exported files include it. **Minimum size:** the wordmark 160px wide, the icon 16px.
 - **Don't** recolour the gold or the outline, add a second outline, redraw the letters, or put a season's emblem on the permanent files.
@@ -50,9 +50,9 @@ The game changes its look with the season; the permanent brand above doesn't. Ea
 
 ### Winter (2026)
 
-<img src="../airfields/themes/winter/wordmark.png" width="420" alt="AIRFIELDS wordmark with a snowflake cut into the A"> &nbsp; <img src="../airfields/themes/winter/icon.png" width="96" alt="Airfields winter icon">
+<img src="../airfields/themes/winter/wordmark.png" width="420" alt="AIRFIELDS wordmark"> &nbsp; <img src="../airfields/themes/winter/icon.png" width="96" alt="Airfields winter icon">
 
-A snowflake cut into the A, a navy sky with an aurora glow and falling snow, and an aurora-teal horizon. For the game's site, Discord and listings while the winter season runs.
+The plain A, a navy sky with an aurora glow and falling snow, and an aurora-teal horizon. For the game's site, Discord and listings while the winter season runs.
 
 ![The winter pixel scene: floating islands under an aurora](../airfields/themes/winter/scene.png)
 

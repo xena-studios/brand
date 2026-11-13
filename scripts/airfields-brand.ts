@@ -5,8 +5,8 @@
 // The permanent brand is drawn here: the AIRFIELDS wordmark and the AF monogram
 // in block title lettering (scripts/airfields-logo.ts: gold faces, bevels, a brown
 // extrusion and a maroon outline), and the icons made from the monogram. Seasons
-// dress it up without changing it: each theme in `themes` cuts its emblem into the
-// A (winter's snowflake), brings its own sky, and may have a pixel scene
+// dress it up without changing it: each theme in `themes` may cut an emblem into the
+// A (winter keeps it plain), brings its own sky, and may have a pixel scene
 // (scripts/airfields-scene.ts); it's written to airfields/themes/<id>/. The game
 // repo (xena-studios/airfields, brand/) syncs these files.
 //
@@ -16,7 +16,7 @@ import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
 import opentype, { type Font, type PathCommand, type BoundingBox } from "opentype.js";
-import { lettering, snowflake, logoColors, type Rect, type Lettering } from "./airfields-logo.ts";
+import { lettering, logoColors, type Rect, type Lettering } from "./airfields-logo.ts";
 import { buildAirfieldsScene, scenePng, SCENE_W, SCENE_H, BANNER_CROP } from "./airfields-scene.ts";
 import { writer, type Out } from "./output.ts";
 
@@ -92,8 +92,6 @@ export const themes: Theme[] = [
     body: W.night,
     rim: W["aurora-teal"],
     glow: [[W["aurora-teal"], 0.3], [W["aurora-violet"], 0.16]],
-    // The season's emblem: a blocky snowflake cut into the A.
-    emblem: snowflake,
     scene: true,
     scenery: (w, h, rand) => {
       let s = "";

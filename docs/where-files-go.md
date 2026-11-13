@@ -8,7 +8,7 @@ These repos copy brand files in with `pnpm brand:sync`. Run it after a change he
 |---|---|
 | [website](https://github.com/xena-studios/website) | Favicon, iOS icon, link preview, logos, horizon, product marks, plugin icons, MostWanted's wordmark and key art |
 | [plugins](https://github.com/xena-studios/plugins) (in `docs/`) | The docs site's logo, favicon, plugin icons and link preview (`social/docs-og.png`) |
-| airfields (private, `brand/`, with `npm run brand:sync`) | `airfields/` and `airfields/themes/`: the wordmark, monogram, icons and server icon, permanent and per season, each season's pixel scene and key art (`scene*.png`, `banner-scene.png`, `key-art.png`, `scene.json`), and `tokens/airfields.json`. The game repo builds its site art, link previews and Discord banners from them |
+| airfields (private, `brand/`, with `npm run brand:sync`) | `airfields/` and `airfields/themes/`: the wordmark, monogram, icons and server icon, permanent and per season, each season's pixel scene and key art (`scene*.png`, `banner-scene.png`, `key-art.png`, `scene.json`, the depth layers in `layers/`), and `tokens/airfields.json`. The game repo builds its site art, link previews and Discord banners from them |
 
 ## Copied by hand
 

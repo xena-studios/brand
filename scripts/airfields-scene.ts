@@ -14,6 +14,8 @@
 //   airfields/themes/<id>/scene-1920x1080.png 1920×1080 (6×), the website hero
 //   airfields/themes/<id>/banner-scene.png    3840×1200 (12×), a wide crop
 //   airfields/themes/<id>/key-art.png         1920×1080, the wordmark over the blurred scene
+//   airfields/themes/<id>/layers/*.png        the scene split into depth layers at 1×, transparent
+//   airfields/themes/<id>/layers/layers.json  their order, depth and what each holds
 //
 // No image libraries: the PNGs are encoded here (node:zlib), and resvg only draws
 // the wordmark over the key art. Every random choice is seeded, so a rebuild
@@ -105,20 +107,64 @@ function stepped(f: number, x: number, y: number, n: number, soft = 0.4) {
 
 class Canvas {
   w: number; h: number; px: Float32Array;
+  /** The depth layers, back to front, each premultiplied RGBA; `plate` is the one being drawn. */
+  plates = new Map<string, Float32Array>();
+  plate: Float32Array | undefined;
   constructor(w: number, h: number) { this.w = w; this.h = h; this.px = new Float32Array(w * h * 3); }
+  /** Everything drawn from here on also goes onto a transparent layer of this name (see LAYERS). */
+  layer(name: LayerName) {
+    if (this.plates.has(name)) throw new Error(`layer ${name} drawn twice`);
+    this.plate = new Float32Array(this.w * this.h * 4);
+    this.plates.set(name, this.plate);
+  }
   get(x: number, y: number): RGB { const i = (y * this.w + x) * 3; return [this.px[i], this.px[i + 1], this.px[i + 2]]; }
   set(x: number, y: number, c: RGB) {
     x = Math.round(x); y = Math.round(y);
     if (x < 0 || y < 0 || x >= this.w || y >= this.h) return;
     const i = (y * this.w + x) * 3;
     this.px[i] = c[0]; this.px[i + 1] = c[1]; this.px[i + 2] = c[2];
+    if (this.plate) {
+      const j = (y * this.w + x) * 4;
+      this.plate[j] = c[0]; this.plate[j + 1] = c[1]; this.plate[j + 2] = c[2]; this.plate[j + 3] = 1;
+    }
   }
   blend(x: number, y: number, c: RGB, a: number) {
     x = Math.round(x); y = Math.round(y);
     if (a <= 0 || x < 0 || y < 0 || x >= this.w || y >= this.h) return;
-    this.set(x, y, mix(this.get(x, y), c, clamp(a)));
+    a = clamp(a);
+    const i = (y * this.w + x) * 3;
+    const m = mix(this.get(x, y), c, a);
+    this.px[i] = m[0]; this.px[i + 1] = m[1]; this.px[i + 2] = m[2];
+    // On the layer, the same paint over what the layer already has ("over", premultiplied),
+    // so the layers stacked over each other give back the flat scene.
+    if (this.plate) {
+      const j = (y * this.w + x) * 4, p = this.plate;
+      for (let k = 0; k < 3; k++) p[j + k] = p[j + k] * (1 - a) + c[k] * a;
+      p[j + 3] = p[j + 3] * (1 - a) + a;
+    }
   }
 }
+
+/**
+ * The scene's depth layers, back to front, for a site that moves them apart (parallax,
+ * islands bobbing, clouds drifting). `depth` runs from 0 (the sky, infinitely far) to
+ * 1 (nearest): how much a layer moves with the pointer or the scroll.
+ */
+export const LAYERS = [
+  { name: "sky", depth: 0, holds: "The night sky's stepped bands, the moon's halo and the stars. Opaque." },
+  { name: "aurora", depth: 0.04, holds: "The aurora curtains, translucent." },
+  { name: "moon", depth: 0.06, holds: "The crescent moon." },
+  { name: "clouds-far", depth: 0.15, holds: "The far cloud bank on the horizon." },
+  { name: "islands-far", depth: 0.25, holds: "Netherite, diamond and the KOTH island, hazed by distance." },
+  { name: "clouds-mid", depth: 0.4, holds: "The low bank of cloud under the route's middle." },
+  { name: "islands-mid", depth: 0.5, holds: "Iron and coal." },
+  { name: "island-gold", depth: 0.7, holds: "The gold island and its glowing mine." },
+  { name: "island-hub", depth: 0.8, holds: "The hub: cabin, lanterns, lights and chimney smoke." },
+  { name: "clouds-near", depth: 0.9, holds: "The near sea of cloud over the islands' tips." },
+  { name: "snow-far", depth: 0.95, holds: "Small, dim falling snow." },
+  { name: "snow-near", depth: 1, holds: "Big, bright falling snow." },
+] as const;
+type LayerName = (typeof LAYERS)[number]["name"];
 
 /**
  * One island (or any object) drawn on its own before it joins the scene: a colour
@@ -472,11 +518,13 @@ function glow(cv: Canvas, x: number, y: number, r: number, strength: number, col
 export function paintScene(): { canvas: Canvas; twinkles: [number, number][] } {
   const cv = new Canvas(W, H);
   const rand = rng(2026);
+  cv.layer("sky");
   drawSky(cv);
 
   // The wordmark's sky: the aurora thins and the stars thin out across the middle.
   const calm = (x: number, y: number) => 1 - 0.45 * clamp(1 - Math.hypot((x - 160) / 95, (y - 74) / 32));
   const twinkles = drawStars(cv, rand, (x, y) => Math.hypot(x - MOON.x, y - MOON.y) > MOON.r + 6 && (Math.hypot((x - 160) / 80, (y - 72) / 24) > 1 || hash(x * 7 + y, 3) < 0.25));
+  cv.layer("aurora");
   drawAurora(cv, [
     // The main curtain: high on the left, dipping through the middle, rising off right.
     { base: (x) => 44 - 16 * Math.sin((x / W) * Math.PI * 1.15 + 0.35) + 3 * Math.sin(x * 0.045), height: (x) => 22 + 10 * fbm(x * 0.03, 4), strength: 1, x0: -20, x1: 300, seed: 11, hue: 0 },
@@ -485,9 +533,11 @@ export function paintScene(): { canvas: Canvas; twinkles: [number, number][] } {
     // A short low curtain on the left, over the diamond island.
     { base: (x) => 70 + 4 * Math.sin(x * 0.05), height: () => 14, strength: 0.45, x0: -10, x1: 120, seed: 31, hue: 0.15 },
   ], calm);
+  cv.layer("moon");
   drawMoon(cv);
 
   // The far cloud bank on the horizon, then the far islands over it.
+  cv.layer("clouds-far");
   drawClouds(cv, [...bank(rng(5), -10, W + 10, 140, 14, 2), ...bank(rng(6), -10, W + 10, 147, 11, 2)], { fade: 0.62, dark: 0.6 });
 
   const islands: Placed[] = [];
@@ -498,6 +548,7 @@ export function paintScene(): { canvas: Canvas; twinkles: [number, number][] } {
     return placed;
   };
 
+  cv.layer("islands-far");
   // Netherite: the farthest, high under the moon, blackstone with embers.
   const nether = add({ cx: 300, top: 70, rx: 10, depth: 13, seed: 41, ore: "netherite", ores: 5, haze: 0.36, stone: ramp("#0a0712", "#1a1228", "#2a1e3a", "#3b2a4c", "#523a60", "#6c5078") });
   glow(cv, 300, nether.bottom(300) - 2, 11, 0.45, ORE.netherite[1]);
@@ -529,12 +580,15 @@ export function paintScene(): { canvas: Canvas; twinkles: [number, number][] } {
   });
 
   // The route's mid islands over a lower bank of cloud.
+  cv.layer("clouds-mid");
   drawClouds(cv, bank(rng(9), 100, 250, 152, 10, 2), { fade: 0.4, dark: 0.4 });
+  cv.layer("islands-mid");
   const iron = add({ cx: 196, top: 120, rx: 21, depth: 27, seed: 19, ore: "iron", ores: 5, haze: 0.22, dress: (l, s, r) => { pine(l, 182, s(182) - 1, 9, r); pine(l, 189, s(189) - 1, 6, r); pine(l, 210, s(210) - 1, 8, r); } });
   const coal = add({ cx: 136, top: 138, rx: 17, depth: 21, seed: 17, ore: "coal", ores: 5, haze: 0.26, stone: ramp("#0b1028", "#1d2550", "#2e3a6c", "#41508a", "#5a6ca6", "#7486bd"), dress: (l, s, r) => { pine(l, 128, s(128) - 1, 7, r); pine(l, 145, s(145) - 1, 9, r); } });
   void iron; void coal; void koth;
 
   // Gold: near, on the right, its mine glowing.
+  cv.layer("island-gold");
   const gold = add({
     cx: 286, top: 108, rx: 42, depth: 50, seed: 13, ore: "gold", ores: 9, haze: 0.04, step: 2,
     dress: (l, s, r) => {
@@ -562,6 +616,7 @@ export function paintScene(): { canvas: Canvas; twinkles: [number, number][] } {
     glow(cv, mx, my + 13, 9, 0.5);
   }
 
+  cv.layer("island-hub");
   // The hub: the nearest and biggest, on the left: a cabin, lanterns, pines.
   const hubSmoke: [number, number] = [0, 0];
   const lights: [number, number][] = [];
@@ -637,17 +692,23 @@ export function paintScene(): { canvas: Canvas; twinkles: [number, number][] } {
   }
 
   // The near sea of cloud, over the islands' lowest tips.
+  cv.layer("clouds-near");
   drawClouds(cv, [...bank(rng(12), -20, W + 20, 163, 26, 4), ...bank(rng(13), -10, W + 20, 177, 22, 3)], { dark: 0.5 });
 
-  // Falling snow, in front of everything.
+  // Falling snow, in front of everything: the big bright flakes on their own layer,
+  // so a site can let them fall faster than the small dim ones behind.
   const snow = rng(99);
-  for (let i = 0; i < 240; i++) {
-    const x = Math.floor(snow() * W), y = Math.floor(snow() * H);
-    const near = snow();
+  const flakes: [number, number, number][] = [];
+  for (let i = 0; i < 240; i++) flakes.push([Math.floor(snow() * W), Math.floor(snow() * H), snow()]);
+  cv.layer("snow-far");
+  for (const [x, y, near] of flakes) if (near >= 0.55) cv.blend(x, y, P.snow[2], 0.45);
+  cv.layer("snow-near");
+  for (const [x, y, near] of flakes) {
     if (near < 0.1) { for (const [dx, dy] of [[0, 0], [1, 0], [0, 1], [1, 1]]) cv.blend(x + dx, y + dy, P.snow[4], dx + dy === 0 ? 0.95 : 0.75); }
     else if (near < 0.55) cv.blend(x, y, P.snow[4], 0.85);
-    else cv.blend(x, y, P.snow[2], 0.45);
   }
+  cv.plate = undefined;
+  if (cv.plates.size !== LAYERS.length) throw new Error("every layer in LAYERS is drawn once");
   return { canvas: cv, twinkles };
 }
 
@@ -702,31 +763,41 @@ function chunk(type: string, data: Uint8Array) {
   return out;
 }
 
-/** Encodes packed RGB as a PNG: indexed when it has 256 colours or fewer (pixel art usually does). */
-export function encodePng({ w, h, rgb }: { w: number; h: number; rgb: Uint8Array }) {
-  const index = new Map<number, number>();
-  for (let i = 0; i < rgb.length && index.size <= 256; i += 3) {
-    const k = (rgb[i] << 16) | (rgb[i + 1] << 8) | rgb[i + 2];
-    if (!index.has(k)) index.set(k, index.size);
-  }
+/**
+ * Encodes packed RGB (or RGBA, with `alpha`) as a PNG: indexed when it has 256
+ * colours or fewer (pixel art usually does), with a tRNS chunk for any alpha.
+ */
+export function encodePng({ w, h, rgb, alpha }: { w: number; h: number; rgb: Uint8Array; alpha?: Uint8Array }) {
+  const key = (p: number) => (((alpha ? alpha[p] : 255) << 24) | (rgb[p * 3] << 16) | (rgb[p * 3 + 1] << 8) | rgb[p * 3 + 2]) >>> 0;
+  // Opaque colours sort last, so tRNS only lists the translucent ones.
+  const seen = new Set<number>();
+  for (let p = 0; p < w * h && seen.size <= 256; p++) seen.add(key(p));
+  const index = new Map([...seen].sort((a, b) => (a >>> 24) - (b >>> 24) || a - b).map((k, i) => [k, i]));
   const ihdr = Buffer.alloc(13);
   ihdr.writeUInt32BE(w, 0); ihdr.writeUInt32BE(h, 4);
   let raw: Buffer, extra: Buffer[] = [];
   if (index.size <= 256) {
     ihdr[8] = 8; ihdr[9] = 3;
     const plte = Buffer.alloc(index.size * 3);
-    for (const [k, i] of index) { plte[i * 3] = k >> 16; plte[i * 3 + 1] = (k >> 8) & 255; plte[i * 3 + 2] = k & 255; }
-    extra = [chunk("PLTE", plte)];
-    raw = Buffer.alloc((w + 1) * h);
-    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
-      const i = (y * w + x) * 3;
-      raw[y * (w + 1) + 1 + x] = index.get((rgb[i] << 16) | (rgb[i + 1] << 8) | rgb[i + 2])!;
+    const trns: number[] = [];
+    for (const [k, i] of index) {
+      plte[i * 3] = (k >> 16) & 255; plte[i * 3 + 1] = (k >> 8) & 255; plte[i * 3 + 2] = k & 255;
+      if (k >>> 24 !== 255) trns[i] = k >>> 24;
     }
+    extra = [chunk("PLTE", plte), ...(trns.length ? [chunk("tRNS", Uint8Array.from(trns))] : [])];
+    raw = Buffer.alloc((w + 1) * h);
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) raw[y * (w + 1) + 1 + x] = index.get(key(y * w + x))!;
   } else {
-    ihdr[8] = 8; ihdr[9] = 2;
+    const bpp = alpha ? 4 : 3;
+    ihdr[8] = 8; ihdr[9] = alpha ? 6 : 2;
+    const px = new Uint8Array(w * h * bpp);
+    for (let p = 0; p < w * h; p++) {
+      px[p * bpp] = rgb[p * 3]; px[p * bpp + 1] = rgb[p * 3 + 1]; px[p * bpp + 2] = rgb[p * 3 + 2];
+      if (alpha) px[p * bpp + 3] = alpha[p];
+    }
     // Each row gets whichever standard filter leaves the smallest residuals
     // (the usual heuristic: least sum of absolute values).
-    const stride = w * 3;
+    const stride = w * bpp;
     raw = Buffer.alloc((stride + 1) * h);
     const row = new Uint8Array(stride);
     for (let y = 0; y < h; y++) {
@@ -734,8 +805,8 @@ export function encodePng({ w, h, rgb }: { w: number; h: number; rgb: Uint8Array
       for (let ft = 0; ft < 5; ft++) {
         let sum = 0;
         for (let x = 0; x < stride; x++) {
-          const v = rgb[y * stride + x];
-          const a = x >= 3 ? rgb[y * stride + x - 3] : 0, b = y > 0 ? rgb[(y - 1) * stride + x] : 0, c = x >= 3 && y > 0 ? rgb[(y - 1) * stride + x - 3] : 0;
+          const v = px[y * stride + x];
+          const a = x >= bpp ? px[y * stride + x - bpp] : 0, b = y > 0 ? px[(y - 1) * stride + x] : 0, c = x >= bpp && y > 0 ? px[(y - 1) * stride + x - bpp] : 0;
           let pred = 0;
           if (ft === 1) pred = a; else if (ft === 2) pred = b; else if (ft === 3) pred = (a + b) >> 1;
           else if (ft === 4) { const p = a + b - c, pa = Math.abs(p - a), pb = Math.abs(p - b), pc = Math.abs(p - c); pred = pa <= pb && pa <= pc ? a : pb <= pc ? b : c; }
@@ -757,6 +828,29 @@ export function encodePng({ w, h, rgb }: { w: number; h: number; rgb: Uint8Array
     chunk("IDAT", zlib.deflateSync(raw, { level: 9 })),
     chunk("IEND", new Uint8Array(0)),
   ]);
+}
+
+/** A layer (premultiplied RGBA floats) as straight 8-bit RGB and alpha; empty pixels are transparent black. */
+function plateImage(plate: Float32Array) {
+  const n = W * H, rgb = new Uint8Array(n * 3), alpha = new Uint8Array(n);
+  for (let p = 0; p < n; p++) {
+    const a = Math.round(plate[p * 4 + 3] * 255);
+    alpha[p] = a;
+    if (a) for (let k = 0; k < 3; k++) rgb[p * 3 + k] = Math.round(clamp(plate[p * 4 + k] / plate[p * 4 + 3], 0, 255));
+  }
+  return { w: W, h: H, rgb, alpha };
+}
+
+/** The layers' PNG images stacked back to front, the way a browser draws them. Must match the flat scene. */
+function checkLayers(cv: Canvas, images: ReturnType<typeof plateImage>[]) {
+  const out = new Float32Array(W * H * 3);
+  for (const img of images) for (let p = 0; p < W * H; p++) {
+    const a = img.alpha[p] / 255;
+    for (let k = 0; k < 3; k++) out[p * 3 + k] = out[p * 3 + k] * (1 - a) + img.rgb[p * 3 + k] * a;
+  }
+  let worst = 0;
+  for (let i = 0; i < out.length; i++) worst = Math.max(worst, Math.abs(out[i] - Math.round(cv.px[i])));
+  if (worst > 3) throw new Error(`the scene's layers, stacked, differ from the flat scene by up to ${worst.toFixed(1)}/255`);
 }
 
 /** The key art: the scene blurred, the season's wordmark over it with a soft shadow. */
@@ -797,6 +891,19 @@ export function buildAirfieldsScene(root: string, themeId = "winter") {
   // The banner: a 320×100 band through the islands' tops, at 12×.
   write("banner-scene.png", upscale(canvas, 12, BANNER_CROP));
   write("key-art.png", keyArt(canvas, fs.readFileSync(path.join(dir, "wordmark.svg"), "utf8")));
+  // The depth layers at 1×, and what's in them.
+  const layers = path.join(dir, "layers");
+  fs.rmSync(layers, { recursive: true, force: true });
+  fs.mkdirSync(layers);
+  const images = LAYERS.map((l) => plateImage(canvas.plates.get(l.name)!));
+  checkLayers(canvas, images);
+  LAYERS.forEach((l, i) => fs.writeFileSync(path.join(layers, `${l.name}.png`), encodePng(images[i])));
+  const manifest = {
+    width: W, height: H,
+    about: "The pixel scene in depth layers, back to front, each the full 320×180 at 1× on transparent. Stacked in this order they make scene-320x180.png. depth: 0 is the sky (still), 1 the nearest; move nearer layers more.",
+    layers: LAYERS.map((l) => ({ name: l.name, file: `${l.name}.png`, depth: l.depth, holds: l.holds })),
+  };
+  fs.writeFileSync(path.join(layers, "layers.json"), JSON.stringify(manifest, null, 2) + "\n");
   // Where the bright stars are (1× pixels), for sites that make them twinkle.
   fs.writeFileSync(path.join(dir, "scene.json"), JSON.stringify({ width: W, height: H, twinkles }, null, 2) + "\n");
 }

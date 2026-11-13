@@ -1,0 +1,79 @@
+{
+  "width": 320,
+  "height": 180,
+  "about": "The pixel scene in depth layers, back to front, each the full 320×180 at 1× on transparent. Stacked in this order they make scene-320x180.png. depth: 0 is the sky (still), 1 the nearest; move nearer layers more.",
+  "layers": [
+    {
+      "name": "sky",
+      "file": "sky.png",
+      "depth": 0,
+      "holds": "The night sky's stepped bands, the moon's halo and the stars. Opaque."
+    },
+    {
+      "name": "aurora",
+      "file": "aurora.png",
+      "depth": 0.04,
+      "holds": "The aurora curtains, translucent."
+    },
+    {
+      "name": "moon",
+      "file": "moon.png",
+      "depth": 0.06,
+      "holds": "The crescent moon."
+    },
+    {
+      "name": "clouds-far",
+      "file": "clouds-far.png",
+      "depth": 0.15,
+      "holds": "The far cloud bank on the horizon."
+    },
+    {
+      "name": "islands-far",
+      "file": "islands-far.png",
+      "depth": 0.25,
+      "holds": "Netherite, diamond and the KOTH island, hazed by distance."
+    },
+    {
+      "name": "clouds-mid",
+      "file": "clouds-mid.png",
+      "depth": 0.4,
+      "holds": "The low bank of cloud under the route's middle."
+    },
+    {
+      "name": "islands-mid",
+      "file": "islands-mid.png",
+      "depth": 0.5,
+      "holds": "Iron and coal."
+    },
+    {
+      "name": "island-gold",
+      "file": "island-gold.png",
+      "depth": 0.7,
+      "holds": "The gold island and its glowing mine."
+    },
+    {
+      "name": "island-hub",
+      "file": "island-hub.png",
+      "depth": 0.8,
+      "holds": "The hub: cabin, lanterns, lights and chimney smoke."
+    },
+    {
+      "name": "clouds-near",
+      "file": "clouds-near.png",
+      "depth": 0.9,
+      "holds": "The near sea of cloud over the islands' tips."
+    },
+    {
+      "name": "snow-far",
+      "file": "snow-far.png",
+      "depth": 0.95,
+      "holds": "Small, dim falling snow."
+    },
+    {
+      "name": "snow-near",
+      "file": "snow-near.png",
+      "depth": 1,
+      "holds": "Big, bright falling snow."
+    }
+  ]
+}

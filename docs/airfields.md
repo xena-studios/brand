@@ -60,6 +60,8 @@ Blocky snow piled on top of every letter (with a few drips), the plain A, a navy
 
 It's pixel art drawn by code, pixel by pixel, in [`scripts/airfields-scene.ts`](../scripts/airfields-scene.ts): a 320×180 canvas (stepped sky bands with ordered dithering, stars, a crescent moon, aurora curtains, cloud billows, the islands, falling snow), scaled up with nearest neighbour so every art pixel stays a square. Show it with `image-rendering: pixelated` when the browser scales it. The key art blurs it under the wordmark, as MostWanted's does; the winter banner and social preview use the same blurred scene.
 
+**The layers:** the same scene split by depth into twelve transparent PNGs in `airfields/themes/winter/layers/`, each the full 320×180 at 1×: the sky (with the stars and the moon's halo), the aurora, the moon, three cloud banks (far, mid, near), the far islands (netherite, diamond, KOTH), the mid islands (iron, coal), the gold island, the hub, and the falling snow in two (far and near). Stacked back to front they make exactly `scene-320x180.png`; the build checks it. [`layers.json`](../airfields/themes/winter/layers/layers.json) lists them in order with a `depth` from 0 (the sky) to 1 (the nearest snow), for a site that moves them apart: parallax, islands bobbing, clouds drifting, snow falling. Move them in whole art pixels so the pixels stay square, keep the movement slow and small, and show the flat scene with no motion when the viewer asks for reduced motion.
+
 | Token | Hex | Role |
 |---|---|---|
 | `navy` | `#0A1230` | The season's sky |
@@ -89,5 +91,6 @@ To add a season: add a theme to `themes` (copy winter's: `sky`, `body`, `rim`, `
 | `airfields/themes/winter/banner-scene.png` | A wide band of it (3840×1200, 12×): headers and banners with no logo |
 | `airfields/themes/winter/key-art.png` | Key art (1920×1080): the winter wordmark over the blurred scene. Site hero, listings, thumbnails, Discord |
 | `airfields/themes/winter/scene.json` | Where the bright stars are, in 1× pixels, for a site that makes them twinkle |
+| `airfields/themes/winter/layers/` | The scene in twelve depth layers at 1×, transparent, and `layers.json` (their order and depth), for a site that animates it |
 
 Colours and copy are in [`scripts/airfields-brand.ts`](../scripts/airfields-brand.ts), the lettering in [`scripts/airfields-logo.ts`](../scripts/airfields-logo.ts) and the scene in [`scripts/airfields-scene.ts`](../scripts/airfields-scene.ts). `pnpm build:airfields` rebuilds only these files and needs only Figtree and JetBrains Mono (see [Building](building.md#fonts)).

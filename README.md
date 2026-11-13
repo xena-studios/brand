@@ -70,4 +70,4 @@ pnpm verify   # no fonts needed: what CI runs
 
 ## Licence
 
-All rights reserved. The logos, graphics, tokens and scripts are © Xena Studios and aren't licensed for other use. No font files are in the repo: Ethnocentric appears only as outlines, as its licence allows, and the other faces are under the [SIL Open Font License](https://openfontlicense.org).
+All rights reserved; see [LICENSE](LICENSE). You may use the logos unmodified to refer to Xena Studios and its products (articles, videos, listings, links), but not alter them or use them as your own. No font files are in the repo: Ethnocentric appears only as outlines, as its licence allows, and the other faces are under the [SIL Open Font License](https://openfontlicense.org).

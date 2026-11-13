@@ -1,7 +1,7 @@
 {
   "name": "xena-brand",
   "version": "1.0.0",
-  "description": "Xena Studios brand system: the studio, Raptor, NeoSkript, MostWanted and the plugin family",
+  "description": "Xena Studios brand system: the studio, Raptor, NeoSkript, MostWanted, Airfields and the plugin family",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@12.16.1",
@@ -10,6 +10,7 @@
   },
   "scripts": {
     "build": "node scripts/build.ts",
+    "build:airfields": "node scripts/airfields-brand.ts",
     "check": "node scripts/build.ts && git diff --exit-code --stat -- . ':!pnpm-lock.yaml' && git ls-files --others --exclude-standard | (! grep .)",
     "typecheck": "tsc",
     "verify": "tsc && node scripts/verify.ts"

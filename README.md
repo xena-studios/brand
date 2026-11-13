@@ -9,12 +9,12 @@ Every logo, colour token and graphic for Xena Studios and its products. All of i
 | Tier | Brands | Identity |
 |---|---|---|
 | **Studio** | Xena Studios | Type only, Ion Blue on deep space |
-| **Products** | Raptor, NeoSkript, MostWanted | Each has its own mark, colours and type, endorsed by XENA STUDIOS |
+| **Products** | Raptor, NeoSkript, MostWanted, Airfields | Each has its own mark, colours and type, endorsed by XENA STUDIOS |
 | **Plugins** | xUtilities, zChat, xLimbo | One shared system: a pixel glyph and an accent each |
 
 Two things tie them together: the **XENA STUDIOS** endorsement and the planet **horizon**. Every brand also has its own accent, and no two share one.
 
-<img src="logo/xena-studios.png" width="360" alt="XENA STUDIOS"> &nbsp; <img src="raptor/icon.png" width="64" alt="Raptor"> <img src="neoskript/icon.png" width="64" alt="NeoSkript"> <img src="mostwanted/icon.png" width="64" alt="MostWanted"> <img src="plugins/xutilities/icon.png" width="64" alt="xUtilities"> <img src="plugins/zchat/icon.png" width="64" alt="zChat"> <img src="plugins/xlimbo/icon.png" width="64" alt="xLimbo">
+<img src="logo/xena-studios.png" width="360" alt="XENA STUDIOS"> &nbsp; <img src="raptor/icon.png" width="64" alt="Raptor"> <img src="neoskript/icon.png" width="64" alt="NeoSkript"> <img src="mostwanted/icon.png" width="64" alt="MostWanted"> <img src="airfields/icon.png" width="64" alt="Airfields"> <img src="plugins/xutilities/icon.png" width="64" alt="xUtilities"> <img src="plugins/zchat/icon.png" width="64" alt="zChat"> <img src="plugins/xlimbo/icon.png" width="64" alt="xLimbo">
 
 ## Guides
 
@@ -24,6 +24,7 @@ Two things tie them together: the **XENA STUDIOS** endorsement and the planet **
 | [Raptor](docs/raptor.md) | Signal Red, the raptor and claw marks |
 | [NeoSkript](docs/neoskript.md) | Neo Magenta and the `.sk` mark |
 | [MostWanted](docs/mostwanted.md) | Desert Orange and the block wordmark |
+| [Airfields](docs/airfields.md) | Airfields Gold, the gold wordmark, and the seasonal themes |
 | [Plugins](docs/plugins.md) | The pixel-glyph system, and how to add a plugin |
 | [Where each file goes](docs/where-files-go.md) | Which file to upload or copy where |
 | [Building](docs/building.md) | Fonts, the build, and checks |

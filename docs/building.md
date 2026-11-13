@@ -22,14 +22,13 @@ The build outlines every letter, so no font ever ships, but it needs the fonts t
 | `SpaceGrotesk-700.ttf` | [floriankarsten/space-grotesk](https://github.com/floriankarsten/space-grotesk), `fonts/ttf/static` |
 | `Geist-700.ttf`, `GeistMono-500.ttf` | [vercel/geist-font](https://github.com/vercel/geist-font) |
 | `LilitaOne-400.ttf` | [google/fonts](https://github.com/google/fonts), `ofl/lilitaone` |
-| `Unbounded-900.woff` | Fontsource (`@fontsource/unbounded`), `files/unbounded-latin-900-normal.woff` |
 | `Figtree-700.woff` | Fontsource (`@fontsource/figtree`), `files/figtree-latin-700-normal.woff` |
 
 JetBrains Mono (Regular, Light and SemiBold) is read from `~/Library/Fonts`.
 
-To use a font from somewhere else, set its path with one of these: `ETHNOCENTRIC`, `MONO`, `MONO_LIGHT`, `MONO_SEMIBOLD`, `HANKEN_BOLD`, `GROTESK_BOLD`, `GEIST_BOLD`, `GEIST_MONO`, `LILITA`, `UNBOUNDED`, `FIGTREE`.
+To use a font from somewhere else, set its path with one of these: `ETHNOCENTRIC`, `MONO`, `MONO_LIGHT`, `MONO_SEMIBOLD`, `HANKEN_BOLD`, `GROTESK_BOLD`, `GEIST_BOLD`, `GEIST_MONO`, `LILITA`, `FIGTREE`.
 
-`pnpm build:airfields` rebuilds only Airfields (`airfields/` and `tokens/airfields.*`) and needs only Unbounded, Figtree and JetBrains Mono. It takes the XENA STUDIOS endorsement from the committed `logo/xena-studios.svg`, so it runs without Ethnocentric.
+`pnpm build:airfields` rebuilds only Airfields (`airfields/` and `tokens/airfields.*`) and needs only Figtree and JetBrains Mono. It takes the XENA STUDIOS endorsement from the committed `logo/xena-studios.svg`, so it runs without Ethnocentric.
 
 ## How the build works
 

@@ -8,7 +8,7 @@ These repos copy brand files in with `pnpm brand:sync`. Run it after a change he
 |---|---|
 | [website](https://github.com/xena-studios/website) | Favicon, iOS icon, link preview, logos, horizon, product marks, plugin icons, MostWanted's wordmark and key art |
 | [plugins](https://github.com/xena-studios/plugins) (in `docs/`) | The docs site's logo, favicon, plugin icons and link preview (`social/docs-og.png`) |
-| airfields (private, `brand/`, with `npm run brand:sync`) | `airfields/` and `airfields/themes/`: the wordmark, monogram, icons and server icon, permanent and per season, and `tokens/airfields.json`. The game repo draws its own scenes and site art over them |
+| airfields (private, `brand/`, with `npm run brand:sync`) | `airfields/` and `airfields/themes/`: the wordmark, monogram, icons and server icon, permanent and per season, each season's pixel scene and key art (`scene*.png`, `banner-scene.png`, `key-art.png`, `scene.json`), and `tokens/airfields.json`. The game repo builds its site art, link previews and Discord banners from them |
 
 ## Copied by hand
 
@@ -22,6 +22,7 @@ These repos copy brand files in with `pnpm brand:sync`. Run it after a change he
 | Team profile photos | `people/<name>.png` |
 | MostWanted avatar and favicon | `mostwanted/icon.png`, `mostwanted/favicon.png` |
 | Airfields Discord icon, bot avatar, store logo | `airfields/icon.png`, or `airfields/themes/<id>/icon.png` while that season runs |
+| Airfields listings and video thumbnails | `airfields/themes/<id>/key-art.png` while that season runs |
 | Modrinth icons and description banners | `neoskript/icon.png`, `neoskript/banner.png`, `plugins/<id>/icon.png`, `plugins/<id>/banner.png` |
 
 ## README banners

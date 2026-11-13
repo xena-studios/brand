@@ -10,13 +10,16 @@ Airfields Gold on a high-altitude night. Xena adds the XENA STUDIOS endorsement,
 
 ## Marks
 
-<img src="../airfields/wordmark.png" width="420" alt="AIRFIELDS wordmark"> &nbsp; <img src="../airfields/icon.png" width="96" alt="Airfields icon">
+<img src="../airfields/wordmark.png" width="420" alt="AIRFIELDS wordmark"> &nbsp; <img src="../airfields/monogram.png" width="120" alt="AF monogram"> &nbsp; <img src="../airfields/icon.png" width="96" alt="Airfields icon">
 
-- **Wordmark:** **AIRFIELDS** in Unbounded Black, outlined, with a gold face lit from above, a bronze extrusion and one ink outline around it all, so it holds on dark and light. Always use the file and never retype it.
-- **Monogram:** the **A** in the same treatment, for small and square spots.
-- **Icon:** the monogram standing on a small horizon, on a `sky-raised` tile with a soft gold glow, 6/32 corners. It clears Discord's circle crop. At 64px and below (the favicon, the Minecraft server list) the A grows to fill the tile and the horizon drops out.
-- **Clear space:** the exported files include it. **Minimum size:** the wordmark 96px wide, the icon 16px.
-- **Don't** recolour the gold, add a second outline, set the name in another face, or put the seasonal cap on the permanent files.
+- **Wordmark:** **AIRFIELDS** in block title lettering, like a game's title screen: chunky letters on a grid, a gold face lit from above (pale at the top, deep gold at the foot), bevelled edges, a deep brown extrusion under the baseline and one thick maroon outline around it all. The letters lean out slightly toward the bottom. It's lettering drawn on a grid, not a font, so **always use the file and never retype it**.
+- **Monogram:** **AF** in the same lettering, for small and square spots.
+- **The A's emblem:** the permanent A has a plain face. Each season can cut its emblem into it in the same bevelled style (winter: a snowflake). Never put a creeper or any other Minecraft mark in it.
+- **Icon:** the monogram standing on a small horizon, on a `sky-raised` tile with a soft gold glow, 6/32 corners. It clears Discord's circle crop. At 64px and below (the favicon, the Minecraft server list) the monogram fills the tile, drops its bevels and emblem, and the horizon drops out.
+- **Clear space:** the exported files include it. **Minimum size:** the wordmark 160px wide, the icon 16px.
+- **Don't** recolour the gold or the outline, add a second outline, redraw the letters, or put a season's emblem on the permanent files.
+
+The lettering is drawn by [`scripts/airfields-logo.ts`](../scripts/airfields-logo.ts), recreated from the owner's original artwork: each letter's cells, the lean, the extrusion, the bevel and outline widths and the colours are measured from it.
 
 ## Colour
 
@@ -31,24 +34,31 @@ Airfields Gold on a high-altitude night. Xena adds the XENA STUDIOS endorsement,
 | `muted` | `#A7ADC6` | Secondary text, kickers |
 | `ink` | `#1A1405` | Text on light and on gold, the logo's outline |
 | `cloud` | `#F6F7FB` | Light backgrounds |
-| `gold-light`, `gold-deep`, `bronze`, `bronze-dark` | `#FFF3B0`, `#F0B312`, `#A8700A`, `#5A3A06` | The wordmark's metal, for illustration only |
+| `gold-light`, `gold-deep`, `bronze`, `bronze-dark` | `#FFF3B0`, `#F0B312`, `#A8700A`, `#5A3A06` | Golds and browns for illustration only |
+| `title-extrusion`, `title-outline` | `#661F0D`, `#3F0F0F` | The wordmark's extrusion and outline, for illustration only |
 
 Airfields Gold sits at OKLCH hue 96, a lemon gold, so it stays clear of the plugin family's amber (xUtilities, hue 81) and MostWanted's Desert Orange (hue 60). In [`tokens/airfields.css`](../tokens/airfields.css) (`--airfields-*`) and [`tokens/airfields.json`](../tokens/airfields.json). Use `gold-daylight`, not `gold`, for text on white.
 
 ## Type
 
-- **Unbounded** (Black for the wordmark, Bold for headings) and **Figtree** for taglines and text.
+- The wordmark and monogram are lettering, not type. On graphics and the site, **Unbounded** Bold for headings and **Figtree** for taglines and text.
 - **JetBrains Mono** for the `//` kicker, as on every Xena banner. The game's website uses IBM Plex Mono for labels.
 
 ## Seasons
 
-The game changes its look with the season; the permanent brand above doesn't. Each season is a **theme**: its own sky, horizon rim and glow, and one layer over the letters (winter's snow cap). A theme may add weather to its own graphics (winter's falling snow), which the permanent files never have. Theme files are in `airfields/themes/<id>/`, and the theme definitions are in `themes` in [`scripts/airfields-brand.ts`](../scripts/airfields-brand.ts).
+The game changes its look with the season; the permanent brand above doesn't. Each season is a **theme**: its own sky, horizon rim and glow, the emblem it cuts into the A, and optionally a pixel scene. A theme may add weather to its own graphics (winter's falling snow), which the permanent files never have. Theme files are in `airfields/themes/<id>/`, and the theme definitions are in `themes` in [`scripts/airfields-brand.ts`](../scripts/airfields-brand.ts).
 
 ### Winter (2026)
 
-<img src="../airfields/themes/winter/wordmark.png" width="420" alt="AIRFIELDS wordmark with a snow cap"> &nbsp; <img src="../airfields/themes/winter/icon.png" width="96" alt="Airfields winter icon">
+<img src="../airfields/themes/winter/wordmark.png" width="420" alt="AIRFIELDS wordmark with a snowflake cut into the A"> &nbsp; <img src="../airfields/themes/winter/icon.png" width="96" alt="Airfields winter icon">
 
-A snow cap on every letter, a navy sky with an aurora glow and falling snow, and an aurora-teal horizon. For the game's site, Discord and listings while the winter season runs.
+A snowflake cut into the A, a navy sky with an aurora glow and falling snow, and an aurora-teal horizon. For the game's site, Discord and listings while the winter season runs.
+
+![The winter pixel scene: floating islands under an aurora](../airfields/themes/winter/scene.png)
+
+**The pixel scene** is winter's key art, the counterpart of MostWanted's pixel desert: the island route floating over a sea of cloud on a winter night. The hub on the left (a cabin with lit windows and chimney smoke, lanterns, a string of lights), coal and iron in the middle, the KOTH island with its tower and flag beside iron, gold on the right with its mine glowing, and diamond and netherite farther off and higher. Each island's rock shows its ore. Farther islands are smaller, bluer and flatter. The sky above the middle stays calm for the wordmark.
+
+It's pixel art drawn by code, pixel by pixel, in [`scripts/airfields-scene.ts`](../scripts/airfields-scene.ts): a 320×180 canvas (stepped sky bands with ordered dithering, stars, a crescent moon, aurora curtains, cloud billows, the islands, falling snow), scaled up with nearest neighbour so every art pixel stays a square. Show it with `image-rendering: pixelated` when the browser scales it. The key art blurs it under the wordmark, as MostWanted's does; the winter banner and social preview use the same blurred scene.
 
 | Token | Hex | Role |
 |---|---|---|
@@ -59,7 +69,7 @@ A snow cap on every letter, a navy sky with an aurora glow and falling snow, and
 
 In [`airfields/themes/winter/colors.json`](../airfields/themes/winter/colors.json).
 
-To add a season: add a theme to `themes` (copy winter's: `sky`, `body`, `rim`, `glow`, and optionally `cap` and `scenery`), run `pnpm build:airfields`, and commit `airfields/themes/<id>/`. The game repo then syncs it (its `brand:sync`).
+To add a season: add a theme to `themes` (copy winter's: `sky`, `body`, `rim`, `glow`, and optionally `emblem`, `scenery` and `scene`), run `pnpm build:airfields`, and commit `airfields/themes/<id>/`. A new season's scene is drawn in `scripts/airfields-scene.ts`. The game repo then syncs it (its `brand:sync`).
 
 ## Files
 
@@ -73,5 +83,11 @@ To add a season: add a theme to `themes` (copy winter's: `sky`, `body`, `rim`, `
 | `airfields/banner` | README banner (1920×600) |
 | `airfields/social` | GitHub social preview (1280×640) |
 | `airfields/themes/<id>/` | The season's wordmark, monogram, icon, server icon, banner and social preview |
+| `airfields/themes/winter/scene.png` | The pixel scene, unblurred (1280×720, 4×) |
+| `airfields/themes/winter/scene-1920x1080.png` | The same at 6×: the website hero |
+| `airfields/themes/winter/scene-320x180.png` | The same at 1×, for the browser to scale with `image-rendering: pixelated` (smallest file) |
+| `airfields/themes/winter/banner-scene.png` | A wide band of it (3840×1200, 12×): headers and banners with no logo |
+| `airfields/themes/winter/key-art.png` | Key art (1920×1080): the winter wordmark over the blurred scene. Site hero, listings, thumbnails, Discord |
+| `airfields/themes/winter/scene.json` | Where the bright stars are, in 1× pixels, for a site that makes them twinkle |
 
-Colours and copy are in [`scripts/airfields-brand.ts`](../scripts/airfields-brand.ts). `pnpm build:airfields` rebuilds only these files and needs only Unbounded, Figtree and JetBrains Mono (see [Building](building.md#fonts)).
+Colours and copy are in [`scripts/airfields-brand.ts`](../scripts/airfields-brand.ts), the lettering in [`scripts/airfields-logo.ts`](../scripts/airfields-logo.ts) and the scene in [`scripts/airfields-scene.ts`](../scripts/airfields-scene.ts). `pnpm build:airfields` rebuilds only these files and needs only Figtree and JetBrains Mono (see [Building](building.md#fonts)).

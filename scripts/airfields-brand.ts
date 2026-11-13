@@ -66,6 +66,8 @@ export interface Theme {
   glow: [string, number][];
   /** Cut into the A's face, in quarter-cells about its centre (airfields-logo.ts). */
   emblem?: Rect[];
+  // Blocky snow piled on the lettering's top edges.
+  snow?: boolean;
   /** Has a pixel scene (airfields-scene.ts) for its key art and banners. */
   scene?: boolean;
   /** Extra marks over a scene (stars, snow), w × h. */
@@ -92,6 +94,7 @@ export const themes: Theme[] = [
     body: W.night,
     rim: W["aurora-teal"],
     glow: [[W["aurora-teal"], 0.3], [W["aurora-violet"], 0.16]],
+    snow: true,
     scene: true,
     scenery: (w, h, rand) => {
       let s = "";
@@ -205,7 +208,7 @@ function icon(size: number, { theme, radius = (size * 6) / 32 }: { theme?: Theme
   const small = size <= 64;
   // Small icons drop the bevels and the emblem: flat gold on the extrusion reads
   // at 16–64px, where a bevel would only blur.
-  const a = lettering("AF", 600, { emblem: theme?.emblem, plain: small, idPrefix: id("aficon") });
+  const a = lettering("AF", 600, { emblem: theme?.emblem, snow: theme?.snow, plain: small, idPrefix: id("aficon") });
   const gid = id("afglow"), clip = id("afclip");
   const glows = theme?.glow ?? [[A.gold, 0.16], ["#6B7BD6", 0.08]];
   const bg = theme ? theme.colors.navy ?? theme.sky : A["sky-raised"];
@@ -276,8 +279,8 @@ export function buildAirfields(out: Out) {
   const sans = load(process.env.FIGTREE ?? path.join(ROOT, ".local-fonts/Figtree-700.woff"));
   const mono = load(process.env.MONO ?? path.join(FONT_DIR, "JetBrainsMono-Regular.ttf"));
 
-  const wordmark = (theme?: Theme) => lettering("AIRFIELDS", 200, { emblem: theme?.emblem, idPrefix: id("afwm") });
-  const mark = (theme?: Theme) => lettering("AF", 600, { emblem: theme?.emblem, idPrefix: id("afmono") });
+  const wordmark = (theme?: Theme) => lettering("AIRFIELDS", 200, { emblem: theme?.emblem, snow: theme?.snow, idPrefix: id("afwm") });
+  const mark = (theme?: Theme) => lettering("AF", 600, { emblem: theme?.emblem, snow: theme?.snow, idPrefix: id("afmono") });
   // Transparent exports with clear space on every side.
   const file = (art: Metal, pad: number) => svgDoc(art.width + pad * 2, art.height + pad * 2, `<g transform="translate(${f(pad)} ${f(pad)})">${art.svg}</g>`);
 

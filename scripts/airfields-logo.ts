@@ -69,7 +69,9 @@ export const snowflake: Rect[] = (() => {
   return r;
 })();
 
-const SUB = 4; // quarter-cells: the emblem's resolution
+const SUB = 4; // quarter-cells: the emblem's and the snow's resolution
+// Winter's snow on the lettering: a bright top, a cool body and a shaded underside.
+const SNOW = { top: "#FFFFFF", body: "#E6F1FF", shade: "#A9C4E6" };
 const f = (n: number) => +n.toFixed(2);
 
 type Pt = [number, number];
@@ -122,9 +124,10 @@ export interface Lettering { svg: string; width: number; height: number }
 
 /**
  * Sets `str` in the title lettering, the face `size` tall. `emblem` cuts a theme's
- * emblem into each A. `plain` drops the bevels and emblem, for the smallest sizes.
+ * emblem into each A. `snow` piles blocky snow on every top edge (a theme layer).
+ * `plain` drops the bevels, emblem and snow, for the smallest sizes.
  */
-export function lettering(str: string, size: number, { emblem, plain = false, idPrefix = "afl" }: { emblem?: Rect[]; plain?: boolean; idPrefix?: string } = {}): Lettering {
+export function lettering(str: string, size: number, { emblem, snow = false, plain = false, idPrefix = "afl" }: { emblem?: Rect[]; snow?: boolean; plain?: boolean; idPrefix?: string } = {}): Lettering {
   const ch = size / ROWS, cw = ch * CELL_W;
   // Lay the letters out on one grid, a cell apart.
   const letters: { ch: string; col: number; w: number }[] = [];
@@ -148,6 +151,7 @@ export function lettering(str: string, size: number, { emblem, plain = false, id
   };
 
   let silhouette = "", sweep = "", extrusion = "", faces = "";
+  let snowTop = "", snowBody = "", snowShade = "";
   const bevels: Record<string, string> = { up: "", down: "", left: "", right: "" };
   const dirOf = ([nx, ny]: Pt) => (ny < 0 ? "up" : ny > 0 ? "down" : nx < 0 ? "left" : "right");
 
@@ -184,6 +188,45 @@ export function lettering(str: string, size: number, { emblem, plain = false, id
     const atq = ([i, j]: Pt): Pt => [(lt.col + i / SUB) * cw, (j / SUB) * ch];
     const contours = trace(face, lt.w * SUB, ROWS * SUB);
     faces += contours.map((c) => poly(c.pts.map((p) => P(atq(p))))).join("");
+    if (snow && !plain) {
+      // Snow on every top edge open to the sky: a drift that rises toward the
+      // middle of the run, with a few wide drips down the face. Each run is one
+      // stepped shape in quarter-cells, so it stays blocky like the letters.
+      for (let j = 0; j < ROWS; j++) {
+        let i = 0;
+        while (i < lt.w) {
+          if (!(cell(i, j) && !solid(i, j - 1))) { i++; continue; }
+          const i0 = i;
+          while (i < lt.w && cell(i, j) && !solid(i, j - 1)) i++;
+          const q0 = i0 * SUB, n = (i - i0) * SUB, y = j * SUB;
+          const top: number[] = [], bottom: number[] = [];
+          for (let k = 0; k < n; k++) {
+            const fromEnd = Math.min(k, n - 1 - k);
+            top.push(y - Math.min(3, 1 + fromEnd)); // the drift: 1, 2, then 3 quarters above the edge
+            // Drips two quarters wide, in a fixed pattern (the same on every build).
+            const pair = Math.floor(k / 2), h = (lt.col * 31 + pair * 17 + j * 7 + q0) % 9;
+            const drip = fromEnd < 2 ? 0 : h === 0 ? 4 : h === 3 ? 2 : 0;
+            bottom.push(y + 2 + drip);
+          }
+          // One stepped outline: along the top left to right, back along the bottom.
+          const stair = (ys: number[], dy = 0, rev = false) => {
+            const pts: Pt[] = [];
+            const ks = [...ys.keys()];
+            for (const k of rev ? ks.reverse() : ks) {
+              const x0 = q0 + k + (rev ? 1 : 0), x1 = q0 + k + (rev ? 0 : 1);
+              pts.push([x0, ys[k] + dy], [x1, ys[k] + dy]);
+            }
+            return pts;
+          };
+          const shape = (upper: Pt[], lower: Pt[]) => poly([...upper, ...lower].map((p) => P(atq(p))));
+          const body = shape(stair(top), stair(bottom, 0, true));
+          silhouette += body;
+          snowBody += body;
+          snowShade += shape(stair(bottom, -1), stair(bottom, 0, true));
+          snowTop += shape(stair(top), stair(top, 1, true));
+        }
+      }
+    }
     if (!plain) {
       for (const c of contours) {
         // Cut-outs (contours inside the letter) get a slightly finer bevel, so
@@ -220,6 +263,7 @@ export function lettering(str: string, size: number, { emblem, plain = false, id
     `<path d="${extrusion}" fill="${L.extrusion}" stroke="${L.extrusion}" stroke-width="${f(size * 0.003)}"/>` +
     `<path d="${faces}" fill="url(#${g}-face)" fill-rule="evenodd"/>` +
     (plain ? "" : Object.entries(bevels).map(([k, d]) => `<path d="${d}" fill="${L[`bevel-${k}` as keyof typeof L]}"/>`).join("")) +
+    (snowBody ? `<path d="${snowBody}" fill="${SNOW.body}"/><path d="${snowShade}" fill="${SNOW.shade}"/><path d="${snowTop}" fill="${SNOW.top}"/>` : "") +
     `</g>`;
   return { svg, width, height };
 }
@@ -229,6 +273,6 @@ if (process.argv[1] && process.argv[1].endsWith("airfields-logo.ts")) {
   const fs = await import("node:fs");
   const text = process.argv[3] ?? "AIRFIELDS";
   const emb = process.argv[4] === "winter" ? snowflake : undefined;
-  const l = lettering(text, 263, { emblem: emb });
+  const l = lettering(text, 263, { emblem: emb, snow: process.argv[4] === "winter" });
   fs.writeFileSync(process.argv[2] ?? "lettering.svg", `<svg xmlns="http://www.w3.org/2000/svg" width="${f(l.width)}" height="${f(l.height)}" viewBox="0 0 ${f(l.width)} ${f(l.height)}">${l.svg}</svg>`);
 }

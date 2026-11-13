@@ -52,7 +52,7 @@ The game changes its look with the season; the permanent brand above doesn't. Ea
 
 <img src="../airfields/themes/winter/wordmark.png" width="420" alt="AIRFIELDS wordmark"> &nbsp; <img src="../airfields/themes/winter/icon.png" width="96" alt="Airfields winter icon">
 
-The plain A, a navy sky with an aurora glow and falling snow, and an aurora-teal horizon. For the game's site, Discord and listings while the winter season runs.
+Blocky snow piled on top of every letter (with a few drips), the plain A, a navy sky with an aurora glow and falling snow, and an aurora-teal horizon. For the game's site, Discord and listings while the winter season runs.
 
 ![The winter pixel scene: floating islands under an aurora](../airfields/themes/winter/scene.png)
 

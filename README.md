@@ -13,7 +13,7 @@ Every logo, colour token and graphic for Xena Studios and its products. Almost a
 | **Servers** | MostWanted, Airfields | Our Minecraft servers. The same as products, plus a game look of their own: pixel key art, a block wordmark, and seasons (Airfields) |
 | **Plugins** | xUtilities, zChat, xLimbo | One shared system: a pixel glyph and an accent each |
 
-Two things tie them together: the **XENA STUDIOS** endorsement and the planet **horizon**. Every brand also has its own accent, and no two share one.
+Two things tie them together: the **XENA STUDIOS** endorsement (on banners, previews and key art; on a product's own website, only in the footer) and the planet **horizon**. Every brand also has its own accent, and no two share one.
 
 <img src="logo/xena-studios.png" width="360" alt="XENA STUDIOS"> &nbsp; <img src="raptor/icon.png" width="64" alt="Raptor"> <img src="neoskript/icon.png" width="64" alt="NeoSkript"> <img src="mostwanted/icon.png" width="64" alt="MostWanted"> <img src="airfields/icon.png" width="64" alt="Airfields"> <img src="plugins/xutilities/icon.png" width="64" alt="xUtilities"> <img src="plugins/zchat/icon.png" width="64" alt="zChat"> <img src="plugins/xlimbo/icon.png" width="64" alt="xLimbo">
 

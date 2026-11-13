@@ -82,7 +82,7 @@ const raptor = {
   headline: ["Pterodactyl had ", "a good run."],
 };
 
-const ORG_TAGLINE = "Game server infrastructure, built in the open.";
+const ORG_TAGLINE = "Game servers, and the tools to run them.";
 
 // ---------------------------------------------------------------- type
 

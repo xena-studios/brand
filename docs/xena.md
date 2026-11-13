@@ -19,6 +19,7 @@ Each comes in four colours: default (`text`), `-blue`, `-white` and `-black`, as
 - **Clear space:** half the cap height on every side. The exported files include it.
 - **Minimum width:** XENA STUDIOS 120px, XENA 64px, X 16px.
 - **Backgrounds:** blue only on `void` or `space`. On light or photo backgrounds, use white or black.
+- **The endorsement:** XENA STUDIOS on a product's or server's graphics, to say it's ours. It goes on the ones that travel on their own: README banners, social previews, key art, listings. On a product's own website it appears **only in the footer**, as the XENA logo linking to xenastudios.co, never over the hero or the title.
 - **Don't** add a symbol, stars, outlines, gradients or a second accent, and don't set Ethnocentric in lowercase or as live web text.
 
 ## Colour

@@ -48,6 +48,25 @@ const glyphs: Record<string, string[]> = {
     "................",
     "................",
   ],
+  // Rewind: two triangles pointing back, as on every player's rewind button.
+  rewind: [
+    "................",
+    "................",
+    "......#......#..",
+    ".....##.....##..",
+    "....###....###..",
+    "...####...####..",
+    "..#####..#####..",
+    ".######.######..",
+    "..#####..#####..",
+    "...####...####..",
+    "....###....###..",
+    ".....##.....##..",
+    "......#......#..",
+    "................",
+    "................",
+    "................",
+  ],
   // A block floating over a glass floor: what a player sees in limbo.
   block: [
     "................",
@@ -83,6 +102,9 @@ export interface Plugin {
   kicker: string;
   headline: [string, string];
   summary: string;
+  // false while it's being built: it gets its own files, but stays off the family's
+  // cards, horizon and lineup until its first release.
+  released?: boolean;
 }
 
 // Grid of null | "light" | "base" | "dark" | "floor".
@@ -130,4 +152,14 @@ export const plugins: Plugin[] = [
     headline: ["Never drop ", "a player again."],
     summary: "Your network's fallback server. When the main server goes down, players wait in a safe void world instead of being disconnected, then go back with /join, or on their own once it's up. For Paper.",
   },
+  {
+    id: "xrewind", prefix: "x", name: "Rewind", accent: "#3DD6C6", glyph: "rewind",
+    kicker: "// BLOCK LOGGER",
+    headline: ["Every change, logged. ", "Any of it, undone."],
+    summary: "Block logger and rollback: see who placed, broke or took what, and undo it. Every feature free, new Minecraft versions the same week, and CoreProtect's command syntax. For Paper and Folia.",
+    released: false,
+  },
 ];
+
+// The released plugins: the family's cards, horizon and lineup show these.
+export const family = plugins.filter((p) => p.released !== false);

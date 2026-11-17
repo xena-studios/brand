@@ -540,7 +540,7 @@ function pluginDocsCard(W = 1200, H = 630, s = 0.9) {
   const ts = Math.round(64 * s);
   family.forEach((p, i) => { body += pluginTile(p, f(m + i * (ts + 14 * s)), f(Y(176)), ts, f(13 * s)); });
   body += text(groteskBold, "Plugin docs", { size: 96 * s, tracking: -0.03, fill: PC.text, x: m, y: Y(340) }).svg;
-  body += text(groteskBold, "Setup, commands and config for xUtilities, zChat and xLimbo.", { size: 30 * s, tracking: -0.01, fill: PC.muted, x: m, y: Y(400) }).svg;
+  body += text(groteskBold, "Setup, commands and config for xUtilities, zChat, xLimbo and xRewind.", { size: 30 * s, tracking: -0.01, fill: PC.muted, x: m, y: Y(400) }).svg;
   return svgDoc(W, H, body);
 }
 

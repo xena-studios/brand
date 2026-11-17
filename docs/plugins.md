@@ -13,7 +13,7 @@ The small plugins share one family look, endorsed by XENA STUDIOS.
 - **Banner:** XENA STUDIOS, the `//` kicker, the icon and name, a two-tone headline, and the horizon with a pixel-stepped rim.
 - **Accent:** one per plugin, and never one that another brand uses.
 
-**Adding a plugin:** draw a 16×16 glyph and pick an unused accent in [`scripts/plugin-brand.ts`](../scripts/plugin-brand.ts), then rebuild.
+**Adding a plugin:** draw a 16×16 glyph and pick an unused accent in [`scripts/plugin-brand.ts`](../scripts/plugin-brand.ts), then rebuild. `pnpm build:plugins` rebuilds only the plugin family, and doesn't need Ethnocentric: the family draws XENA STUDIOS from the committed `logo/xena-studios.svg`.
 
 ## Lineup
 
@@ -22,11 +22,15 @@ The small plugins share one family look, endorsed by XENA STUDIOS.
 | **xUtilities** | `#F5B83D` amber | Wrench | Every command you need. *None you don't.* |
 | **zChat** | `#5EE08A` green | Chat bubble | Format your chat. *Keep it clean.* |
 | **xLimbo** | `#B48CFF` violet | Block over a glass floor | Never drop *a player again.* |
+| **xRewind** | `#3DD6C6` teal | Rewind button | Every change, logged. *Any of it, undone.* |
+
+xRewind is being built: it has its own icon, banner and social preview, but stays off the family's cards, horizon and lineup until its first release (`released: false` in [`scripts/plugin-brand.ts`](../scripts/plugin-brand.ts)).
 
 ### Modrinth summaries
 
 - **xUtilities:** Every command you need, none you don't: gamemodes, flight, heal, /back, workstation menus, and link commands like /discord that you write yourself. Every command can be switched off. For Paper and Folia.
 - **zChat:** A chat format per rank, a filter that's hard to dodge, cooldowns, mentions and private messages. Each message is drawn once, however many players see it. For Paper and Folia.
+- **xRewind:** Block logger and rollback: see who placed, broke or took what, and undo it. Every feature free, new Minecraft versions the same week, and CoreProtect's command syntax. For Paper and Folia.
 - **xLimbo:** Your network's fallback server. When the main server goes down, players wait in a safe void world instead of being disconnected, then go back with /join, or on their own once it's up. For Paper.
 
 ## Colour

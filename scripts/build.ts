@@ -9,7 +9,7 @@ import os from "node:os";
 import opentype, { type Font, type PathCommand } from "opentype.js";
 import { Resvg } from "@resvg/resvg-js";
 import { clawPath, raptorPath, wordmarkPath, raptorColors, lockup } from "./raptor-brand.ts";
-import { pluginColors as PC, plugins, glyphCells, type Plugin } from "./plugin-brand.ts";
+import { pluginColors as PC, plugins, family, glyphCells, type Plugin } from "./plugin-brand.ts";
 import { neoskriptColors as NS, neoskript, markText } from "./neoskript-brand.ts";
 import { mostwantedColors as MW, mostwanted, type Art } from "./mostwanted-brand.ts";
 import { buildAirfields } from "./airfields-brand.ts";
@@ -17,7 +17,7 @@ import { writer } from "./output.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const FONT_DIR = path.join(os.homedir(), "Library/Fonts");
-const fontFile = (p: string): Font => {
+const loadFont = (p: string): Font => {
   if (!fs.existsSync(p)) {
     console.error(`Missing font: ${p}\nSee docs/building.md for where each font comes from, or set its path with the env var.`);
     process.exit(1);
@@ -27,6 +27,22 @@ const fontFile = (p: string): Font => {
   const b = fs.readFileSync(p);
   return opentype.parse(b.buffer.slice(b.byteOffset, b.byteOffset + b.length));
 };
+// Each font loads the first time it's drawn with, so `--plugins` needs only the
+// fonts the plugin family uses.
+const fontFile = (p: string): Font => {
+  let font: Font | undefined;
+  return new Proxy({} as Font, {
+    get(_, key) {
+      font ??= loadFont(p);
+      const value = Reflect.get(font, key);
+      return typeof value === "function" ? value.bind(font) : value;
+    },
+  });
+};
+
+// pnpm build:plugins: only the plugin family's files and tokens. Needs Space
+// Grotesk and JetBrains Mono, not Ethnocentric.
+const pluginsOnly = process.argv.includes("--plugins");
 
 const display = fontFile(process.env.ETHNOCENTRIC ?? path.join(ROOT, ".local-fonts/Ethnocentric-Regular.otf"));
 const mono = fontFile(process.env.MONO ?? path.join(FONT_DIR, "JetBrainsMono-Regular.ttf"));
@@ -157,7 +173,8 @@ export const logos: Record<"full" | "short" | "x", Lockup & { file: string }> = 
   x: { str: "X", tracking: 0, file: "x" },
 };
 
-const CAP = capHeight(display, 100) / 100;
+let cap100: number | undefined;
+const CAP = () => (cap100 ??= capHeight(display, 100) / 100);
 
 // Draws a logo (a `logos` key, or any { str, tracking }) with its ink top-left
 // at (x, y) and the given cap height.
@@ -165,7 +182,7 @@ type LogoKey = keyof typeof logos;
 
 function logo(key: LogoKey | Lockup, { x = 0, y = 0, cap, fill }: { x?: number; y?: number; cap: number; fill: string }) {
   const { str, tracking } = typeof key === "string" ? logos[key] : key;
-  const t = text(display, str, { size: cap / CAP, tracking, fill, x, y: y + cap });
+  const t = text(display, str, { size: cap / CAP(), tracking, fill, x, y: y + cap });
   return { svg: t.svg, width: t.width };
 }
 
@@ -276,6 +293,16 @@ function raptorBanner() {
 const mix = (a: string, b: string, t: number) => "#" + [1, 3, 5].map((i) =>
   Math.round(parseInt(a.slice(i, i + 2), 16) * (1 - t) + parseInt(b.slice(i, i + 2), 16) * t)
     .toString(16).padStart(2, "0")).join("").toUpperCase();
+// XENA STUDIOS from the outlined logo (logo/xena-studios.svg), ink top-left at (x, y),
+// `cap` tall. The plugin family draws it this way, not from Ethnocentric, so its
+// files come out the same from `pnpm build:plugins`, which runs without the font.
+function endorsement(x: number, y: number, cap: number, fill: string) {
+  const svg = fs.readFileSync(path.join(ROOT, "logo/xena-studios.svg"), "utf8");
+  // logoFile draws it at cap height 100 with 50 of clear space on every side.
+  const d = svg.match(/ d="([^"]+)"/)![1], k = cap / 100;
+  return `<path transform="translate(${f(x - 50 * k)} ${f(y - 50 * k)}) scale(${+k.toFixed(5)})" d="${d}" fill="${fill}"/>`;
+}
+
 const tones = (a: string) => ({ light: mix(a, "#FFFFFF", 0.38), base: a, dark: mix(a, "#000000", 0.42), floor: mix(a, PC.bg, 0.45) });
 
 // The glyph at (x, y) in px-sized cells, over a hard drop shadow one cell down-right.
@@ -338,7 +365,7 @@ function blockHorizon(w: number, h: number, accent: string | string[], s = 1) {
 function pluginBanner(p: Plugin, W = 1920, H = 600, s = W / 1920) {
   const dy = (H - 600 * s) / 2, m = 120 * s, Y = (v: number) => dy + v * s;
   let body = `<rect width="${W}" height="${H}" fill="${PC.bg}"/>` + blockHorizon(W, H, p.accent, s);
-  body += logo("full", { x: m, y: Y(98), cap: 14 * s, fill: PC.text }).svg;
+  body += endorsement(m, Y(98), 14 * s, PC.text);
   body += text(mono, p.kicker, { size: 17 * s, tracking: 0.18, fill: PC.muted, x: W - m, y: Y(111), anchor: "end" }).svg;
   const ts = Math.round(80 * s);
   body += pluginTile(p, f(m), f(Y(190)), ts, f(16 * s));
@@ -480,7 +507,7 @@ function xenaCard({ kicker, title, lead, icons = false }: Card, W = 1280, H = 64
   body += text(mono, kicker, { size: 17 * s, tracking: 0.18, fill: C.muted, x: W - m, y: Y(111), anchor: "end" }).svg;
   body += text(monoSemi, title, { size: 104 * s, tracking: -0.03, fill: C.text, x: m, y: Y(292) }).svg;
   body += text(monoLight, lead, { size: 31 * s, tracking: 0, fill: C.muted, x: m, y: Y(372) }).svg;
-  if (icons) plugins.forEach((p, i) => { body += pluginTile(p, f(m + i * 80 * s), f(Y(410)), Math.round(64 * s), f(13 * s)); });
+  if (icons) family.forEach((p, i) => { body += pluginTile(p, f(m + i * 80 * s), f(Y(410)), Math.round(64 * s), f(13 * s)); });
   return svgDoc(W, H, body);
 }
 
@@ -488,12 +515,12 @@ function xenaCard({ kicker, title, lead, icons = false }: Card, W = 1280, H = 64
 // horizon with its rim split into the three accents.
 function pluginsCard(W = 1280, H = 640, s = 0.9) {
   const dy = (H - 600 * s) / 2, m = 120 * s, Y = (v: number) => dy + v * s;
-  let body = `<rect width="${W}" height="${H}" fill="${PC.bg}"/>` + blockHorizon(W, H, plugins.map((p) => p.accent), s);
-  body += logo("full", { x: m, y: Y(98), cap: 14 * s, fill: PC.text }).svg;
+  let body = `<rect width="${W}" height="${H}" fill="${PC.bg}"/>` + blockHorizon(W, H, family.map((p) => p.accent), s);
+  body += endorsement(m, Y(98), 14 * s, PC.text);
   body += text(mono, "// PLUGINS", { size: 17 * s, tracking: 0.18, fill: PC.muted, x: W - m, y: Y(111), anchor: "end" }).svg;
   const ts = Math.round(64 * s), size = 50 * s;
   let x = m;
-  for (const p of plugins) {
+  for (const p of family) {
     body += pluginTile(p, f(x), f(Y(196)), ts, f(13 * s));
     body += pluginName(p, x + ts + 18 * s, Y(196) + ts / 2 + size * 0.36, size);
     const w = text(groteskBold, p.prefix + p.name, { size, tracking: -0.02, fill: "" }).width;
@@ -507,11 +534,11 @@ function pluginsCard(W = 1280, H = 640, s = 0.9) {
 // title and a line over the three-accent stepped horizon.
 function pluginDocsCard(W = 1200, H = 630, s = 0.9) {
   const dy = (H - 600 * s) / 2, m = 120 * s, Y = (v: number) => dy + v * s;
-  let body = `<rect width="${W}" height="${H}" fill="${PC.bg}"/>` + blockHorizon(W, H, plugins.map((p) => p.accent), s);
-  body += logo("full", { x: m, y: Y(98), cap: 14 * s, fill: PC.text }).svg;
+  let body = `<rect width="${W}" height="${H}" fill="${PC.bg}"/>` + blockHorizon(W, H, family.map((p) => p.accent), s);
+  body += endorsement(m, Y(98), 14 * s, PC.text);
   body += text(mono, "// PLUGIN DOCS", { size: 17 * s, tracking: 0.18, fill: PC.muted, x: W - m, y: Y(111), anchor: "end" }).svg;
   const ts = Math.round(64 * s);
-  plugins.forEach((p, i) => { body += pluginTile(p, f(m + i * (ts + 14 * s)), f(Y(176)), ts, f(13 * s)); });
+  family.forEach((p, i) => { body += pluginTile(p, f(m + i * (ts + 14 * s)), f(Y(176)), ts, f(13 * s)); });
   body += text(groteskBold, "Plugin docs", { size: 96 * s, tracking: -0.03, fill: PC.text, x: m, y: Y(340) }).svg;
   body += text(groteskBold, "Setup, commands and config for xUtilities, zChat and xLimbo.", { size: 30 * s, tracking: -0.01, fill: PC.muted, x: m, y: Y(400) }).svg;
   return svgDoc(W, H, body);
@@ -528,43 +555,92 @@ const repoCards: Record<string, Card> = {
 const written: string[] = [];
 const out = writer(ROOT, written);
 
-for (const k of Object.keys(logos) as LogoKey[]) {
-  const name = logos[k].file, w = k === "x" ? 1024 : 2400;
-  out(`logo/${name}.svg`, logoFile(k, C.text), w);
-  out(`logo/${name}-blue.svg`, logoFile(k, C.accent), w);
-  out(`logo/${name}-white.svg`, logoFile(k, "#FFFFFF"), w);
-  out(`logo/${name}-black.svg`, logoFile(k, "#0A0B10"), w);
+// Everything but the plugin family; `--plugins` skips it.
+if (!pluginsOnly) {
+  for (const k of Object.keys(logos) as LogoKey[]) {
+    const name = logos[k].file, w = k === "x" ? 1024 : 2400;
+    out(`logo/${name}.svg`, logoFile(k, C.text), w);
+    out(`logo/${name}-blue.svg`, logoFile(k, C.accent), w);
+    out(`logo/${name}-white.svg`, logoFile(k, "#FFFFFF"), w);
+    out(`logo/${name}-black.svg`, logoFile(k, "#0A0B10"), w);
+  }
+
+  out("avatar/avatar.svg", avatar(512), 1024);
+  out("avatar/favicon.svg", avatar(64, 12), 64);
+  // The iOS home-screen icon: the avatar at the 180px iOS asks for, square and
+  // opaque (iOS rounds the corners itself). PNG only: its SVG is avatar.svg.
+  fs.writeFileSync(path.join(ROOT, "avatar/apple-touch-icon.png"), new Resvg(avatar(512), { fitTo: { mode: "width", value: 180 }, font: { loadSystemFonts: false } }).render().asPng());
+
+  out("social/x-header.svg", orgCard(1500, 500), 3000);
+  out("social/discord-banner.svg", orgCard(960, 540, { scale: 0.75 }), 1920);
+  out("social/og-card.svg", orgCard(1200, 630, { scale: 0.85 }), 2400);
+
+  out("raptor/banner.svg", raptorBanner(), 3840);
+  out("raptor/icon.svg", raptorIcon(512), 1024);
+  out("raptor/mark.svg", raptorMark(512), 1024);
+  out("raptor/logo-dark.svg", svgDoc(lockup.w * 4, lockup.h * 4, raptorLogo(0, 0, lockup.h * 4)), 2312);
+  out("raptor/logo-light.svg", svgDoc(lockup.w * 4, lockup.h * 4, raptorLogo(0, 0, lockup.h * 4, R.graphite).replace(R["signal-red"], R["signal-red-daylight"])), 2312);
+  // Google Workspace header logo (Admin console → Account → Personalization):
+  // 320×132 max. Black XENA on transparent: Google frames the logo in white, so a
+  // dark tile reads as a box with a border. XENA STUDIOS is illegible at the
+  // ~40px height Gmail draws it. As large as the half-cap clear space allows.
+  out("workspace/logo.svg", logoBox("short", { w: 320, h: 132, fill: "#0A0B10", scaleW: 0.86, scaleH: 0.5 }), 320);
+
+  // The horizon on its own, no type: backgrounds for the website and anything else.
+  out("scene/horizon.svg", svgDoc(2400, 900, `<rect width="2400" height="900" fill="${C.void}"/>` + planetLimb(2400, 900, { cx: 1200, r: 2400 * 1.3, top: 900 * 0.62 })), 2400);
+  // Team profile photos (Google account, GitHub, Discord): the person's initial
+  // in the avatar's style. Square; Google crops to a circle, which the glyph clears.
+  const people: Record<string, string> = { zachary: "Z" };
+  for (const [name, ch] of Object.entries(people))
+    out(`people/${name}.svg`, logoBox({ str: ch, tracking: 0 }, { w: 512, h: 512, fill: C.accent, bg: C.space, glow: C.accent, scaleH: 0.4, scaleW: 0.6 }), 1024);
+
+  // NeoSkript: icon (Modrinth, GitHub, favicon), small mark, dark/light logos,
+  // README banner (1920×600 @2×) and GitHub social preview (1280×640).
+  out("neoskript/icon.svg", nsIcon(512), 1024);
+  out("neoskript/mark.svg", svgDoc(512, 512, nsMark(256, 256, 400, NS.magenta)), 1024);
+  out("neoskript/logo-dark.svg", nsLogoFile({}), 2400);
+  out("neoskript/logo-light.svg", nsLogoFile({ word: NS.ink, accent: NS["magenta-daylight"] }), 2400);
+  out("neoskript/banner.svg", nsBanner(), 3840);
+  out("neoskript/social.svg", nsBanner(1280, 640, 0.9, false), 1280);
+
+  // GitHub social previews (repo Settings → Social preview) and the docs' link preview.
+  for (const [name, card] of Object.entries(repoCards)) out(`github/${name}.svg`, xenaCard(card), 1280);
+
+  // README banners for the same repos, in Raptor's and NeoSkript's banner size
+  // (1920×600 @2×), so every README in the org opens the same way.
+  for (const [name, card] of Object.entries(repoCards)) out(`github/${name}-banner.svg`, xenaCard(card, 1920, 600, 1), 3840);
+
+  // MostWanted: icon (server icon, socials, favicon), README banner (1920×600 @2×)
+  // and GitHub social preview (1280×640). The wordmark, monogram and key art are
+  // the official files in mostwanted/official/.
+  out("mostwanted/icon.svg", mwIcon(512), 1024);
+  out("mostwanted/favicon.svg", mwIcon(64, 12), 64);
+  out("mostwanted/banner.svg", mwBanner(), 3840);
+  out("mostwanted/social.svg", mwBanner(1280, 640, 0.9), 1280);
+
+  // Airfields: its marks, icon, banner and social preview, and each season's theme
+  // (scripts/airfields-brand.ts). Also runs alone: pnpm build:airfields.
+  buildAirfields(out);
+
+  // PNG previews of the official files copied from xena-studios/raptor.
+  for (const f of ["logo-dark", "logo-light", "favicon"]) {
+    const svg = hexify(fs.readFileSync(path.join(ROOT, `raptor/official/${f}.svg`), "utf8"));
+    fs.writeFileSync(path.join(ROOT, `raptor/official/${f}.png`), new Resvg(svg, { fitTo: { mode: "width", value: f === "favicon" ? 512 : 1156 }, font: { loadSystemFonts: false } }).render().asPng());
+  }
+
+  fs.mkdirSync(path.join(ROOT, "tokens"), { recursive: true });
+  fs.writeFileSync(path.join(ROOT, "tokens/colors.json"), JSON.stringify(C, null, 2) + "\n");
+  fs.writeFileSync(path.join(ROOT, "tokens/colors.css"), `:root {\n${Object.entries(C).map(([k, v]) => `  --xena-${k}: ${v};`).join("\n")}\n}\n`);
+  fs.writeFileSync(path.join(ROOT, "tokens/raptor.json"), JSON.stringify(Object.fromEntries(Object.entries(raptorColors).map(([k, v]) => [k, { oklch: v.startsWith("oklch") ? v : null, hex: oklchHex(v) }])), null, 2) + "\n");
+  fs.writeFileSync(path.join(ROOT, "tokens/raptor.css"), `:root {\n${Object.entries(raptorColors).map(([k, v]) => `  --raptor-${k}: ${v}; /* ${oklchHex(v)} */`).join("\n")}\n}\n`);
+
+  fs.writeFileSync(path.join(ROOT, "tokens/neoskript.json"), JSON.stringify(NS, null, 2) + "\n");
+  fs.writeFileSync(path.join(ROOT, "tokens/neoskript.css"), `:root {\n${Object.entries(NS).map(([k, v]) => `  --neoskript-${k}: ${v};`).join("\n")}\n}\n`);
+  fs.writeFileSync(path.join(ROOT, "tokens/mostwanted.json"), JSON.stringify(MW, null, 2) + "\n");
+  fs.writeFileSync(path.join(ROOT, "tokens/mostwanted.css"), `:root {\n${Object.entries(MW).map(([k, v]) => `  --mostwanted-${k}: ${v};`).join("\n")}\n}\n`);
 }
 
-out("avatar/avatar.svg", avatar(512), 1024);
-out("avatar/favicon.svg", avatar(64, 12), 64);
-// The iOS home-screen icon: the avatar at the 180px iOS asks for, square and
-// opaque (iOS rounds the corners itself). PNG only: its SVG is avatar.svg.
-fs.writeFileSync(path.join(ROOT, "avatar/apple-touch-icon.png"), new Resvg(avatar(512), { fitTo: { mode: "width", value: 180 }, font: { loadSystemFonts: false } }).render().asPng());
-
-out("social/x-header.svg", orgCard(1500, 500), 3000);
-out("social/discord-banner.svg", orgCard(960, 540, { scale: 0.75 }), 1920);
-out("social/og-card.svg", orgCard(1200, 630, { scale: 0.85 }), 2400);
-
-out("raptor/banner.svg", raptorBanner(), 3840);
-out("raptor/icon.svg", raptorIcon(512), 1024);
-out("raptor/mark.svg", raptorMark(512), 1024);
-out("raptor/logo-dark.svg", svgDoc(lockup.w * 4, lockup.h * 4, raptorLogo(0, 0, lockup.h * 4)), 2312);
-out("raptor/logo-light.svg", svgDoc(lockup.w * 4, lockup.h * 4, raptorLogo(0, 0, lockup.h * 4, R.graphite).replace(R["signal-red"], R["signal-red-daylight"])), 2312);
-// Google Workspace header logo (Admin console → Account → Personalization):
-// 320×132 max. Black XENA on transparent: Google frames the logo in white, so a
-// dark tile reads as a box with a border. XENA STUDIOS is illegible at the
-// ~40px height Gmail draws it. As large as the half-cap clear space allows.
-out("workspace/logo.svg", logoBox("short", { w: 320, h: 132, fill: "#0A0B10", scaleW: 0.86, scaleH: 0.5 }), 320);
-
-// The horizon on its own, no type: backgrounds for the website and anything else.
-out("scene/horizon.svg", svgDoc(2400, 900, `<rect width="2400" height="900" fill="${C.void}"/>` + planetLimb(2400, 900, { cx: 1200, r: 2400 * 1.3, top: 900 * 0.62 })), 2400);
-// Team profile photos (Google account, GitHub, Discord): the person's initial
-// in the avatar's style. Square; Google crops to a circle, which the glyph clears.
-const people: Record<string, string> = { zachary: "Z" };
-for (const [name, ch] of Object.entries(people))
-  out(`people/${name}.svg`, logoBox({ str: ch, tracking: 0 }, { w: 512, h: 512, fill: C.accent, bg: C.space, glow: C.accent, scaleH: 0.4, scaleW: 0.6 }), 1024);
-
+// The plugin family, in both builds.
 // The plugin family: Modrinth icon (512), README/Modrinth banner (1920×600 @2×)
 // and GitHub social preview (1280×640, GitHub's recommended size).
 for (const p of plugins) {
@@ -574,57 +650,14 @@ for (const p of plugins) {
   out(`plugins/${p.id}/social.svg`, pluginBanner(p, 1280, 640, 0.9), 1280);
 }
 
-// NeoSkript: icon (Modrinth, GitHub, favicon), small mark, dark/light logos,
-// README banner (1920×600 @2×) and GitHub social preview (1280×640).
-out("neoskript/icon.svg", nsIcon(512), 1024);
-out("neoskript/mark.svg", svgDoc(512, 512, nsMark(256, 256, 400, NS.magenta)), 1024);
-out("neoskript/logo-dark.svg", nsLogoFile({}), 2400);
-out("neoskript/logo-light.svg", nsLogoFile({ word: NS.ink, accent: NS["magenta-daylight"] }), 2400);
-out("neoskript/banner.svg", nsBanner(), 3840);
-out("neoskript/social.svg", nsBanner(1280, 640, 0.9, false), 1280);
-
-// GitHub social previews (repo Settings → Social preview) and the docs' link preview.
-for (const [name, card] of Object.entries(repoCards)) out(`github/${name}.svg`, xenaCard(card), 1280);
 out("github/plugins.svg", pluginsCard(), 1280);
 out("social/docs-og.svg", pluginDocsCard(), 2400);
 // The family's horizon alone, rim in all three accents: the docs' home page.
-out("plugins/horizon.svg", svgDoc(2400, 900, `<rect width="2400" height="900" fill="${PC.bg}"/>` + blockHorizon(2400, 900, plugins.map((p) => p.accent), 1.5)), 2400);
-
-// README banners for the same repos, in Raptor's and NeoSkript's banner size
-// (1920×600 @2×), so every README in the org opens the same way.
-for (const [name, card] of Object.entries(repoCards)) out(`github/${name}-banner.svg`, xenaCard(card, 1920, 600, 1), 3840);
+out("plugins/horizon.svg", svgDoc(2400, 900, `<rect width="2400" height="900" fill="${PC.bg}"/>` + blockHorizon(2400, 900, family.map((p) => p.accent), 1.5)), 2400);
 out("github/plugins-banner.svg", pluginsCard(1920, 600, 1), 3840);
 out("github/plugin-docs-banner.svg", pluginDocsCard(1920, 600, 1), 3840);
-
-// MostWanted: icon (server icon, socials, favicon), README banner (1920×600 @2×)
-// and GitHub social preview (1280×640). The wordmark, monogram and key art are
-// the official files in mostwanted/official/.
-out("mostwanted/icon.svg", mwIcon(512), 1024);
-out("mostwanted/favicon.svg", mwIcon(64, 12), 64);
-out("mostwanted/banner.svg", mwBanner(), 3840);
-out("mostwanted/social.svg", mwBanner(1280, 640, 0.9), 1280);
-
-// Airfields: its marks, icon, banner and social preview, and each season's theme
-// (scripts/airfields-brand.ts). Also runs alone: pnpm build:airfields.
-buildAirfields(out);
-
-// PNG previews of the official files copied from xena-studios/raptor.
-for (const f of ["logo-dark", "logo-light", "favicon"]) {
-  const svg = hexify(fs.readFileSync(path.join(ROOT, `raptor/official/${f}.svg`), "utf8"));
-  fs.writeFileSync(path.join(ROOT, `raptor/official/${f}.png`), new Resvg(svg, { fitTo: { mode: "width", value: f === "favicon" ? 512 : 1156 }, font: { loadSystemFonts: false } }).render().asPng());
-}
-
-fs.mkdirSync(path.join(ROOT, "tokens"), { recursive: true });
-fs.writeFileSync(path.join(ROOT, "tokens/colors.json"), JSON.stringify(C, null, 2) + "\n");
-fs.writeFileSync(path.join(ROOT, "tokens/colors.css"), `:root {\n${Object.entries(C).map(([k, v]) => `  --xena-${k}: ${v};`).join("\n")}\n}\n`);
-fs.writeFileSync(path.join(ROOT, "tokens/raptor.json"), JSON.stringify(Object.fromEntries(Object.entries(raptorColors).map(([k, v]) => [k, { oklch: v.startsWith("oklch") ? v : null, hex: oklchHex(v) }])), null, 2) + "\n");
-fs.writeFileSync(path.join(ROOT, "tokens/raptor.css"), `:root {\n${Object.entries(raptorColors).map(([k, v]) => `  --raptor-${k}: ${v}; /* ${oklchHex(v)} */`).join("\n")}\n}\n`);
-
-fs.writeFileSync(path.join(ROOT, "tokens/neoskript.json"), JSON.stringify(NS, null, 2) + "\n");
-fs.writeFileSync(path.join(ROOT, "tokens/neoskript.css"), `:root {\n${Object.entries(NS).map(([k, v]) => `  --neoskript-${k}: ${v};`).join("\n")}\n}\n`);
-fs.writeFileSync(path.join(ROOT, "tokens/mostwanted.json"), JSON.stringify(MW, null, 2) + "\n");
-fs.writeFileSync(path.join(ROOT, "tokens/mostwanted.css"), `:root {\n${Object.entries(MW).map(([k, v]) => `  --mostwanted-${k}: ${v};`).join("\n")}\n}\n`);
 const pluginTokens = { ...PC, ...Object.fromEntries(plugins.map((p) => [p.id, p.accent])) };
+fs.mkdirSync(path.join(ROOT, "tokens"), { recursive: true });
 fs.writeFileSync(path.join(ROOT, "tokens/plugins.json"), JSON.stringify(pluginTokens, null, 2) + "\n");
 fs.writeFileSync(path.join(ROOT, "tokens/plugins.css"), `:root {\n${Object.entries(pluginTokens).map(([k, v]) => `  --plugin-${k}: ${v};`).join("\n")}\n}\n`);
 

@@ -157,7 +157,6 @@ export const plugins: Plugin[] = [
     kicker: "// BLOCK LOGGER",
     headline: ["Every change, logged. ", "Any of it, undone."],
     summary: "Block logger and rollback: see who placed, broke or took what, and undo it. Every feature free, new Minecraft versions the same week, and CoreProtect's command syntax. For Paper and Folia.",
-    released: false,
   },
 ];
 

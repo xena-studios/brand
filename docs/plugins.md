@@ -4,7 +4,7 @@
 
 The small plugins share one family look, endorsed by XENA STUDIOS.
 
-<img src="../plugins/xutilities/icon.png" width="96" alt="xUtilities icon"> &nbsp; <img src="../plugins/zchat/icon.png" width="96" alt="zChat icon"> &nbsp; <img src="../plugins/xlimbo/icon.png" width="96" alt="xLimbo icon">
+<img src="../plugins/xutilities/icon.png" width="96" alt="xUtilities icon"> &nbsp; <img src="../plugins/zchat/icon.png" width="96" alt="zChat icon"> &nbsp; <img src="../plugins/xlimbo/icon.png" width="96" alt="xLimbo icon"> &nbsp; <img src="../plugins/xrewind/icon.png" width="96" alt="xRewind icon">
 
 ## The system
 
@@ -24,7 +24,7 @@ The small plugins share one family look, endorsed by XENA STUDIOS.
 | **xLimbo** | `#B48CFF` violet | Block over a glass floor | Never drop *a player again.* |
 | **xRewind** | `#3DD6C6` teal | Rewind button | Every change, logged. *Any of it, undone.* |
 
-xRewind is being built: it has its own icon, banner and social preview, but stays off the family's cards, horizon and lineup until its first release (`released: false` in [`scripts/plugin-brand.ts`](../scripts/plugin-brand.ts)).
+A plugin that's being built can be marked `released: false` in [`scripts/plugin-brand.ts`](../scripts/plugin-brand.ts): it gets its own icon, banner and social preview, but stays off the family's cards and horizon until its first release.
 
 ### Modrinth summaries
 

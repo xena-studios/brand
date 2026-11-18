@@ -140,6 +140,24 @@ const glyphs: Record<string, string[]> = {
     "................",
     "..##########....",
     ".############...",
+  // A coin on its edge, with its stamp: money.
+  coin: [
+    "................",
+    ".....######.....",
+    "...##########...",
+    "..####....####..",
+    ".####......####.",
+    ".###...##...###.",
+    ".###..###...###.",
+    ".###...##...###.",
+    ".###...##...###.",
+    ".###...##...###.",
+    ".###..####..###.",
+    ".####......####.",
+    "..####....####..",
+    "...##########...",
+    ".....######.....",
+    "................",
   ],
   // A block floating over a glass floor: what a player sees in limbo.
   block: [
@@ -258,6 +276,12 @@ export const plugins: Plugin[] = [
     kicker: "// PUNISHMENTS",
     headline: ["Bans, mutes and warnings, ", "the LiteBans way."],
     summary: "Bans, mutes, warnings and kicks with LiteBans' commands, flags and durations, free and open source. Checked from memory at every join and chat message, with templates, staff limits, alts and a LiteBans import. For Paper and Folia.",
+    // Glacier blue, OKLCH hue 213: between xRewind's teal (185) and Ion Blue (246). Gold would
+    // be the obvious money colour, but it's Airfields'.
+    id: "xmoney", prefix: "x", name: "Money", accent: "#58D0E8", glyph: "coin",
+    kicker: "// ECONOMY",
+    headline: ["The economy and Vault, ", "in one plugin."],
+    summary: "An economy that is its own Vault: balances, /pay, /baltop and a ledger of every change, with the Vault and VaultUnlocked APIs built in, so shop and jobs plugins work without Vault.jar. Imports from EssentialsX, CMI or any Vault economy. For Paper and Folia.",
     released: false,
   },
 ];

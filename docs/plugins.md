@@ -27,6 +27,7 @@ The small plugins share one family look, endorsed by XENA STUDIOS.
 | **xTeleport** (not released yet) | `#EA87E2` orchid, OKLCH hue 330 | Pin over the ring it lands in | Every teleport *your server needs.* |
 | **xVote** (not released yet) | `#91ACFF` periwinkle, OKLCH hue 272 | A ticked ballot over its box | Votes in. *Rewards out.* |
 | **xBans** (not released yet) | `#FF9447` tangerine, OKLCH hue 54 | Gavel on its block | Bans, mutes and warnings, *the LiteBans way.* |
+| **xMoney** (not released yet; working name) | `#58D0E8` glacier blue, OKLCH hue 213 | Coin | The economy and Vault, *in one plugin.* |
 
 A plugin that's being built can be marked `released: false` in [`scripts/plugin-brand.ts`](../scripts/plugin-brand.ts): it gets its own icon, banner and social preview, but stays off the family's cards and horizon until its first release.
 
@@ -40,6 +41,7 @@ Modrinth's search ranks a word in the title above everything else, so each title
 | **zChat** | zChat: Chat Formatting & Filter | Chat formatting per rank, a chat filter that's hard to dodge, mentions, private messages, cooldowns and anti-spam, in one light chat plugin. Each message is drawn once, however many players see it. For Paper and Folia. |
 | **xLimbo** | xLimbo: Limbo & Fallback Server | A limbo and fallback server for Velocity and BungeeCord. When your main server goes down, players wait in a safe void world instead of being kicked, then go back with /join, or on their own once it's up. For Paper. |
 | **xRewind** | xRewind: Block Logger & Rollback | Block logger and rollback, and a free CoreProtect alternative: see who placed, broke or took what, then preview a rollback and undo it. Uses CoreProtect's commands and imports its history. For Paper and Folia. |
+| **xMoney** | xMoney: Economy & Vault Provider | An economy that is its own Vault: balances, /pay, /baltop and a ledger of every change, with the Vault and VaultUnlocked APIs built in, so shop and jobs plugins work without Vault.jar. Imports from EssentialsX, CMI or any Vault economy. For Paper and Folia. |
 | **xPlots** | xPlots: Rentable Plots | Rentable plots for box and PvP servers: select an area and it's split into a grid of plots, each with its sign. Players rent with Vault or an item, add members and pay ahead; expired plots reset themselves. For Paper. |
 | **xTeleport** | xTeleport: Homes, TPA, Warps & RTP | Homes, TPA, warps, spawn and random teleport in one light plugin, with warmups, cooldowns and costs through Vault. Imports homes and warps from EssentialsX, HuskHomes and CMI. For Paper and Folia. |
 | **xVote** | xVote: Vote Rewards & Votifier | Vote rewards with a built-in Votifier for Paper and Folia: keeps NuVotifier's keys and tokens, rewards per site, streaks and every Nth vote, a vote party, leaderboards, and offline votes paid on join. Imports VotingPlugin and SuperbVote totals. |

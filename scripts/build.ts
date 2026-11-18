@@ -503,7 +503,7 @@ function xenaCard({ kicker, title, lead, icons = false }: Card, W = 1280, H = 64
   const dy = (H - 600 * s) / 2, m = 120 * s, Y = (v: number) => dy + v * s;
   let body = `<rect width="${W}" height="${H}" fill="${C.void}"/>`;
   body += planetLimb(W, H, { cx: W * 0.7, r: W * 1.25, top: H * 0.8 });
-  body += logo("full", { x: m, y: Y(98), cap: 14 * s, fill: C.text }).svg;
+  body += endorsement(m, Y(98), 14 * s, C.text);
   body += text(mono, kicker, { size: 17 * s, tracking: 0.18, fill: C.muted, x: W - m, y: Y(111), anchor: "end" }).svg;
   body += text(monoSemi, title, { size: 104 * s, tracking: -0.03, fill: C.text, x: m, y: Y(292) }).svg;
   body += text(monoLight, lead, { size: 31 * s, tracking: 0, fill: C.muted, x: m, y: Y(372) }).svg;
@@ -548,6 +548,7 @@ const repoCards: Record<string, Card> = {
   brand: { kicker: "// BRAND", title: "Brand", lead: "Logos, colours and graphics for every Xena brand." },
   website: { kicker: "// WEBSITE", title: "xenastudios.co", lead: "The studio's website. Astro, served by Cloudflare." },
   dotgithub: { kicker: "// GITHUB", title: "Xena Studios", lead: ORG_TAGLINE },
+  hallow: { kicker: "// HALLOW", title: "Hallow", lead: "A full minigame network on Pumpkin, in Rust." },
 };
 
 // ---------------------------------------------------------------- output
@@ -603,13 +604,6 @@ if (!pluginsOnly) {
   out("neoskript/banner.svg", nsBanner(), 3840);
   out("neoskript/social.svg", nsBanner(1280, 640, 0.9, false), 1280);
 
-  // GitHub social previews (repo Settings → Social preview) and the docs' link preview.
-  for (const [name, card] of Object.entries(repoCards)) out(`github/${name}.svg`, xenaCard(card), 1280);
-
-  // README banners for the same repos, in Raptor's and NeoSkript's banner size
-  // (1920×600 @2×), so every README in the org opens the same way.
-  for (const [name, card] of Object.entries(repoCards)) out(`github/${name}-banner.svg`, xenaCard(card, 1920, 600, 1), 3840);
-
   // MostWanted: icon (server icon, socials, favicon), README banner (1920×600 @2×)
   // and GitHub social preview (1280×640). The wordmark, monogram and key art are
   // the official files in mostwanted/official/.
@@ -639,6 +633,15 @@ if (!pluginsOnly) {
   fs.writeFileSync(path.join(ROOT, "tokens/mostwanted.json"), JSON.stringify(MW, null, 2) + "\n");
   fs.writeFileSync(path.join(ROOT, "tokens/mostwanted.css"), `:root {\n${Object.entries(MW).map(([k, v]) => `  --mostwanted-${k}: ${v};`).join("\n")}\n}\n`);
 }
+
+// GitHub social previews (repo Settings → Social preview) for the studio's own
+// repos, in both builds: they take XENA STUDIOS from logo/xena-studios.svg, so
+// they don't need Ethnocentric.
+for (const [name, card] of Object.entries(repoCards)) out(`github/${name}.svg`, xenaCard(card), 1280);
+
+// README banners for the same repos, in Raptor's and NeoSkript's banner size
+// (1920×600 @2×), so every README in the org opens the same way.
+for (const [name, card] of Object.entries(repoCards)) out(`github/${name}-banner.svg`, xenaCard(card, 1920, 600, 1), 3840);
 
 // The plugin family, in both builds.
 // The plugin family: Modrinth icon (512), README/Modrinth banner (1920×600 @2×)

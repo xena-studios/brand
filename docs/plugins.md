@@ -78,4 +78,4 @@ In [`tokens/plugins.css`](../tokens/plugins.css) (`--plugin-*`, plus `--plugin-<
 | `plugins/<id>/banner` | 1920×600 | Modrinth description and README banner |
 | `plugins/<id>/social` | 1280×640 | GitHub social preview |
 | `plugins/horizon` | 2400×900 | The family horizon alone: the docs home page |
-| `social/docs-og` | 1200×630 | docs.xenastudios.co link preview |
+| `social/docs-og` | 1200×630 | plugins.xenastudios.co link preview |

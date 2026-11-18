@@ -26,12 +26,16 @@ The small plugins share one family look, endorsed by XENA STUDIOS.
 
 A plugin that's being built can be marked `released: false` in [`scripts/plugin-brand.ts`](../scripts/plugin-brand.ts): it gets its own icon, banner and social preview, but stays off the family's cards and horizon until its first release.
 
-### Modrinth summaries
+### Modrinth titles and summaries
 
-- **xUtilities:** Every command you need, none you don't: gamemodes, flight, heal, /back, workstation menus, and link commands like /discord that you write yourself. Every command can be switched off. For Paper and Folia.
-- **zChat:** A chat format per rank, a filter that's hard to dodge, cooldowns, mentions and private messages. Each message is drawn once, however many players see it. For Paper and Folia.
-- **xRewind:** Block logger and rollback: see who placed, broke or took what, and undo it. Every feature free, new Minecraft versions the same week, and CoreProtect's command syntax. For Paper and Folia.
-- **xLimbo:** Your network's fallback server. When the main server goes down, players wait in a safe void world instead of being disconnected, then go back with /join, or on their own once it's up. For Paper.
+Modrinth's search ranks a word in the title above everything else, so each title is the name and what the plugin is. The summary is the line under it in search results.
+
+| Plugin | Title | Summary |
+|---|---|---|
+| **xUtilities** | xUtilities: Lightweight Essentials | Lightweight essentials for Paper and Folia: gamemode, fly, speed, heal, feed, /back, /top and repair, with anvils, crafting tables and other workstations anywhere. Add your own link commands like /discord, and switch off any command. |
+| **zChat** | zChat: Chat Formatting & Filter | Chat formatting per rank, a chat filter that's hard to dodge, mentions, private messages, cooldowns and anti-spam, in one light chat plugin. Each message is drawn once, however many players see it. For Paper and Folia. |
+| **xLimbo** | xLimbo: Limbo & Fallback Server | A limbo and fallback server for Velocity and BungeeCord. When your main server goes down, players wait in a safe void world instead of being kicked, then go back with /join, or on their own once it's up. For Paper. |
+| **xRewind** | xRewind: Block Logger & Rollback | Block logger and rollback, and a free CoreProtect alternative: see who placed, broke or took what, then preview a rollback and undo it. Uses CoreProtect's commands and imports its history. For Paper and Folia. |
 
 ## Colour
 

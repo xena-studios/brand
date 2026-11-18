@@ -8,5 +8,11 @@
   "zchat": "#5EE08A",
   "xlimbo": "#B48CFF",
   "xrewind": "#3DD6C6",
-  "xplots": "#A9D750"
+  "xplots": "#A9D750",
+  "xteleport": "#CE41E3",
+  "xvote": "#4D7BFD",
+  "xbans": "#D70E3A",
+  "xmoney": "#10AC79",
+  "xstats": "#3EC407",
+  "xbackup": "#9EEDFD"
 }

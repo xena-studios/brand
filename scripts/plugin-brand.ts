@@ -345,10 +345,10 @@ export const plugins: Plugin[] = [
     // Raptor's coral Signal Red (25, L 0.66).
     id: "xbans", prefix: "x", name: "Bans", accent: "#D70E3A", glyph: "gavel",
     kicker: "// PUNISHMENTS",
-    headline: ["Bans, mutes and warnings, ", "the LiteBans way."],
-    summary: "Bans, mutes, warnings and kicks with LiteBans' commands, flags and durations, free and open source. Checked from memory at every join and chat message, with templates, staff limits, alts and a LiteBans import. For Paper and Folia.",
+    headline: ["Bans, mutes and warnings. ", "Nothing slips through."],
+    summary: "Bans, mutes, warnings and kicks for Paper and Folia, free and open source. Checked from memory at every join and chat message, with templates, staff limits, alts and IP bans. Uses LiteBans' commands and imports its history.",
     category: "Moderation",
-    blurb: "LiteBans' commands and flags, checked from memory, with templates, staff limits, alts and a one-command import.",
+    blurb: "Checked from memory at every join and chat message, with templates, staff limits, alts and IP bans. Uses LiteBans' commands and imports its history.",
     released: false,
   },
   {

@@ -28,7 +28,7 @@ The small plugins share one family look, endorsed by XENA STUDIOS.
 | **xPlots** (not released yet) | `#A9D750` lime, OKLCH hue 126 | Signpost | Rentable plots, *set up in a minute.* |
 | **xTeleport** (not released yet) | `#CE41E3` fuchsia, OKLCH hue 322 | Pin over the ring it lands in | Every teleport *your server needs.* |
 | **xVote** (not released yet) | `#4D7BFD` cobalt, OKLCH hue 266 | A ticked ballot over its box | Votes in. *Rewards out.* |
-| **xBans** (not released yet) | `#D70E3A` crimson, OKLCH hue 20 | Gavel on its block | Bans, mutes and warnings, *the LiteBans way.* |
+| **xBans** (not released yet) | `#D70E3A` crimson, OKLCH hue 20 | Gavel on its block | Bans, mutes and warnings. *Nothing slips through.* |
 | **xMoney** (not released yet; working name) | `#10AC79` emerald, OKLCH hue 163 | Coin | The economy and Vault, *in one plugin.* |
 | **xStats** (not released yet) | `#3EC407` vivid green, OKLCH hue 140 | Podium | Every player's stats, *on your own website.* |
 | **xBackup** (not released yet) | `#9EEDFD` ice, OKLCH hue 212, pale | Safe with its dial | Backups that cost nothing. *Restores you can trust.* |
@@ -50,7 +50,7 @@ Modrinth's search ranks a word in the title above everything else, so each title
 | **xPlots** | xPlots: Rentable Plots | Rentable plots for box and PvP servers: select an area and it's split into a grid of plots, each with its sign. Players rent with Vault or an item, add members and pay ahead; expired plots reset themselves. For Paper. |
 | **xTeleport** | xTeleport: Homes, TPA, Warps & RTP | Homes, TPA, warps, spawn and random teleport in one light plugin, with warmups, cooldowns and costs through Vault. Imports homes and warps from EssentialsX. For Paper and Folia. |
 | **xVote** | xVote: Vote Rewards & Votifier | Vote rewards with a built-in Votifier for Paper and Folia: keeps NuVotifier's keys and tokens, rewards per site, streaks and every Nth vote, a vote party, leaderboards, and offline votes paid on join. Imports VotingPlugin and SuperbVote totals. |
-| **xBans** | xBans: Bans, Mutes & Warnings | Bans, mutes, warnings and kicks with LiteBans' commands, flags and durations, free and open source. Checked from memory at every join and chat message, with templates, staff limits, alts and a LiteBans import. For Paper and Folia. |
+| **xBans** | xBans: Bans, Mutes & Warnings | Bans, mutes, warnings and kicks for Paper and Folia, free and open source. Checked from memory at every join and chat message, with templates, staff limits, alts and IP bans. Uses LiteBans' commands and imports its history. |
 | **xStats** | xStats: Player Stats, Leaderboards & Website | Player stats, leaderboards and a stats website your server hosts itself: playtime that leaves out AFK time, kills, blocks and any placeholder, with daily, weekly and monthly leaderboards, PlaceholderAPI and in-world boards. For Paper and Folia. |
 
 ## Colour

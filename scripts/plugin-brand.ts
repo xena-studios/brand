@@ -86,6 +86,25 @@ const glyphs: Record<string, string[]> = {
     ".......##.......",
     "................",
   ],
+  // A gavel coming down on its block: a ruling.
+  gavel: [
+    "................",
+    "....##..........",
+    "...####.........",
+    "..######........",
+    ".########.......",
+    "..########......",
+    "...########.....",
+    "....######.##...",
+    ".....####.####..",
+    "......##...####.",
+    "............###.",
+    ".............#..",
+    "................",
+    "................",
+    "..##########....",
+    ".############...",
+  ],
   // A block floating over a glass floor: what a player sees in limbo.
   block: [
     "................",
@@ -185,6 +204,14 @@ export const plugins: Plugin[] = [
     kicker: "// RENTABLE PLOTS",
     headline: ["Rentable plots, ", "set up in a minute."],
     summary: "Rentable plots for box and PvP servers: select an area and it's split into a grid of plots, each with its sign. Players rent with Vault or an item, add members and pay ahead; expired plots reset themselves. For Paper.",
+    released: false,
+  },
+  {
+    // Tangerine, OKLCH hue 54: between Raptor's Signal Red (25) and xUtilities' amber (81).
+    id: "xbans", prefix: "x", name: "Bans", accent: "#FF9447", glyph: "gavel",
+    kicker: "// PUNISHMENTS",
+    headline: ["Bans, mutes and warnings, ", "the LiteBans way."],
+    summary: "Bans, mutes, warnings and kicks with LiteBans' commands, flags and durations, free and open source. Checked from memory at every join and chat message, with templates, staff limits, alts and a LiteBans import. For Paper and Folia.",
     released: false,
   },
 ];

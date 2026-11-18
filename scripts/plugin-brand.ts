@@ -157,6 +157,23 @@ const glyphs: Record<string, string[]> = {
     "..####....####..",
     "...##########...",
     ".....######.....",
+  // A podium: first, second and third, as on every leaderboard.
+  podium: [
+    "................",
+    "................",
+    "......####......",
+    "......####......",
+    "......####......",
+    "......####......",
+    ".####.####......",
+    ".####.####......",
+    ".####.####.####.",
+    ".####.####.####.",
+    ".####.####.####.",
+    ".####.####.####.",
+    ".####.####.####.",
+    ".####.####.####.",
+    "................",
     "................",
   ],
   // A block floating over a glass floor: what a player sees in limbo.
@@ -282,6 +299,12 @@ export const plugins: Plugin[] = [
     kicker: "// ECONOMY",
     headline: ["The economy and Vault, ", "in one plugin."],
     summary: "An economy that is its own Vault: balances, /pay, /baltop and a ledger of every change, with the Vault and VaultUnlocked APIs built in, so shop and jobs plugins work without Vault.jar. Imports from EssentialsX, CMI or any Vault economy. For Paper and Folia.",
+    // Rose, OKLCH hue 1: between xTeleport's pink (330) and Raptor's Signal Red (25). Blue
+    // would read as charts, but it's Ion Blue's, with xMoney's glacier (213) beside it.
+    id: "xstats", prefix: "x", name: "Stats", accent: "#F77FA5", glyph: "podium",
+    kicker: "// PLAYER STATS",
+    headline: ["Every player's stats, ", "on your own website."],
+    summary: "Player stats, leaderboards and a stats website your server hosts itself: playtime that leaves out AFK time, kills, blocks and any placeholder, with daily, weekly and monthly leaderboards, PlaceholderAPI and in-world boards. For Paper and Folia.",
     released: false,
   },
 ];

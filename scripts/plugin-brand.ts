@@ -307,7 +307,7 @@ export const plugins: Plugin[] = [
     id: "xteleport", prefix: "x", name: "Teleport", accent: "#CE41E3", glyph: "pin",
     kicker: "// TELEPORT PLUGIN",
     headline: ["Every teleport ", "your server needs."],
-    summary: "Homes, TPA, warps, spawn and random teleport in one light plugin, with warmups, cooldowns and costs through Vault. Imports homes and warps from EssentialsX, HuskHomes and CMI. For Paper and Folia.",
+    summary: "Homes, TPA, warps, spawn and random teleport in one light plugin, with warmups, cooldowns and costs through Vault. Imports homes and warps from EssentialsX. For Paper and Folia.",
     released: false,
   },
   {

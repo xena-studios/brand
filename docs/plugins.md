@@ -24,12 +24,12 @@ The small plugins share one family look, endorsed by XENA STUDIOS.
 | **xLimbo** | `#B48CFF` violet | Block over a glass floor | Never drop *a player again.* |
 | **xRewind** | `#3DD6C6` teal | Rewind button | Every change, logged. *Any of it, undone.* |
 | **xPlots** (not released yet) | `#A9D750` lime, OKLCH hue 126 | Signpost | Rentable plots, *set up in a minute.* |
-| **xTeleport** (not released yet) | `#EA87E2` orchid, OKLCH hue 330 | Pin over the ring it lands in | Every teleport *your server needs.* |
-| **xVote** (not released yet) | `#91ACFF` periwinkle, OKLCH hue 272 | A ticked ballot over its box | Votes in. *Rewards out.* |
-| **xBans** (not released yet) | `#FF9447` tangerine, OKLCH hue 54 | Gavel on its block | Bans, mutes and warnings, *the LiteBans way.* |
-| **xMoney** (not released yet; working name) | `#58D0E8` glacier blue, OKLCH hue 213 | Coin | The economy and Vault, *in one plugin.* |
-| **xStats** (not released yet) | `#F77FA5` rose, OKLCH hue 1 | Podium | Every player's stats, *on your own website.* |
-| **xBackup** (not released yet) | `#FF9A5C` apricot, OKLCH hue 51 | Safe with its dial | Backups that cost nothing. *Restores you can trust.* |
+| **xTeleport** (not released yet) | `#CE41E3` fuchsia, OKLCH hue 322 | Pin over the ring it lands in | Every teleport *your server needs.* |
+| **xVote** (not released yet) | `#4D7BFD` cobalt, OKLCH hue 266 | A ticked ballot over its box | Votes in. *Rewards out.* |
+| **xBans** (not released yet) | `#D70E3A` crimson, OKLCH hue 20 | Gavel on its block | Bans, mutes and warnings, *the LiteBans way.* |
+| **xMoney** (not released yet; working name) | `#10AC79` emerald, OKLCH hue 163 | Coin | The economy and Vault, *in one plugin.* |
+| **xStats** (not released yet) | `#3EC407` vivid green, OKLCH hue 140 | Podium | Every player's stats, *on your own website.* |
+| **xBackup** (not released yet) | `#9EEDFD` ice, OKLCH hue 212, pale | Safe with its dial | Backups that cost nothing. *Restores you can trust.* |
 
 A plugin that's being built can be marked `released: false` in [`scripts/plugin-brand.ts`](../scripts/plugin-brand.ts): it gets its own icon, banner and social preview, but stays off the family's cards and horizon until its first release.
 

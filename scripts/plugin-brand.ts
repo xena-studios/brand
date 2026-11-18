@@ -104,6 +104,7 @@ const glyphs: Record<string, string[]> = {
     "...###....###...",
     ".##..........##.",
     "...##########...",
+  ],
   // A ballot over the box it goes in, ticked: a vote.
   ballot: [
     "................",
@@ -122,6 +123,7 @@ const glyphs: Record<string, string[]> = {
     ".##############.",
     ".##############.",
     "................",
+  ],
   // A gavel coming down on its block: a ruling.
   gavel: [
     "................",
@@ -140,6 +142,7 @@ const glyphs: Record<string, string[]> = {
     "................",
     "..##########....",
     ".############...",
+  ],
   // A coin on its edge, with its stamp: money.
   coin: [
     "................",
@@ -157,6 +160,8 @@ const glyphs: Record<string, string[]> = {
     "..####....####..",
     "...##########...",
     ".....######.....",
+    "................",
+  ],
   // A podium: first, second and third, as on every leaderboard.
   podium: [
     "................",
@@ -174,6 +179,8 @@ const glyphs: Record<string, string[]> = {
     ".####.####.####.",
     ".####.####.####.",
     "................",
+    "................",
+  ],
   // A safe with its dial: where backups are kept.
   safe: [
     "................",
@@ -295,35 +302,53 @@ export const plugins: Plugin[] = [
     released: false,
   },
   {
-    // Orchid, OKLCH hue 330: between xLimbo's violet (298) and NeoSkript's magenta (357), clear of Ion Blue.
-    id: "xteleport", prefix: "x", name: "Teleport", accent: "#EA87E2", glyph: "pin",
+    // Fuchsia, OKLCH hue 322, dark and vivid (L 0.64): a portal colour, deeper than xLimbo's
+    // lilac and bluer than NeoSkript's magenta.
+    id: "xteleport", prefix: "x", name: "Teleport", accent: "#CE41E3", glyph: "pin",
     kicker: "// TELEPORT PLUGIN",
     headline: ["Every teleport ", "your server needs."],
     summary: "Homes, TPA, warps, spawn and random teleport in one light plugin, with warmups, cooldowns and costs through Vault. Imports homes and warps from EssentialsX, HuskHomes and CMI. For Paper and Folia.",
-    // Periwinkle, OKLCH hue 272: between Ion Blue (246) and xLimbo's violet (298).
-    id: "xvote", prefix: "x", name: "Vote", accent: "#91ACFF", glyph: "ballot",
+    released: false,
+  },
+  {
+    // Cobalt, OKLCH hue 266, dark (L 0.62): deeper and more violet than Ion Blue (247, L 0.75).
+    id: "xvote", prefix: "x", name: "Vote", accent: "#4D7BFD", glyph: "ballot",
     kicker: "// VOTE REWARDS",
     headline: ["Votes in. ", "Rewards out."],
     summary: "Vote rewards with a built-in Votifier for Paper and Folia: keeps NuVotifier's keys and tokens, rewards per site, streaks and every Nth vote, a vote party, leaderboards, and offline votes paid on join. Imports VotingPlugin and SuperbVote totals.",
-    // Tangerine, OKLCH hue 54: between Raptor's Signal Red (25) and xUtilities' amber (81).
-    id: "xbans", prefix: "x", name: "Bans", accent: "#FF9447", glyph: "gavel",
+    released: false,
+  },
+  {
+    // Crimson, OKLCH hue 20, dark and vivid (L 0.56): a ban's red, deeper and redder than
+    // Raptor's coral Signal Red (25, L 0.66).
+    id: "xbans", prefix: "x", name: "Bans", accent: "#D70E3A", glyph: "gavel",
     kicker: "// PUNISHMENTS",
     headline: ["Bans, mutes and warnings, ", "the LiteBans way."],
     summary: "Bans, mutes, warnings and kicks with LiteBans' commands, flags and durations, free and open source. Checked from memory at every join and chat message, with templates, staff limits, alts and a LiteBans import. For Paper and Folia.",
-    // Glacier blue, OKLCH hue 213: between xRewind's teal (185) and Ion Blue (246). Gold would
-    // be the obvious money colour, but it's Airfields'.
-    id: "xmoney", prefix: "x", name: "Money", accent: "#58D0E8", glyph: "coin",
+    released: false,
+  },
+  {
+    // Emerald, OKLCH hue 163, dark (L 0.66): money green, well below zChat's bright green
+    // and greener than xRewind's teal. Gold would be the obvious money colour, but it's Airfields'.
+    id: "xmoney", prefix: "x", name: "Money", accent: "#10AC79", glyph: "coin",
     kicker: "// ECONOMY",
     headline: ["The economy and Vault, ", "in one plugin."],
     summary: "An economy that is its own Vault: balances, /pay, /baltop and a ledger of every change, with the Vault and VaultUnlocked APIs built in, so shop and jobs plugins work without Vault.jar. Imports from EssentialsX, CMI or any Vault economy. For Paper and Folia.",
-    // Rose, OKLCH hue 1: between xTeleport's pink (330) and Raptor's Signal Red (25). Blue
-    // would read as charts, but it's Ion Blue's, with xMoney's glacier (213) beside it.
-    id: "xstats", prefix: "x", name: "Stats", accent: "#F77FA5", glyph: "podium",
+    released: false,
+  },
+  {
+    // Vivid green, OKLCH hue 140 (L 0.72, chroma 0.23): numbers going up. Far more saturated
+    // than zChat's mint-green and much lighter than xMoney's emerald.
+    id: "xstats", prefix: "x", name: "Stats", accent: "#3EC407", glyph: "podium",
     kicker: "// PLAYER STATS",
     headline: ["Every player's stats, ", "on your own website."],
     summary: "Player stats, leaderboards and a stats website your server hosts itself: playtime that leaves out AFK time, kills, blocks and any placeholder, with daily, weekly and monthly leaderboards, PlaceholderAPI and in-world boards. For Paper and Folia.",
-    // Apricot, OKLCH hue 51: between Raptor's Signal Red (25) and xUtilities' amber (81).
-    id: "xbackup", prefix: "x", name: "Backup", accent: "#FF9A5C", glyph: "safe",
+    released: false,
+  },
+  {
+    // Ice, OKLCH hue 212, pale (L 0.90, chroma 0.08): cold storage, far lighter than xRewind's
+    // teal and Ion Blue.
+    id: "xbackup", prefix: "x", name: "Backup", accent: "#9EEDFD", glyph: "safe",
     kicker: "// BACKUP PLUGIN",
     headline: ["Backups that cost nothing. ", "Restores you can trust."],
     summary: "Incremental backups for Paper and Folia: only what changed is stored, chunk by chunk, with a save pause of milliseconds. Copies to S3, WebDAV, SFTP, FTP, Google Drive, OneDrive and Dropbox, and restores from the command line or on the next start.",

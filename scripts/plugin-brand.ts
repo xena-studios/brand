@@ -86,6 +86,25 @@ const glyphs: Record<string, string[]> = {
     ".......##.......",
     "................",
   ],
+  // A pin over the ring it lands in: where a teleport puts you.
+  pin: [
+    "................",
+    ".....######.....",
+    "...##########...",
+    "..####....####..",
+    "..###......###..",
+    "..###......###..",
+    "..####....####..",
+    "..############..",
+    "...##########...",
+    "....########....",
+    ".....######.....",
+    "......####......",
+    ".......##.......",
+    "...###....###...",
+    ".##..........##.",
+    "...##########...",
+  ],
   // A block floating over a glass floor: what a player sees in limbo.
   block: [
     "................",
@@ -185,6 +204,14 @@ export const plugins: Plugin[] = [
     kicker: "// RENTABLE PLOTS",
     headline: ["Rentable plots, ", "set up in a minute."],
     summary: "Rentable plots for box and PvP servers: select an area and it's split into a grid of plots, each with its sign. Players rent with Vault or an item, add members and pay ahead; expired plots reset themselves. For Paper.",
+    released: false,
+  },
+  {
+    // Orchid, OKLCH hue 330: between xLimbo's violet (298) and NeoSkript's magenta (357), clear of Ion Blue.
+    id: "xteleport", prefix: "x", name: "Teleport", accent: "#EA87E2", glyph: "pin",
+    kicker: "// TELEPORT PLUGIN",
+    headline: ["Every teleport ", "your server needs."],
+    summary: "Homes, TPA, warps, spawn and random teleport in one light plugin, with warmups, cooldowns and costs through Vault. Imports homes and warps from EssentialsX, HuskHomes and CMI. For Paper and Folia.",
     released: false,
   },
 ];

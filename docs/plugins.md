@@ -24,6 +24,7 @@ The small plugins share one family look, endorsed by XENA STUDIOS.
 | **xLimbo** | `#B48CFF` violet | Block over a glass floor | Never drop *a player again.* |
 | **xRewind** | `#3DD6C6` teal | Rewind button | Every change, logged. *Any of it, undone.* |
 | **xPlots** (not released yet) | `#A9D750` lime, OKLCH hue 126 | Signpost | Rentable plots, *set up in a minute.* |
+| **xBackup** (not released yet) | `#FF9A5C` apricot, OKLCH hue 51 | Safe with its dial | Backups that cost nothing. *Restores you can trust.* |
 
 A plugin that's being built can be marked `released: false` in [`scripts/plugin-brand.ts`](../scripts/plugin-brand.ts): it gets its own icon, banner and social preview, but stays off the family's cards and horizon until its first release.
 
@@ -37,6 +38,7 @@ Modrinth's search ranks a word in the title above everything else, so each title
 | **zChat** | zChat: Chat Formatting & Filter | Chat formatting per rank, a chat filter that's hard to dodge, mentions, private messages, cooldowns and anti-spam, in one light chat plugin. Each message is drawn once, however many players see it. For Paper and Folia. |
 | **xLimbo** | xLimbo: Limbo & Fallback Server | A limbo and fallback server for Velocity and BungeeCord. When your main server goes down, players wait in a safe void world instead of being kicked, then go back with /join, or on their own once it's up. For Paper. |
 | **xRewind** | xRewind: Block Logger & Rollback | Block logger and rollback, and a free CoreProtect alternative: see who placed, broke or took what, then preview a rollback and undo it. Uses CoreProtect's commands and imports its history. For Paper and Folia. |
+| **xBackup** | xBackup: Incremental Backups & Restore | Incremental backups for Paper and Folia: only what changed is stored, chunk by chunk, with a save pause of milliseconds. Copies to S3, WebDAV, SFTP, FTP, Google Drive, OneDrive and Dropbox, and restores from the command line or on the next start. |
 | **xPlots** | xPlots: Rentable Plots | Rentable plots for box and PvP servers: select an area and it's split into a grid of plots, each with its sign. Players rent with Vault or an item, add members and pay ahead; expired plots reset themselves. For Paper. |
 
 ## Colour

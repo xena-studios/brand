@@ -26,6 +26,7 @@ The small plugins share one family look, endorsed by XENA STUDIOS.
 | **xPlots** (not released yet) | `#A9D750` lime, OKLCH hue 126 | Signpost | Rentable plots, *set up in a minute.* |
 | **xTeleport** (not released yet) | `#EA87E2` orchid, OKLCH hue 330 | Pin over the ring it lands in | Every teleport *your server needs.* |
 | **xVote** (not released yet) | `#91ACFF` periwinkle, OKLCH hue 272 | A ticked ballot over its box | Votes in. *Rewards out.* |
+| **xBans** (not released yet) | `#FF9447` tangerine, OKLCH hue 54 | Gavel on its block | Bans, mutes and warnings, *the LiteBans way.* |
 
 A plugin that's being built can be marked `released: false` in [`scripts/plugin-brand.ts`](../scripts/plugin-brand.ts): it gets its own icon, banner and social preview, but stays off the family's cards and horizon until its first release.
 
@@ -42,6 +43,7 @@ Modrinth's search ranks a word in the title above everything else, so each title
 | **xPlots** | xPlots: Rentable Plots | Rentable plots for box and PvP servers: select an area and it's split into a grid of plots, each with its sign. Players rent with Vault or an item, add members and pay ahead; expired plots reset themselves. For Paper. |
 | **xTeleport** | xTeleport: Homes, TPA, Warps & RTP | Homes, TPA, warps, spawn and random teleport in one light plugin, with warmups, cooldowns and costs through Vault. Imports homes and warps from EssentialsX, HuskHomes and CMI. For Paper and Folia. |
 | **xVote** | xVote: Vote Rewards & Votifier | Vote rewards with a built-in Votifier for Paper and Folia: keeps NuVotifier's keys and tokens, rewards per site, streaks and every Nth vote, a vote party, leaderboards, and offline votes paid on join. Imports VotingPlugin and SuperbVote totals. |
+| **xBans** | xBans: Bans, Mutes & Warnings | Bans, mutes, warnings and kicks with LiteBans' commands, flags and durations, free and open source. Checked from memory at every join and chat message, with templates, staff limits, alts and a LiteBans import. For Paper and Folia. |
 
 ## Colour
 

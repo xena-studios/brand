@@ -86,6 +86,25 @@ const glyphs: Record<string, string[]> = {
     ".......##.......",
     "................",
   ],
+  // A podium: first, second and third, as on every leaderboard.
+  podium: [
+    "................",
+    "................",
+    "......####......",
+    "......####......",
+    "......####......",
+    "......####......",
+    ".####.####......",
+    ".####.####......",
+    ".####.####.####.",
+    ".####.####.####.",
+    ".####.####.####.",
+    ".####.####.####.",
+    ".####.####.####.",
+    ".####.####.####.",
+    "................",
+    "................",
+  ],
   // A block floating over a glass floor: what a player sees in limbo.
   block: [
     "................",
@@ -185,6 +204,15 @@ export const plugins: Plugin[] = [
     kicker: "// RENTABLE PLOTS",
     headline: ["Rentable plots, ", "set up in a minute."],
     summary: "Rentable plots for box and PvP servers: select an area and it's split into a grid of plots, each with its sign. Players rent with Vault or an item, add members and pay ahead; expired plots reset themselves. For Paper.",
+    released: false,
+  },
+  {
+    // Rose, OKLCH hue 1: between xTeleport's pink (330) and Raptor's Signal Red (25). Blue
+    // would read as charts, but it's Ion Blue's, with xMoney's glacier (213) beside it.
+    id: "xstats", prefix: "x", name: "Stats", accent: "#F77FA5", glyph: "podium",
+    kicker: "// PLAYER STATS",
+    headline: ["Every player's stats, ", "on your own website."],
+    summary: "Player stats, leaderboards and a stats website your server hosts itself: playtime that leaves out AFK time, kills, blocks and any placeholder, with daily, weekly and monthly leaderboards, PlaceholderAPI and in-world boards. For Paper and Folia.",
     released: false,
   },
 ];

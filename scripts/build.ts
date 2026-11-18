@@ -14,6 +14,7 @@ import { neoskriptColors as NS, neoskript, markText } from "./neoskript-brand.ts
 import { mostwantedColors as MW, mostwanted, type Art } from "./mostwanted-brand.ts";
 import { buildAirfields } from "./airfields-brand.ts";
 import { writer } from "./output.ts";
+import { writeCatalog } from "./catalog.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const FONT_DIR = path.join(os.homedir(), "Library/Fonts");
@@ -663,5 +664,6 @@ const pluginTokens = { ...PC, ...Object.fromEntries(plugins.map((p) => [p.id, p.
 fs.mkdirSync(path.join(ROOT, "tokens"), { recursive: true });
 fs.writeFileSync(path.join(ROOT, "tokens/plugins.json"), JSON.stringify(pluginTokens, null, 2) + "\n");
 fs.writeFileSync(path.join(ROOT, "tokens/plugins.css"), `:root {\n${Object.entries(pluginTokens).map(([k, v]) => `  --plugin-${k}: ${v};`).join("\n")}\n}\n`);
+writeCatalog();
 
 console.log(`wrote ${written.length} svgs (+png)`);

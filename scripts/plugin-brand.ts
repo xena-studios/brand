@@ -67,6 +67,25 @@ const glyphs: Record<string, string[]> = {
     "................",
     "................",
   ],
+  // A plot's sign on its post: the sign players click to rent one.
+  sign: [
+    "................",
+    "................",
+    ".##############.",
+    ".##############.",
+    ".##..........##.",
+    ".##############.",
+    ".##........####.",
+    ".##############.",
+    ".##############.",
+    ".......##.......",
+    ".......##.......",
+    ".......##.......",
+    ".......##.......",
+    ".......##.......",
+    ".......##.......",
+    "................",
+  ],
   // A block floating over a glass floor: what a player sees in limbo.
   block: [
     "................",
@@ -159,6 +178,14 @@ export const plugins: Plugin[] = [
     kicker: "// BLOCK LOGGER",
     headline: ["Every change, logged. ", "Any of it, undone."],
     summary: "Block logger and rollback, and a free CoreProtect alternative: see who placed, broke or took what, then preview a rollback and undo it. Uses CoreProtect's commands and imports its history. For Paper and Folia.",
+  },
+  {
+    // Grass-block lime, OKLCH hue 126: between Airfields' gold (95 to 99) and zChat's green (152).
+    id: "xplots", prefix: "x", name: "Plots", accent: "#A9D750", glyph: "sign",
+    kicker: "// RENTABLE PLOTS",
+    headline: ["Rentable plots, ", "set up in a minute."],
+    summary: "Rentable plots for box and PvP servers: select an area and it's split into a grid of plots, each with its sign. Players rent with Vault or an item, add members and pay ahead; expired plots reset themselves. For Paper.",
+    released: false,
   },
 ];
 

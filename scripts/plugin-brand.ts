@@ -86,6 +86,25 @@ const glyphs: Record<string, string[]> = {
     ".......##.......",
     "................",
   ],
+  // A coin on its edge, with its stamp: money.
+  coin: [
+    "................",
+    ".....######.....",
+    "...##########...",
+    "..####....####..",
+    ".####......####.",
+    ".###...##...###.",
+    ".###..###...###.",
+    ".###...##...###.",
+    ".###...##...###.",
+    ".###...##...###.",
+    ".###..####..###.",
+    ".####......####.",
+    "..####....####..",
+    "...##########...",
+    ".....######.....",
+    "................",
+  ],
   // A block floating over a glass floor: what a player sees in limbo.
   block: [
     "................",
@@ -185,6 +204,15 @@ export const plugins: Plugin[] = [
     kicker: "// RENTABLE PLOTS",
     headline: ["Rentable plots, ", "set up in a minute."],
     summary: "Rentable plots for box and PvP servers: select an area and it's split into a grid of plots, each with its sign. Players rent with Vault or an item, add members and pay ahead; expired plots reset themselves. For Paper.",
+    released: false,
+  },
+  {
+    // Glacier blue, OKLCH hue 213: between xRewind's teal (185) and Ion Blue (246). Gold would
+    // be the obvious money colour, but it's Airfields'.
+    id: "xmoney", prefix: "x", name: "Money", accent: "#58D0E8", glyph: "coin",
+    kicker: "// ECONOMY",
+    headline: ["The economy and Vault, ", "in one plugin."],
+    summary: "An economy that is its own Vault: balances, /pay, /baltop and a ledger of every change, with the Vault and VaultUnlocked APIs built in, so shop and jobs plugins work without Vault.jar. Imports from EssentialsX, CMI or any Vault economy. For Paper and Folia.",
     released: false,
   },
 ];

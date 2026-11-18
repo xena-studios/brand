@@ -104,6 +104,24 @@ const glyphs: Record<string, string[]> = {
     "...###....###...",
     ".##..........##.",
     "...##########...",
+  // A ballot over the box it goes in, ticked: a vote.
+  ballot: [
+    "................",
+    "....########....",
+    "....########....",
+    "....######.#....",
+    "....#####.##....",
+    "....#.##.###....",
+    "....##..####....",
+    "....########....",
+    "................",
+    ".##############.",
+    ".##..........##.",
+    ".##############.",
+    ".##############.",
+    ".##############.",
+    ".##############.",
+    "................",
   ],
   // A block floating over a glass floor: what a player sees in limbo.
   block: [
@@ -212,6 +230,11 @@ export const plugins: Plugin[] = [
     kicker: "// TELEPORT PLUGIN",
     headline: ["Every teleport ", "your server needs."],
     summary: "Homes, TPA, warps, spawn and random teleport in one light plugin, with warmups, cooldowns and costs through Vault. Imports homes and warps from EssentialsX, HuskHomes and CMI. For Paper and Folia.",
+    // Periwinkle, OKLCH hue 272: between Ion Blue (246) and xLimbo's violet (298).
+    id: "xvote", prefix: "x", name: "Vote", accent: "#91ACFF", glyph: "ballot",
+    kicker: "// VOTE REWARDS",
+    headline: ["Votes in. ", "Rewards out."],
+    summary: "Vote rewards with a built-in Votifier for Paper and Folia: keeps NuVotifier's keys and tokens, rewards per site, streaks and every Nth vote, a vote party, leaderboards, and offline votes paid on join. Imports VotingPlugin and SuperbVote totals.",
     released: false,
   },
 ];

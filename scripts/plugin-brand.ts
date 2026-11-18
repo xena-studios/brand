@@ -133,30 +133,32 @@ export function glyphCells(name: string): (Cell | null)[][] {
 
 // Each plugin: name (prefix letter in the accent), glyph, the banner's // kicker and
 // two-tone headline, and the Modrinth summary (the line under the name in search).
+// Modrinth titles are "<name>: <what it is>" (docs/plugins.md), because Modrinth's
+// search ranks a word in the title above everything else.
 export const plugins: Plugin[] = [
   {
     id: "xutilities", prefix: "x", name: "Utilities", accent: "#F5B83D", glyph: "wrench",
     kicker: "// UTILITY PLUGIN",
     headline: ["Every command you need. ", "None you don't."],
-    summary: "Every command you need, none you don't: gamemodes, flight, heal, /back, workstation menus, and link commands like /discord that you write yourself. Every command can be switched off. For Paper and Folia.",
+    summary: "Lightweight essentials for Paper and Folia: gamemode, fly, speed, heal, feed, /back, /top and repair, with anvils, crafting tables and other workstations anywhere. Add your own link commands like /discord, and switch off any command.",
   },
   {
     id: "zchat", prefix: "z", name: "Chat", accent: "#5EE08A", glyph: "bubble",
     kicker: "// CHAT PLUGIN",
     headline: ["Format your chat. ", "Keep it clean."],
-    summary: "A chat format per rank, a filter that's hard to dodge, cooldowns, mentions and private messages. Each message is drawn once, however many players see it. For Paper and Folia.",
+    summary: "Chat formatting per rank, a chat filter that's hard to dodge, mentions, private messages, cooldowns and anti-spam, in one light chat plugin. Each message is drawn once, however many players see it. For Paper and Folia.",
   },
   {
     id: "xlimbo", prefix: "x", name: "Limbo", accent: "#B48CFF", glyph: "block",
     kicker: "// FALLBACK SERVER",
     headline: ["Never drop ", "a player again."],
-    summary: "Your network's fallback server. When the main server goes down, players wait in a safe void world instead of being disconnected, then go back with /join, or on their own once it's up. For Paper.",
+    summary: "A limbo and fallback server for Velocity and BungeeCord. When your main server goes down, players wait in a safe void world instead of being kicked, then go back with /join, or on their own once it's up. For Paper.",
   },
   {
     id: "xrewind", prefix: "x", name: "Rewind", accent: "#3DD6C6", glyph: "rewind",
     kicker: "// BLOCK LOGGER",
     headline: ["Every change, logged. ", "Any of it, undone."],
-    summary: "Block logger and rollback: see who placed, broke or took what, and undo it. Every feature free, new Minecraft versions the same week, and CoreProtect's command syntax. For Paper and Folia.",
+    summary: "Block logger and rollback, and a free CoreProtect alternative: see who placed, broke or took what, then preview a rollback and undo it. Uses CoreProtect's commands and imports its history. For Paper and Folia.",
   },
 ];
 

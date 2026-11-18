@@ -174,6 +174,23 @@ const glyphs: Record<string, string[]> = {
     ".####.####.####.",
     ".####.####.####.",
     "................",
+  // A safe with its dial: where backups are kept.
+  safe: [
+    "................",
+    ".##############.",
+    ".##############.",
+    ".##..........##.",
+    ".##..######..##.",
+    ".##..#....#..##.",
+    ".##..#.##.#..##.",
+    ".##..#.##.#..##.",
+    ".##..#....#..##.",
+    ".##..######..##.",
+    ".##..........##.",
+    ".##############.",
+    ".##############.",
+    "..##........##..",
+    "..##........##..",
     "................",
   ],
   // A block floating over a glass floor: what a player sees in limbo.
@@ -305,6 +322,11 @@ export const plugins: Plugin[] = [
     kicker: "// PLAYER STATS",
     headline: ["Every player's stats, ", "on your own website."],
     summary: "Player stats, leaderboards and a stats website your server hosts itself: playtime that leaves out AFK time, kills, blocks and any placeholder, with daily, weekly and monthly leaderboards, PlaceholderAPI and in-world boards. For Paper and Folia.",
+    // Apricot, OKLCH hue 51: between Raptor's Signal Red (25) and xUtilities' amber (81).
+    id: "xbackup", prefix: "x", name: "Backup", accent: "#FF9A5C", glyph: "safe",
+    kicker: "// BACKUP PLUGIN",
+    headline: ["Backups that cost nothing. ", "Restores you can trust."],
+    summary: "Incremental backups for Paper and Folia: only what changed is stored, chunk by chunk, with a save pause of milliseconds. Copies to S3, WebDAV, SFTP, FTP, Google Drive, OneDrive and Dropbox, and restores from the command line or on the next start.",
     released: false,
   },
 ];

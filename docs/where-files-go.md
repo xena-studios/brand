@@ -39,6 +39,7 @@ Each repo keeps its banner at `.github/assets/banner.png`.
 | plugins | `github/plugins-banner.png`, plus `plugins/<id>/banner.png` per plugin and `github/plugin-docs-banner.png` for `docs/` |
 | website | `github/website-banner.png` |
 | .github | `github/dotgithub-banner.png` |
+| hallow | `github/hallow-banner.png` |
 | brand | `github/brand-banner.png` (used directly) |
 
 ## Social previews
@@ -47,8 +48,9 @@ Upload in each repo under **Settings → General → Social preview**. GitHub ha
 
 | Repo | File |
 |---|---|
-| brand, website, .github | `github/brand.png`, `github/website.png`, `github/dotgithub.png` |
+| brand, website, .github, hallow | `github/brand.png`, `github/website.png`, `github/dotgithub.png`, `github/hallow.png` |
 | plugins | `github/plugins.png` |
 | neoskript, mostwanted | `neoskript/social.png`, `mostwanted/social.png` |
 | airfields | `airfields/social.png` |
 | raptor | Made in its own repo |
+| raptor-status | `raptor/official/og.png`, Raptor's own link preview |

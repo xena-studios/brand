@@ -23,7 +23,7 @@ Two things tie them together: the **XENA STUDIOS** endorsement (on banners, prev
 |---|---|
 | `logo/`, `avatar/` | The Xena Studios logo in every version and colour, and the X avatar and favicons |
 | `social/`, `scene/` | Xena's social graphics (X header, Discord banner, link previews) and the bare horizon |
-| `github/` | README banners and social previews for the org's own repos (brand, website, .github, plugins) |
+| `github/` | README banners and social previews for the org's own repos (brand, website, .github, plugins, hallow) |
 | `people/`, `workspace/` | Team profile photos and the Google Workspace logo |
 | `raptor/`, `neoskript/` | Each product's marks, icon, banner and social preview |
 | `mostwanted/`, `airfields/` | Each server's marks, icon, banner and social preview; `airfields/themes/<season>/` for the seasons |

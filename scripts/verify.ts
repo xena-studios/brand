@@ -1,7 +1,8 @@
 // Checks what CI can without the fonts the build needs (Ethnocentric is
 // licensed and never in the repo, so `pnpm check` only runs locally): every
 // SVG renders and has its PNG beside it, every PNG is a PNG, every token file
-// parses, and every file the README and docs/ show, link to or name exists. `pnpm verify`
+// parses, every file the README and docs/ show, link to or name exists, the
+// plugin catalog is up to date, and no two accents look alike. `pnpm verify`
 // type-checks the scripts first.
 //
 //   pnpm verify
@@ -9,6 +10,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { Resvg } from "@resvg/resvg-js";
+import { CATALOG, catalog, catalogText } from "./catalog.ts";
+import { contrast, distance } from "./color.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const tracked = execFileSync("git", ["-C", ROOT, "ls-files"], { encoding: "utf8" }).trim().split("\n");
@@ -62,6 +65,43 @@ for (const doc of docs) {
   }
   links += new Set(refs).size;
   paths += new Set(spans).size;
+}
+
+// The plugin catalog matches the plugins it's made from.
+if (fs.existsSync(path.join(ROOT, CATALOG)) && fs.readFileSync(path.join(ROOT, CATALOG), "utf8") === catalogText()) {
+  // Up to date.
+} else {
+  problems.push(`${CATALOG}: out of date; run node scripts/catalog.ts`);
+}
+
+// Every accent in the studio, the plugins' and each brand's own, looks different from every
+// other: a new one must stay at least MIN_DISTANCE (OKLab) from all the rest. The closest
+// pair today is xUtilities' amber and MostWanted's orange, at 0.073.
+const MIN_DISTANCE = 0.07;
+const token = (file: string, key: string) => {
+  const value = JSON.parse(fs.readFileSync(path.join(ROOT, "tokens", file), "utf8"))[key];
+  return typeof value === "string" ? value : value.hex;
+};
+const { plugins: listed, colors } = catalog();
+const accents: [string, string][] = [
+  ["Xena Ion Blue", token("colors.json", "accent")],
+  ["Raptor", token("raptor.json", "signal-red")],
+  ["NeoSkript", token("neoskript.json", "magenta")],
+  ["MostWanted", token("mostwanted.json", "orange")],
+  ["Airfields", token("airfields.json", "gold")],
+  ...listed.map((p): [string, string] => [p.name, p.accent]),
+];
+for (let i = 0; i < accents.length; i++) {
+  for (let j = i + 1; j < accents.length; j++) {
+    const d = distance(accents[i][1], accents[j][1]);
+    if (d < MIN_DISTANCE) {
+      problems.push(`${accents[i][0]} (${accents[i][1]}) and ${accents[j][0]} (${accents[j][1]}) look alike: ${d.toFixed(3)} apart, under ${MIN_DISTANCE}`);
+    }
+  }
+}
+// Each plugin's text colour reads on the family's background.
+for (const p of listed) {
+  if (contrast(p.accentText, colors.bg) < 4.5) problems.push(`${p.name}: accentText ${p.accentText} is under 4.5:1 on ${colors.bg}`);
 }
 
 if (problems.length) {

@@ -226,6 +226,10 @@ const FACES: Record<string, Cell> = { t: "light", b: "base", d: "dark", f: "floo
 
 export type Cell = "light" | "base" | "dark" | "floor";
 
+// The catalog's groups, in the order they're shown.
+export const categories = ["Players", "Moderation", "Economy", "Server"] as const;
+export type Category = (typeof categories)[number];
+
 export interface Plugin {
   id: string;
   prefix: string;
@@ -235,6 +239,10 @@ export interface Plugin {
   kicker: string;
   headline: [string, string];
   summary: string;
+  // Where the plugin sits in the catalog: the README, the docs' home page and its sidebar.
+  category: Category;
+  // One sentence after the headline, for lists: the docs' home page and the README.
+  blurb: string;
   // false while it's being built: it gets its own files, but stays off the family's
   // cards, horizon and lineup until its first release.
   released?: boolean;
@@ -274,24 +282,32 @@ export const plugins: Plugin[] = [
     kicker: "// UTILITY PLUGIN",
     headline: ["Every command you need. ", "None you don't."],
     summary: "Lightweight essentials for Paper and Folia: gamemode, fly, speed, heal, feed, /back, /top and repair, with anvils, crafting tables and other workstations anywhere. Add your own link commands like /discord, and switch off any command.",
+    category: "Players",
+    blurb: "Gamemodes, fly, heal, `/back`, workstations and your own link commands.",
   },
   {
     id: "zchat", prefix: "z", name: "Chat", accent: "#5EE08A", glyph: "bubble",
     kicker: "// CHAT PLUGIN",
     headline: ["Format your chat. ", "Keep it clean."],
     summary: "Chat formatting per rank, a chat filter that's hard to dodge, mentions, private messages, cooldowns and anti-spam, in one light chat plugin. Each message is drawn once, however many players see it. For Paper and Folia.",
+    category: "Players",
+    blurb: "Chat formats per rank, a filter that's hard to dodge, mentions and private messages.",
   },
   {
     id: "xlimbo", prefix: "x", name: "Limbo", accent: "#B48CFF", glyph: "block",
     kicker: "// FALLBACK SERVER",
     headline: ["Never drop ", "a player again."],
     summary: "A limbo and fallback server for Velocity and BungeeCord. When your main server goes down, players wait in a safe void world instead of being kicked, then go back with /join, or on their own once it's up. For Paper.",
+    category: "Server",
+    blurb: "A fallback server that holds players when your main server goes down, and sends them back when it's up.",
   },
   {
     id: "xrewind", prefix: "x", name: "Rewind", accent: "#3DD6C6", glyph: "rewind",
     kicker: "// BLOCK LOGGER",
     headline: ["Every change, logged. ", "Any of it, undone."],
     summary: "Block logger and rollback, and a free CoreProtect alternative: see who placed, broke or took what, then preview a rollback and undo it. Uses CoreProtect's commands and imports its history. For Paper and Folia.",
+    category: "Moderation",
+    blurb: "A block logger with rollback, every feature free, with CoreProtect's commands and your CoreProtect history.",
   },
   {
     // Grass-block lime, OKLCH hue 126: between Airfields' gold (95 to 99) and zChat's green (152).
@@ -299,6 +315,8 @@ export const plugins: Plugin[] = [
     kicker: "// RENTABLE PLOTS",
     headline: ["Rentable plots, ", "set up in a minute."],
     summary: "Rentable plots for box and PvP servers: select an area and it's split into a grid of plots, each with its sign. Players rent with Vault or an item, add members and pay ahead; expired plots reset themselves. For Paper.",
+    category: "Economy",
+    blurb: "Select an area and every plot and sign is made for you; players rent, add members and pay ahead.",
     released: false,
   },
   {
@@ -308,6 +326,8 @@ export const plugins: Plugin[] = [
     kicker: "// TELEPORT PLUGIN",
     headline: ["Every teleport ", "your server needs."],
     summary: "Homes, TPA, warps, spawn and random teleport in one light plugin, with warmups, cooldowns and costs through Vault. Imports homes and warps from EssentialsX. For Paper and Folia.",
+    category: "Players",
+    blurb: "Homes, TPA, warps, spawn and random teleport in one plugin, with warmups, cooldowns and costs.",
     released: false,
   },
   {
@@ -316,6 +336,8 @@ export const plugins: Plugin[] = [
     kicker: "// VOTE REWARDS",
     headline: ["Votes in. ", "Rewards out."],
     summary: "Vote rewards with a built-in Votifier for Paper and Folia: keeps NuVotifier's keys and tokens, rewards per site, streaks and every Nth vote, a vote party, leaderboards, and offline votes paid on join. Imports VotingPlugin and SuperbVote totals.",
+    category: "Economy",
+    blurb: "A built-in Votifier that keeps NuVotifier's keys, rewards per site, streaks and a vote party, paid once even across a network.",
     released: false,
   },
   {
@@ -323,8 +345,10 @@ export const plugins: Plugin[] = [
     // Raptor's coral Signal Red (25, L 0.66).
     id: "xbans", prefix: "x", name: "Bans", accent: "#D70E3A", glyph: "gavel",
     kicker: "// PUNISHMENTS",
-    headline: ["Bans, mutes and warnings, ", "the LiteBans way."],
-    summary: "Bans, mutes, warnings and kicks with LiteBans' commands, flags and durations, free and open source. Checked from memory at every join and chat message, with templates, staff limits, alts and a LiteBans import. For Paper and Folia.",
+    headline: ["Bans, mutes and warnings. ", "Nothing slips through."],
+    summary: "Bans, mutes, warnings and kicks for Paper and Folia, free and open source. Checked from memory at every join and chat message, with templates, staff limits, alts and IP bans. Uses LiteBans' commands and imports its history.",
+    category: "Moderation",
+    blurb: "Checked from memory at every join and chat message, with templates, staff limits, alts and IP bans. Uses LiteBans' commands and imports its history.",
     released: false,
   },
   {
@@ -334,6 +358,8 @@ export const plugins: Plugin[] = [
     kicker: "// ECONOMY",
     headline: ["The economy and Vault, ", "in one plugin."],
     summary: "An economy that is its own Vault: balances, /pay, /baltop and a ledger of every change, with the Vault and VaultUnlocked APIs built in, so shop and jobs plugins work without Vault.jar. Imports from EssentialsX, CMI or any Vault economy. For Paper and Folia.",
+    category: "Economy",
+    blurb: "Balances, /pay and /baltop, a ledger of every change, and Vault's API built in, so shops work without Vault.jar.",
     released: false,
   },
   {
@@ -343,6 +369,8 @@ export const plugins: Plugin[] = [
     kicker: "// PLAYER STATS",
     headline: ["Every player's stats, ", "on your own website."],
     summary: "Player stats, leaderboards and a stats website your server hosts itself: playtime that leaves out AFK time, kills, blocks and any placeholder, with daily, weekly and monthly leaderboards, PlaceholderAPI and in-world boards. For Paper and Folia.",
+    category: "Players",
+    blurb: "Playtime that leaves out AFK time, leaderboards by day, week and month, placeholders, and a stats site your server hosts itself.",
     released: false,
   },
   {
@@ -352,6 +380,8 @@ export const plugins: Plugin[] = [
     kicker: "// BACKUP PLUGIN",
     headline: ["Backups that cost nothing. ", "Restores you can trust."],
     summary: "Incremental backups for Paper and Folia: only what changed is stored, chunk by chunk, with a save pause of milliseconds. Copies to S3, WebDAV, SFTP, FTP, Google Drive, OneDrive and Dropbox, and restores from the command line or on the next start.",
+    category: "Server",
+    blurb: "Only what changed is stored, chunk by chunk, and copied to S3, SFTP, WebDAV or a cloud drive.",
     released: false,
   },
 ];

@@ -14,7 +14,9 @@
     "build:plugins": "node scripts/build.ts --plugins",
     "check": "node scripts/build.ts && git diff --exit-code --stat -- . ':!pnpm-lock.yaml' && git ls-files --others --exclude-standard | (! grep .)",
     "typecheck": "tsc",
-    "verify": "tsc && node scripts/verify.ts"
+    "verify": "tsc && node scripts/verify.ts",
+    "catalog": "node scripts/catalog.ts",
+    "new-plugin": "node scripts/new-plugin.ts"
   },
   "repository": {
     "type": "git",

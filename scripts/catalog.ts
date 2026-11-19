@@ -14,6 +14,10 @@ export const CATALOG = "tokens/plugins-catalog.json";
 
 /** The catalog, as written to tokens/plugins-catalog.json. */
 export function catalog() {
+  // Modrinth refuses a summary over 256 characters, so a longer one never reaches the page.
+  for (const p of plugins) {
+    if (p.summary.length > 256) throw new Error(`${p.id}: summary is ${p.summary.length} characters; Modrinth allows 256`);
+  }
   return {
     // Bumped when a field changes meaning or goes away, so readers can refuse an old shape.
     version: 1,

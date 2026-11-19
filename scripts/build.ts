@@ -519,17 +519,24 @@ function pluginsCard(W = 1280, H = 640, s = 0.9) {
   let body = `<rect width="${W}" height="${H}" fill="${PC.bg}"/>` + blockHorizon(W, H, family.map((p) => p.accent), s);
   body += endorsement(m, Y(98), 14 * s, PC.text);
   body += text(mono, "// PLUGINS", { size: 17 * s, tracking: 0.18, fill: PC.muted, x: W - m, y: Y(111), anchor: "end" }).svg;
-  const ts = Math.round(64 * s), size = 50 * s;
+  // The row is drawn at full size, then shrunk to fit between the margins as the family grows.
+  const width = (k: number) => family.reduce((sum, p, i) => sum + Math.round(64 * s * k) + 18 * s * k
+    + text(groteskBold, p.prefix + p.name, { size: 50 * s * k, tracking: -0.02, fill: "" }).width + (i < family.length - 1 ? 52 * s * k : 0), 0);
+  const k = Math.min(1, (W - 2 * m) / width(1));
+  const ts = Math.round(64 * s * k), size = 50 * s * k, rowY = Y(196) + (64 * s - ts) / 2;
   let x = m;
   for (const p of family) {
-    body += pluginTile(p, f(x), f(Y(196)), ts, f(13 * s));
-    body += pluginName(p, x + ts + 18 * s, Y(196) + ts / 2 + size * 0.36, size);
+    body += pluginTile(p, f(x), f(rowY), ts, f(13 * s * k));
+    body += pluginName(p, x + ts + 18 * s * k, rowY + ts / 2 + size * 0.36, size);
     const w = text(groteskBold, p.prefix + p.name, { size, tracking: -0.02, fill: "" }).width;
-    x += ts + 18 * s + w + 52 * s;
+    x += ts + 18 * s * k + w + 52 * s * k;
   }
   body += text(groteskBold, "Small, fast plugins for Paper servers.", { size: 48 * s, tracking: -0.02, fill: PC.text, x: m, y: Y(384) }).svg;
   return svgDoc(W, H, body);
 }
+
+// "a, b and c".
+const names = (list: string[]) => list.length < 2 ? list.join("") : `${list.slice(0, -1).join(", ")} and ${list.at(-1)}`;
 
 // The plugin docs' link preview, in the family's look: the three icons, the
 // title and a line over the three-accent stepped horizon.
@@ -541,7 +548,11 @@ function pluginDocsCard(W = 1200, H = 630, s = 0.9) {
   const ts = Math.round(64 * s);
   family.forEach((p, i) => { body += pluginTile(p, f(m + i * (ts + 14 * s)), f(Y(176)), ts, f(13 * s)); });
   body += text(groteskBold, "Plugin docs", { size: 96 * s, tracking: -0.03, fill: PC.text, x: m, y: Y(340) }).svg;
-  body += text(groteskBold, "Setup, commands and config for xUtilities, zChat, xLimbo and xRewind.", { size: 30 * s, tracking: -0.01, fill: PC.muted, x: m, y: Y(400) }).svg;
+  // Every plugin by name while the line fits between the margins, then the family as a whole.
+  const line = { size: 30 * s, tracking: -0.01, fill: PC.muted, x: m, y: Y(400) };
+  const listed = `Setup, commands and config for ${names(family.map((p) => p.prefix + p.name))}.`;
+  const fits = text(groteskBold, listed, line).width <= W - 2 * m;
+  body += text(groteskBold, fits ? listed : "Setup, commands and config for every Xena Studios plugin.", line).svg;
   return svgDoc(W, H, body);
 }
 

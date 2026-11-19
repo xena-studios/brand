@@ -317,7 +317,6 @@ export const plugins: Plugin[] = [
     summary: "Rentable plots for box and PvP servers: select an area and it's split into a grid of plots, each with its sign. Players rent with Vault or an item, add members and pay ahead; expired plots reset themselves. For Paper.",
     category: "Economy",
     blurb: "Select an area and every plot and sign is made for you; players rent, add members and pay ahead.",
-    released: false,
   },
   {
     // Fuchsia, OKLCH hue 322, dark and vivid (L 0.64): a portal colour, deeper than xLimbo's
@@ -357,7 +356,7 @@ export const plugins: Plugin[] = [
     id: "xmoney", prefix: "x", name: "Money", accent: "#10AC79", glyph: "coin",
     kicker: "// ECONOMY",
     headline: ["The economy and Vault, ", "in one plugin."],
-    summary: "An economy that is its own Vault: balances, /pay, /baltop and a ledger of every change, with the Vault and VaultUnlocked APIs built in, so shop and jobs plugins work without Vault.jar. Imports from EssentialsX, CMI or any Vault economy. For Paper and Folia.",
+    summary: "An economy that is its own Vault: balances, /pay, /baltop and a ledger of every change, with the Vault and VaultUnlocked APIs built in, so shop and jobs plugins work without Vault.jar. Imports EssentialsX, CMI or any Vault economy. For Paper and Folia.",
     category: "Economy",
     blurb: "Balances, /pay and /baltop, a ledger of every change, and Vault's API built in, so shops work without Vault.jar.",
     released: false,

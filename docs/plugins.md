@@ -25,7 +25,7 @@ The small plugins share one family look, endorsed by XENA STUDIOS.
 | **zChat** | `#5EE08A` green | Chat bubble | Format your chat. *Keep it clean.* |
 | **xLimbo** | `#B48CFF` violet | Block over a glass floor | Never drop *a player again.* |
 | **xRewind** | `#3DD6C6` teal | Rewind button | Every change, logged. *Any of it, undone.* |
-| **xPlots** (not released yet) | `#A9D750` lime, OKLCH hue 126 | Signpost | Rentable plots, *set up in a minute.* |
+| **xPlots** | `#A9D750` lime, OKLCH hue 126 | Signpost | Rentable plots, *set up in a minute.* |
 | **xTeleport** (not released yet) | `#CE41E3` fuchsia, OKLCH hue 322 | Pin over the ring it lands in | Every teleport *your server needs.* |
 | **xVote** (not released yet) | `#4D7BFD` cobalt, OKLCH hue 266 | A ticked ballot over its box | Votes in. *Rewards out.* |
 | **xBans** (not released yet) | `#D70E3A` crimson, OKLCH hue 20 | Gavel on its block | Bans, mutes and warnings. *Nothing slips through.* |
@@ -45,7 +45,7 @@ Modrinth's search ranks a word in the title above everything else, so each title
 | **zChat** | zChat: Chat Formatting & Filter | Chat formatting per rank, a chat filter that's hard to dodge, mentions, private messages, cooldowns and anti-spam, in one light chat plugin. Each message is drawn once, however many players see it. For Paper and Folia. |
 | **xLimbo** | xLimbo: Limbo & Fallback Server | A limbo and fallback server for Velocity and BungeeCord. When your main server goes down, players wait in a safe void world instead of being kicked, then go back with /join, or on their own once it's up. For Paper. |
 | **xRewind** | xRewind: Block Logger & Rollback | Block logger and rollback, and a free CoreProtect alternative: see who placed, broke or took what, then preview a rollback and undo it. Uses CoreProtect's commands and imports its history. For Paper and Folia. |
-| **xMoney** | xMoney: Economy & Vault Provider | An economy that is its own Vault: balances, /pay, /baltop and a ledger of every change, with the Vault and VaultUnlocked APIs built in, so shop and jobs plugins work without Vault.jar. Imports from EssentialsX, CMI or any Vault economy. For Paper and Folia. |
+| **xMoney** | xMoney: Economy & Vault Provider | An economy that is its own Vault: balances, /pay, /baltop and a ledger of every change, with the Vault and VaultUnlocked APIs built in, so shop and jobs plugins work without Vault.jar. Imports EssentialsX, CMI or any Vault economy. For Paper and Folia. |
 | **xBackup** | xBackup: Incremental Backups & Restore | Incremental backups for Paper and Folia: only what changed is stored, chunk by chunk, with a save pause of milliseconds. Copies to S3, WebDAV, SFTP, FTP, Google Drive, OneDrive and Dropbox, and restores from the command line or on the next start. |
 | **xPlots** | xPlots: Rentable Plots | Rentable plots for box and PvP servers: select an area and it's split into a grid of plots, each with its sign. Players rent with Vault or an item, add members and pay ahead; expired plots reset themselves. For Paper. |
 | **xTeleport** | xTeleport: Homes, TPA, Warps & RTP | Homes, TPA, warps, spawn and random teleport in one light plugin, with warmups, cooldowns and costs through Vault. Imports homes and warps from EssentialsX. For Paper and Folia. |

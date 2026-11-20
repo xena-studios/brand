@@ -4,7 +4,7 @@
 
 The small plugins share one family look, endorsed by XENA STUDIOS.
 
-<img src="../plugins/xutilities/icon.png" width="96" alt="xUtilities icon"> &nbsp; <img src="../plugins/zchat/icon.png" width="96" alt="zChat icon"> &nbsp; <img src="../plugins/xlimbo/icon.png" width="96" alt="xLimbo icon"> &nbsp; <img src="../plugins/xrewind/icon.png" width="96" alt="xRewind icon">
+<img src="../plugins/xutilities/icon.png" width="96" alt="xUtilities icon"> &nbsp; <img src="../plugins/zchat/icon.png" width="96" alt="zChat icon"> &nbsp; <img src="../plugins/xlimbo/icon.png" width="96" alt="xLimbo icon"> &nbsp; <img src="../plugins/xrewind/icon.png" width="96" alt="xRewind icon"> &nbsp; <img src="../plugins/xplots/icon.png" width="96" alt="xPlots icon"> &nbsp; <img src="../plugins/xteleport/icon.png" width="96" alt="xTeleport icon"> &nbsp; <img src="../plugins/xvote/icon.png" width="96" alt="xVote icon"> &nbsp; <img src="../plugins/xbans/icon.png" width="96" alt="xBans icon"> &nbsp; <img src="../plugins/xmoney/icon.png" width="96" alt="xMoney icon"> &nbsp; <img src="../plugins/xstats/icon.png" width="96" alt="xStats icon"> &nbsp; <img src="../plugins/xbackup/icon.png" width="96" alt="xBackup icon">
 
 ## The system
 
@@ -26,12 +26,12 @@ The small plugins share one family look, endorsed by XENA STUDIOS.
 | **xLimbo** | `#B48CFF` violet | Block over a glass floor | Never drop *a player again.* |
 | **xRewind** | `#3DD6C6` teal | Rewind button | Every change, logged. *Any of it, undone.* |
 | **xPlots** | `#A9D750` lime, OKLCH hue 126 | Signpost | Rentable plots, *set up in a minute.* |
-| **xTeleport** (not released yet) | `#CE41E3` fuchsia, OKLCH hue 322 | Pin over the ring it lands in | Every teleport *your server needs.* |
-| **xVote** (not released yet) | `#4D7BFD` cobalt, OKLCH hue 266 | A ticked ballot over its box | Votes in. *Rewards out.* |
-| **xBans** (not released yet) | `#D70E3A` crimson, OKLCH hue 20 | Gavel on its block | Bans, mutes and warnings. *Nothing slips through.* |
-| **xMoney** (not released yet; working name) | `#10AC79` emerald, OKLCH hue 163 | Coin | The economy and Vault, *in one plugin.* |
-| **xStats** (not released yet) | `#3EC407` vivid green, OKLCH hue 140 | Podium | Every player's stats, *on your own website.* |
-| **xBackup** (not released yet) | `#9EEDFD` ice, OKLCH hue 212, pale | Safe with its dial | Backups that cost nothing. *Restores you can trust.* |
+| **xTeleport** | `#CE41E3` fuchsia, OKLCH hue 322 | Pin over the ring it lands in | Every teleport *your server needs.* |
+| **xVote** | `#4D7BFD` cobalt, OKLCH hue 266 | A ticked ballot over its box | Votes in. *Rewards out.* |
+| **xBans** | `#D70E3A` crimson, OKLCH hue 20 | Gavel on its block | Bans, mutes and warnings. *Nothing slips through.* |
+| **xMoney** | `#10AC79` emerald, OKLCH hue 163 | Coin | The economy and Vault, *in one plugin.* |
+| **xStats** | `#3EC407` vivid green, OKLCH hue 140 | Podium | Every player's stats, *on your own website.* |
+| **xBackup** | `#9EEDFD` ice, OKLCH hue 212, pale | Safe with its dial | Backups that cost nothing. *Restores you can trust.* |
 
 A plugin that's being built can be marked `released: false` in [`scripts/plugin-brand.ts`](../scripts/plugin-brand.ts): it gets its own icon, banner and social preview, but stays off the family's cards and horizon until its first release.
 

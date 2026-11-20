@@ -327,7 +327,6 @@ export const plugins: Plugin[] = [
     summary: "Homes, TPA, warps, spawn and random teleport in one light plugin, with warmups, cooldowns and costs through Vault. Imports homes and warps from EssentialsX. For Paper and Folia.",
     category: "Players",
     blurb: "Homes, TPA, warps, spawn and random teleport in one plugin, with warmups, cooldowns and costs.",
-    released: false,
   },
   {
     // Cobalt, OKLCH hue 266, dark (L 0.62): deeper and more violet than Ion Blue (247, L 0.75).
@@ -337,7 +336,6 @@ export const plugins: Plugin[] = [
     summary: "Vote rewards with a built-in Votifier for Paper and Folia: keeps NuVotifier's keys and tokens, rewards per site, streaks and every Nth vote, a vote party, leaderboards, and offline votes paid on join. Imports VotingPlugin and SuperbVote totals.",
     category: "Economy",
     blurb: "A built-in Votifier that keeps NuVotifier's keys, rewards per site, streaks and a vote party, paid once even across a network.",
-    released: false,
   },
   {
     // Crimson, OKLCH hue 20, dark and vivid (L 0.56): a ban's red, deeper and redder than
@@ -348,7 +346,6 @@ export const plugins: Plugin[] = [
     summary: "Bans, mutes, warnings and kicks for Paper and Folia, free and open source. Checked from memory at every join and chat message, with templates, staff limits, alts and IP bans. Uses LiteBans' commands and imports its history.",
     category: "Moderation",
     blurb: "Checked from memory at every join and chat message, with templates, staff limits, alts and IP bans. Uses LiteBans' commands and imports its history.",
-    released: false,
   },
   {
     // Emerald, OKLCH hue 163, dark (L 0.66): money green, well below zChat's bright green
@@ -359,7 +356,6 @@ export const plugins: Plugin[] = [
     summary: "An economy that is its own Vault: balances, /pay, /baltop and a ledger of every change, with the Vault and VaultUnlocked APIs built in, so shop and jobs plugins work without Vault.jar. Imports EssentialsX, CMI or any Vault economy. For Paper and Folia.",
     category: "Economy",
     blurb: "Balances, /pay and /baltop, a ledger of every change, and Vault's API built in, so shops work without Vault.jar.",
-    released: false,
   },
   {
     // Vivid green, OKLCH hue 140 (L 0.72, chroma 0.23): numbers going up. Far more saturated
@@ -370,7 +366,6 @@ export const plugins: Plugin[] = [
     summary: "Player stats, leaderboards and a stats website your server hosts itself: playtime that leaves out AFK time, kills, blocks and any placeholder, with daily, weekly and monthly leaderboards, PlaceholderAPI and in-world boards. For Paper and Folia.",
     category: "Players",
     blurb: "Playtime that leaves out AFK time, leaderboards by day, week and month, placeholders, and a stats site your server hosts itself.",
-    released: false,
   },
   {
     // Ice, OKLCH hue 212, pale (L 0.90, chroma 0.08): cold storage, far lighter than xRewind's
@@ -381,7 +376,6 @@ export const plugins: Plugin[] = [
     summary: "Incremental backups for Paper and Folia: only what changed is stored, chunk by chunk, with a save pause of milliseconds. Copies to S3, WebDAV, SFTP, FTP, Google Drive, OneDrive and Dropbox, and restores from the command line or on the next start.",
     category: "Server",
     blurb: "Only what changed is stored, chunk by chunk, and copied to S3, SFTP, WebDAV or a cloud drive.",
-    released: false,
   },
 ];
 

@@ -73,7 +73,7 @@ Every repo gets a 1280×640 GitHub social preview in the same layout: XENA STUDI
 
 ## Team photos
 
-Profile photos for Google, GitHub and Discord: the person's initial in Ion Blue on a `space` tile. To add someone, add them to `people` in `scripts/build.ts` and rebuild.
+Profile photos for Google, GitHub and Discord: the person's initial in Ion Blue on a `space` tile. To add someone, add them to `people` in [`scripts/art/xena.ts`](../scripts/art/xena.ts) and run `pnpm build:logos` (it needs Ethnocentric).
 
 | File | Person |
 |---|---|

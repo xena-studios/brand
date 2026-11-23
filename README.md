@@ -30,9 +30,9 @@ Two things tie them together: the **XENA STUDIOS** endorsement (on banners, prev
 | `plugins/` | Each plugin's icon, banner and social preview, and the stepped pixel horizon they share |
 | `badges/` | The badges for READMEs and Modrinth pages (Modrinth, Paper, Folia, Docs…), in each brand's colours |
 | `<brand>/official/` | Files made in that product's own repo, copied in as they are (see the brand's guide) |
-| `tokens/` | Every brand's colours, as CSS custom properties and JSON |
+| `tokens/` | Every brand's colours, as CSS custom properties, JSON and W3C design tokens; the plugin catalog and its schema |
 | `test/` | Unit tests for the build's maths and layout (`pnpm test`) |
-| `scripts/` | The build: `build.ts` draws everything, `<brand>-brand.ts` holds each brand's colours, marks and copy, `verify.ts` is what CI runs |
+| `scripts/` | The build: `<brand>-brand.ts` holds each brand's colours, marks and copy, `art/<brand>.ts` draws its files, `build.ts` runs them all, `verify.ts` checks the result |
 | `types/` | Type declarations for opentype.js, used by the build |
 
 Every SVG has a PNG beside it. Both are committed, so other repos can link or copy them without building.
@@ -51,7 +51,7 @@ Every SVG has a PNG beside it. Both are committed, so other repos can link or co
 | [Where each file goes](docs/where-files-go.md) | Which file to upload or copy where |
 | [Building](docs/building.md) | Fonts, the build, and checks |
 
-Colour tokens for every brand are in [`tokens/`](tokens/), as CSS and JSON. Third-party material (the platform logos on the badges, Folia's leaf, the typefaces) is listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Colour tokens for every brand are in [`tokens/`](tokens/): CSS custom properties, plain JSON, and the [W3C design tokens format](https://www.designtokens.org) (`<brand>.tokens.json`) that Style Dictionary, Tokens Studio and Figma read. Third-party material (the platform logos on the badges, Folia's leaf, the typefaces) is listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 ## Build
 
@@ -70,7 +70,7 @@ pnpm check    # rebuild everything, and fail if anything committed is out of dat
 - Releases are tags made by the Release workflow, versioned from the commits: see [Releasing](docs/building.md#releasing). Other repos link a release, not `main`.
 - Commits follow [Conventional Commits](https://www.conventionalcommits.org), and the version follows from them: `feat:` for a new or changed asset, plus `fix:`, `docs:`, `build:` and `ci:`.
 - Other repos only pick up a change when they copy it in. The website, the plugin docs and the two game repos have a `brand:sync` script; everything else is copied by hand. [Where each file goes](docs/where-files-go.md) lists it all.
-- A new product, server or plugin gets its own `scripts/<id>-brand.ts`, a folder, tokens and a guide in `docs/`, and an accent no other brand uses (compare OKLCH hues: the guides list them).
+- A new product or server gets its own `scripts/<id>-brand.ts` (its colours, marks and copy) and `scripts/art/<id>.ts` (its files), a folder, tokens, a badge theme and a guide in `docs/`. Add it to the contrast and full-set checks in `scripts/verify.ts`, so `pnpm verify` holds it to the same rules. A new plugin needs only `pnpm new-plugin`. Each needs an accent no other brand uses (compare OKLCH hues: the guides list them).
 
 ## Licence
 

@@ -31,6 +31,7 @@ Two things tie them together: the **XENA STUDIOS** endorsement (on banners, prev
 | `badges/` | The badges for READMEs and Modrinth pages (Modrinth, Paper, Folia, Docs…), in each brand's colours |
 | `<brand>/official/` | Files made in that product's own repo, copied in as they are (see the brand's guide) |
 | `tokens/` | Every brand's colours, as CSS custom properties and JSON |
+| `test/` | Unit tests for the build's maths and layout (`pnpm test`) |
 | `scripts/` | The build: `build.ts` draws everything, `<brand>-brand.ts` holds each brand's colours, marks and copy, `verify.ts` is what CI runs |
 | `types/` | Type declarations for opentype.js, used by the build |
 
@@ -50,7 +51,7 @@ Every SVG has a PNG beside it. Both are committed, so other repos can link or co
 | [Where each file goes](docs/where-files-go.md) | Which file to upload or copy where |
 | [Building](docs/building.md) | Fonts, the build, and checks |
 
-Colour tokens for every brand are in [`tokens/`](tokens/), as CSS and JSON.
+Colour tokens for every brand are in [`tokens/`](tokens/), as CSS and JSON. Third-party material (the platform logos on the badges, Folia's leaf, the typefaces) is listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 ## Build
 

@@ -46,7 +46,8 @@ In [`tokens/neoskript.css`](../tokens/neoskript.css) (`--neoskript-*`) and [`tok
 | `neoskript/banner` | README and Modrinth banner (1920×600) |
 | `neoskript/social` | GitHub social preview (1280×640) |
 | `neoskript/logo-dark`, `neoskript/logo-light` | Full logo for dark and light backgrounds |
-| `neoskript/icon` | Modrinth icon, avatar, favicon (512) |
+| `neoskript/icon` | Modrinth icon, avatar (512) |
+| `neoskript/favicon` | neoskript.dev's favicon (64) |
 | `neoskript/mark` | `.sk` alone, for spots that already show the name |
 
 Colours, the mark and the copy are in [`scripts/neoskript-brand.ts`](../scripts/neoskript-brand.ts).

@@ -4,7 +4,7 @@
 
 ## Checklist
 
-- [ ] `pnpm check` passes locally, and the regenerated files are committed
+- [ ] The regenerated files are committed (`pnpm build`; CI's `check` fails otherwise)
 - [ ] The guide in `docs/` and [where each file goes](https://github.com/xena-studios/brand/blob/main/docs/where-files-go.md) are updated for new, renamed or resized files
 - [ ] A new brand or plugin uses an accent no other brand has
 

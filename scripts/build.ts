@@ -13,6 +13,7 @@ import { pluginColors as PC, plugins, family, glyphCells, type Plugin } from "./
 import { neoskriptColors as NS, neoskript, markText } from "./neoskript-brand.ts";
 import { mostwantedColors as MW, mostwanted, type Art } from "./mostwanted-brand.ts";
 import { buildAirfields } from "./airfields-brand.ts";
+import { buildBadges } from "./badges.ts";
 import { writer } from "./output.ts";
 import { writeCatalog } from "./catalog.ts";
 
@@ -627,6 +628,10 @@ if (!pluginsOnly) {
   // Airfields: its marks, icon, banner and social preview, and each season's theme
   // (scripts/airfields-brand.ts). Also runs alone: pnpm build:airfields.
   buildAirfields(out);
+
+  // Badges in the style of Devin's Badges, for what that library lacks, such as Folia
+  // (scripts/badges.ts). Also runs alone: pnpm build:badges.
+  buildBadges(out);
 
   // PNG previews of the official files copied from xena-studios/raptor.
   for (const f of ["logo-dark", "logo-light", "favicon"]) {

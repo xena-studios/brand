@@ -28,6 +28,7 @@ Two things tie them together: the **XENA STUDIOS** endorsement (on banners, prev
 | `raptor/`, `neoskript/` | Each product's marks, icon, banner and social preview |
 | `mostwanted/`, `airfields/` | Each server's marks, icon, banner and social preview; `airfields/themes/<season>/` for the seasons |
 | `plugins/` | Each plugin's icon, banner and social preview, and the stepped pixel horizon they share |
+| `badges/` | Badges in the style of Devin's Badges, for what that library doesn't have, such as Folia |
 | `<brand>/official/` | Files made in that product's own repo, copied in as they are (see the brand's guide) |
 | `tokens/` | Every brand's colours, as CSS custom properties and JSON |
 | `scripts/` | The build: `build.ts` draws everything, `<brand>-brand.ts` holds each brand's colours, marks and copy, `verify.ts` is what CI runs |
@@ -45,6 +46,7 @@ Every SVG has a PNG beside it. Both are committed, so other repos can link or co
 | [MostWanted](docs/mostwanted.md) | Desert Orange, the block wordmark and the pixel desert |
 | [Airfields](docs/airfields.md) | Airfields Gold, the gold wordmark, and the seasonal themes |
 | [Plugins](docs/plugins.md) | The pixel-glyph system, and how to add a plugin |
+| [Badges](docs/badges.md) | The badge rows on READMEs and Modrinth pages, and the badges we draw |
 | [Where each file goes](docs/where-files-go.md) | Which file to upload or copy where |
 | [Building](docs/building.md) | Fonts, the build, and checks |
 

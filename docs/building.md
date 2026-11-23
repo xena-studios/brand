@@ -8,7 +8,8 @@ pnpm build            # regenerate every asset (only what changed)
 pnpm dev              # rebuild on every save, and refresh the preview
 pnpm preview          # write .preview/index.html: every asset, what changed marked
 pnpm check            # rebuild everything, and fail if anything committed is out of date
-pnpm verify           # type check, every SVG renders and has a PNG, tokens parse, docs links work
+pnpm verify           # type check, and the checks below
+pnpm test             # unit tests (test/)
 pnpm build:plugins    # only the plugin family, its cards and the badges
 pnpm build:airfields  # only Airfields
 pnpm build:badges     # only the badges
@@ -39,7 +40,13 @@ To use another copy of any font, set its path with one of these: `ETHNOCENTRIC`,
 
 [`check.yml`](../.github/workflows/check.yml) runs on every pull request, and `main` requires it:
 
-- **verify:** `pnpm verify`.
+- **verify:** `pnpm verify` and `pnpm test`. Besides the type check, verify fails when:
+  - an SVG doesn't render or has no PNG beside it, a token file doesn't parse, or a doc shows or links a file that isn't there;
+  - the plugin catalog is out of date or doesn't match its schema;
+  - two accents in the studio look alike, under 0.07 apart in OKLab;
+  - a brand's text or secondary text is under 4.5:1 on its backgrounds, its accent under 3:1, or its daylight accent under 4.5:1 on its light background;
+  - a brand is missing its icon, banner, social preview or (with a website) favicon;
+  - a file a platform takes isn't the size it wants or is over its upload limit: the 64×64 Minecraft server icon, GitHub's social preview (1280×640, under 1 MB), Modrinth's icon (under 256 KB), link previews, the Discord banner, the X header and README banners.
 - **rebuild:** `pnpm check`, so the committed files have to be exactly what the build makes. If it fails, run `pnpm build` and commit what changed.
 
 CodeQL ([`codeql.yml`](../.github/workflows/codeql.yml)) scans the scripts and workflows.

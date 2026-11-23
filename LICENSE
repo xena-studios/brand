@@ -13,13 +13,16 @@ Referring to us
   product's name, logo or branding, or use them in a way that suggests
   Xena Studios made, sponsors or endorses something it doesn't.
 
-Fonts
-  No font files are included. Ethnocentric appears only as outlined vector
-  paths, as its licence allows. The other typefaces are under the SIL Open
-  Font License (https://openfontlicense.org).
+Third-party material
+  Some parts are other people's work under their own licences, which still
+  apply to them: the platform logos on the badges, Folia's leaf, and the
+  typefaces the outlines are drawn from. THIRD_PARTY_NOTICES.md lists each
+  one and its licence. No font files are included: Ethnocentric appears only
+  as outlined vector paths, as its licence allows, and the other typefaces
+  are under the SIL Open Font License (https://openfontlicense.org).
 
 Third-party software used to build these files remains under its own
-licence. Xena Studios, Raptor, NeoSkript, MostWanted, Airfields, xUtilities,
-zChat, xLimbo and xRewind are names of Xena Studios.
+licence. Xena Studios, Raptor, NeoSkript, MostWanted, Airfields, Hallow and
+the names of the plugins in the plugin family are names of Xena Studios.
 
 Anything else, including permission for other uses: contact@xenastudios.co

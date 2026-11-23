@@ -7,6 +7,7 @@ pnpm install
 pnpm build       # regenerate every asset
 pnpm build:airfields  # only Airfields: fewer fonts needed
 pnpm build:plugins    # only the plugin family: Space Grotesk and JetBrains Mono
+pnpm build:badges     # only the badges: JetBrains Mono
 pnpm check       # rebuild, and fail if anything committed is out of date
 pnpm typecheck   # type-check the scripts
 pnpm verify      # no fonts needed: type check, every SVG renders and has a PNG, tokens parse, docs links work
@@ -29,7 +30,7 @@ JetBrains Mono (Regular, Light and SemiBold) is read from `~/Library/Fonts`.
 
 To use a font from somewhere else, set its path with one of these: `ETHNOCENTRIC`, `MONO`, `MONO_LIGHT`, `MONO_SEMIBOLD`, `HANKEN_BOLD`, `GROTESK_BOLD`, `GEIST_BOLD`, `GEIST_MONO`, `LILITA`, `FIGTREE`.
 
-`pnpm build:plugins` rebuilds only the plugin family (`plugins/`, the family's cards and `tokens/plugins.*`) and the studio's repo cards in `github/`, and needs only Space Grotesk and JetBrains Mono. Like Airfields, these take XENA STUDIOS from the committed `logo/xena-studios.svg`, in both builds, so their files come out the same either way.
+`pnpm build:plugins` rebuilds only the plugin family (`plugins/`, the family's cards and `tokens/plugins.*`) the studio's repo cards in `github/` and the badges, and needs only Space Grotesk and JetBrains Mono. Like Airfields, these take XENA STUDIOS from the committed `logo/xena-studios.svg`, in both builds, so their files come out the same either way.
 
 `pnpm build:airfields` rebuilds only Airfields (`airfields/` and `tokens/airfields.*`) and needs only Figtree and JetBrains Mono. It takes the XENA STUDIOS endorsement from the committed `logo/xena-studios.svg`, so it runs without Ethnocentric.
 

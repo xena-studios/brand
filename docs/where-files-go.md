@@ -26,6 +26,10 @@ These repos copy brand files in with their `brand:sync` script (`pnpm brand:sync
 | Airfields listings and video thumbnails | `airfields/themes/<id>/key-art.png` while that season runs |
 | Modrinth icons and description banners | `neoskript/icon.png`, `neoskript/banner.png`, `plugins/<id>/icon.png`, `plugins/<id>/banner.png` |
 
+## Badges
+
+Nothing to copy: READMEs and Modrinth pages link `badges/` straight from this repo on `main`. [Badges](badges.md) says which go where.
+
 ## README banners
 
 Each repo keeps its banner at `.github/assets/banner.png`.

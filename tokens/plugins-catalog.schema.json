@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/xena-studios/brand/blob/main/tokens/plugins-catalog.schema.json",
+  "title": "Xena Studios plugin catalog",
+  "description": "tokens/plugins-catalog.json: everything another repo needs to list the plugin family. Written by scripts/catalog.ts. A field that changes meaning or goes away bumps `version`.",
+  "type": "object",
+  "required": ["version", "colors", "categories", "plugins"],
+  "additionalProperties": false,
+  "$defs": {
+    "hex": { "type": "string", "pattern": "^#[0-9A-F]{6}$" },
+    "text": { "type": "string", "minLength": 1 }
+  },
+  "properties": {
+    "version": { "const": 1 },
+    "colors": {
+      "description": "The family's neutrals.",
+      "type": "object",
+      "required": ["bg", "raised", "rule", "text", "muted"],
+      "additionalProperties": false,
+      "properties": {
+        "bg": { "$ref": "#/$defs/hex" },
+        "raised": { "$ref": "#/$defs/hex" },
+        "rule": { "$ref": "#/$defs/hex" },
+        "text": { "$ref": "#/$defs/hex" },
+        "muted": { "$ref": "#/$defs/hex" }
+      }
+    },
+    "categories": { "type": "array", "items": { "$ref": "#/$defs/text" }, "minItems": 1, "uniqueItems": true },
+    "plugins": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "prefix", "category", "tagline", "headline", "blurb", "summary", "released", "accent", "accentText", "accentLow", "accentHigh", "icon", "banner"],
+        "properties": {
+          "id": { "description": "Lowercase: the plugin's folder, Modrinth slug and command namespace.", "type": "string", "pattern": "^[a-z][a-z0-9]*$" },
+          "name": { "description": "The full name, such as xUtilities.", "$ref": "#/$defs/text" },
+          "prefix": { "description": "The letter drawn in the accent.", "type": "string", "pattern": "^[a-z]$" },
+          "category": { "description": "One of `categories`.", "$ref": "#/$defs/text" },
+          "tagline": { "$ref": "#/$defs/text" },
+          "headline": { "description": "The tagline's two tones.", "type": "array", "items": { "$ref": "#/$defs/text" }, "minItems": 2, "maxItems": 2 },
+          "blurb": { "$ref": "#/$defs/text" },
+          "summary": { "description": "Modrinth's summary.", "type": "string", "minLength": 1, "maxLength": 256 },
+          "released": { "type": "boolean" },
+          "accent": { "$ref": "#/$defs/hex" },
+          "accentText": { "description": "The accent for text on `colors.bg`, at least 4.5:1.", "$ref": "#/$defs/hex" },
+          "accentLow": { "$ref": "#/$defs/hex" },
+          "accentHigh": { "$ref": "#/$defs/hex" },
+          "icon": { "type": "string", "pattern": "^plugins/[a-z0-9]+/icon\\.svg$" },
+          "banner": { "type": "string", "pattern": "^plugins/[a-z0-9]+/banner\\.png$" }
+        }
+      }
+    }
+  }
+}

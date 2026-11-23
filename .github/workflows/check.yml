@@ -31,6 +31,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm verify
+      - run: pnpm test
       - run: pnpm check
       # On a mismatch, the files the build made, to compare with what's committed.
       - if: failure()

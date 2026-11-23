@@ -526,6 +526,7 @@ if (!pluginsOnly) {
   // NeoSkript: icon (Modrinth, GitHub, favicon), small mark, dark/light logos,
   // README banner (1920×600 @2×) and GitHub social preview (1280×640).
   out("neoskript/icon.svg", nsIcon(512), 1024);
+  out("neoskript/favicon.svg", nsIcon(64), 64);
   out("neoskript/mark.svg", svgDoc(512, 512, nsMark(256, 256, 400, NS.magenta)), 1024);
   out("neoskript/logo-dark.svg", nsLogoFile({}), 2400);
   out("neoskript/logo-light.svg", nsLogoFile({ word: NS.ink, accent: NS["magenta-daylight"] }), 2400);

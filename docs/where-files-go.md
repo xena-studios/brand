@@ -26,9 +26,17 @@ These repos copy brand files in with their `brand:sync` script (`pnpm brand:sync
 | Airfields listings and video thumbnails | `airfields/themes/<id>/key-art.png` while that season runs |
 | Modrinth icons and description banners | `neoskript/icon.png`, `neoskript/banner.png`, `plugins/<id>/icon.png`, `plugins/<id>/banner.png` |
 
-## Badges
+## Linking files
 
-Nothing to copy: READMEs and Modrinth pages link `badges/` straight from this repo on `main`. [Badges](badges.md) says which go where.
+Pages that show a file from here without copying it (READMEs, Modrinth pages) link a **release**, through jsDelivr, pinned to the major version:
+
+```
+https://cdn.jsdelivr.net/gh/xena-studios/brand@1/badges/xena/compact/modrinth.svg
+```
+
+`@1` follows every v1.x release, so a fix or a new asset reaches every page once it's released, and a breaking change (v2) never does until the link says so. A file linked from `main` (`raw.githubusercontent.com/xena-studios/brand/main/...`) changes the moment anything merges here, with no release and no way back, so new links shouldn't use it. [Badges](badges.md) says which badges go where.
+
+jsDelivr caches a version range for up to a week; [purge](https://www.jsdelivr.com/tools/purge) the file's URL to show a new release sooner.
 
 ## README banners
 

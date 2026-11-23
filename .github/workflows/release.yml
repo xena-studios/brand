@@ -1,0 +1,45 @@
+name: Release
+
+# Run by hand (Actions → Release → Run workflow) when main has changes worth releasing.
+# scripts/release.ts works out the version from the Conventional Commits since the last
+# release (breaking: major, feat: minor, anything else: patch), then this tags main and
+# publishes the notes as a GitHub release. jsDelivr serves each release at
+# cdn.jsdelivr.net/gh/xena-studios/brand@<major>/..., which is how other repos and
+# Modrinth pages should link the files (docs/where-files-go.md).
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: release
+
+jobs:
+  release:
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # Only a main that builds and checks clean is released.
+      - run: pnpm verify && pnpm test && pnpm check
+      - id: next
+        run: node scripts/release.ts release-notes.md
+      # The press kit: what someone writing about us or listing us needs, in one download.
+      - run: |
+          zip -qr xena-studios-press-kit.zip LICENSE THIRD_PARTY_NOTICES.md \
+            logo avatar tokens/*.css tokens/*.json \
+            raptor/logo-*.png raptor/icon.png neoskript/logo-*.png neoskript/icon.png \
+            mostwanted/icon.png mostwanted/official/wordmark.png airfields/icon.png airfields/wordmark.png \
+            plugins/*/icon.png docs/xena.md docs/raptor.md docs/neoskript.md docs/mostwanted.md docs/airfields.md docs/plugins.md
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: v${{ steps.next.outputs.version }}
+        run: gh release create "$VERSION" --target "$(git rev-parse HEAD)" --title "$VERSION" --notes-file release-notes.md xena-studios-press-kit.zip

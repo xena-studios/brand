@@ -32,7 +32,14 @@ jobs:
       - run: pnpm verify && pnpm test && pnpm check
       - id: next
         run: node scripts/release.ts release-notes.md
+      # The press kit: what someone writing about us or listing us needs, in one download.
+      - run: |
+          zip -qr xena-studios-press-kit.zip LICENSE THIRD_PARTY_NOTICES.md \
+            logo avatar tokens/*.css tokens/*.json \
+            raptor/logo-*.png raptor/icon.png neoskript/logo-*.png neoskript/icon.png \
+            mostwanted/icon.png mostwanted/official/wordmark.png airfields/icon.png airfields/wordmark.png \
+            plugins/*/icon.png docs/xena.md docs/raptor.md docs/neoskript.md docs/mostwanted.md docs/airfields.md docs/plugins.md
       - env:
           GH_TOKEN: ${{ github.token }}
           VERSION: v${{ steps.next.outputs.version }}
-        run: gh release create "$VERSION" --target "$(git rev-parse HEAD)" --title "$VERSION" --notes-file release-notes.md
+        run: gh release create "$VERSION" --target "$(git rev-parse HEAD)" --title "$VERSION" --notes-file release-notes.md xena-studios-press-kit.zip

@@ -891,7 +891,13 @@ export function buildAirfieldsScene(root: string, themeId = "winter") {
   const key = createHash("sha256").update(fs.readFileSync(import.meta.filename)).update(fs.readFileSync(path.join(dir, "wordmark.svg"))).digest("hex");
   const stamp = path.join(root, ".cache", `airfields-scene-${themeId}`);
   const outputs = ["scene-320x180.png", "scene.png", "scene-1920x1080.png", "banner-scene.png", "key-art.png", "scene.json", "layers/layers.json"];
-  const fresh = fs.existsSync(stamp) && fs.readFileSync(stamp, "utf8") === key && outputs.every((o) => fs.existsSync(path.join(dir, o)));
+  let last = "";
+  try {
+    last = fs.readFileSync(stamp, "utf8");
+  } catch {
+    // Never drawn here: no stamp.
+  }
+  const fresh = last === key && outputs.every((o) => fs.existsSync(path.join(dir, o)));
   if (fresh && !process.argv.includes("--force")) return;
   const { canvas, twinkles } = scene();
   const write = (name: string, img: { w: number; h: number; rgb: Uint8Array }) => fs.writeFileSync(path.join(dir, name), encodePng(img));

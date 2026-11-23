@@ -1,12 +1,15 @@
-// Generates every Xena Studios brand asset from code: logos, avatar, social
-// graphics, Raptor's, NeoSkript's and MostWanted's marks and banners, and the plugin family. All type is converted to outlines so no
-// font file ever ships (Ethnocentric's desktop EULA forbids redistribution).
+// Generates every Xena Studios brand asset from code: logos, avatar, social graphics,
+// Raptor's, NeoSkript's and MostWanted's marks and banners, Airfields, the plugin family
+// and the badges. All type is converted to outlines so no font file ever ships
+// (Ethnocentric's desktop EULA forbids redistribution).
 //
-//   pnpm build
+//   pnpm build            everything but logo/ and people/, from npm fonts alone
+//   pnpm build --plugins  the plugin family, its cards and the badges
+//   pnpm build --logos    logo/ and people/, which need Ethnocentric
+//   --force               render every PNG, not only those whose SVG changed
+//   --preview             write .preview/index.html afterwards (pnpm dev)
 import fs from "node:fs";
 import path from "node:path";
-import os from "node:os";
-import opentype, { type Font, type PathCommand } from "opentype.js";
 import { Resvg } from "@resvg/resvg-js";
 import { clawPath, raptorPath, wordmarkPath, raptorColors, lockup } from "./raptor-brand.ts";
 import { pluginColors as PC, plugins, family, glyphCells, type Plugin } from "./plugin-brand.ts";
@@ -16,50 +19,19 @@ import { buildAirfields } from "./airfields-brand.ts";
 import { buildBadges } from "./badges.ts";
 import { writer } from "./output.ts";
 import { writeCatalog } from "./catalog.ts";
+import { fonts } from "./fonts.ts";
+import { f, text, capHeight } from "./type.ts";
+import { committedLogo, endorsement, type LogoKey } from "./logo.ts";
+import { writePreview } from "./preview.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
-const FONT_DIR = path.join(os.homedir(), "Library/Fonts");
-const loadFont = (p: string): Font => {
-  if (!fs.existsSync(p)) {
-    console.error(`Missing font: ${p}\nSee docs/building.md for where each font comes from, or set its path with the env var.`);
-    process.exit(1);
-  }
-  // Copy out the file's own bytes: a small file's Buffer can sit inside Node's
-  // shared pool, whose ArrayBuffer holds other data too.
-  const b = fs.readFileSync(p);
-  return opentype.parse(b.buffer.slice(b.byteOffset, b.byteOffset + b.length));
-};
-// Each font loads the first time it's drawn with, so `--plugins` needs only the
-// fonts the plugin family uses.
-const fontFile = (p: string): Font => {
-  let font: Font | undefined;
-  return new Proxy({} as Font, {
-    get(_, key) {
-      font ??= loadFont(p);
-      const value = Reflect.get(font, key);
-      return typeof value === "function" ? value.bind(font) : value;
-    },
-  });
-};
+const { ethnocentric: display, mono, monoLight, monoSemi, hankenBold, groteskBold, geistBold, geistMono, lilita } = fonts;
 
-// pnpm build:plugins: only the plugin family's files and tokens. Needs Space
-// Grotesk and JetBrains Mono, not Ethnocentric.
+// pnpm build:plugins: only the plugin family's files, tokens and badges.
 const pluginsOnly = process.argv.includes("--plugins");
-
-const display = fontFile(process.env.ETHNOCENTRIC ?? path.join(ROOT, ".local-fonts/Ethnocentric-Regular.otf"));
-const mono = fontFile(process.env.MONO ?? path.join(FONT_DIR, "JetBrainsMono-Regular.ttf"));
-const monoLight = fontFile(process.env.MONO_LIGHT ?? path.join(FONT_DIR, "JetBrainsMono-Light.ttf"));
-// xenastudios.co's heading weight, for the studio's repo cards and the docs' link preview.
-const monoSemi = fontFile(process.env.MONO_SEMIBOLD ?? path.join(FONT_DIR, "JetBrainsMono-SemiBold.ttf"));
-// Raptor's sans (OFL), static 700 instance from Google Fonts.
-const hankenBold = fontFile(process.env.HANKEN_BOLD ?? path.join(ROOT, ".local-fonts/HankenGrotesk-700.ttf"));
-// The plugin family's sans (OFL), static Bold from github.com/floriankarsten/space-grotesk.
-const groteskBold = fontFile(process.env.GROTESK_BOLD ?? path.join(ROOT, ".local-fonts/SpaceGrotesk-700.ttf"));
-// NeoSkript's sans and code faces (OFL), static instances from github.com/vercel/geist-font.
-const geistBold = fontFile(process.env.GEIST_BOLD ?? path.join(ROOT, ".local-fonts/Geist-700.ttf"));
-const geistMono = fontFile(process.env.GEIST_MONO ?? path.join(ROOT, ".local-fonts/GeistMono-500.ttf"));
-// MostWanted's display face (OFL), Lilita One from github.com/google/fonts (ofl/lilitaone).
-const lilita = fontFile(process.env.LILITA ?? path.join(ROOT, ".local-fonts/LilitaOne-400.ttf"));
+// pnpm build:logos: only logo/ and people/, the files drawn in Ethnocentric. Everything
+// else reads XENA STUDIOS from the committed logo/ (scripts/logo.ts), so needs no licensed font.
+const logosOnly = process.argv.includes("--logos");
 
 // ---------------------------------------------------------------- tokens
 
@@ -102,65 +74,6 @@ const raptor = {
 
 const ORG_TAGLINE = "Game servers, and the tools to run them.";
 
-// ---------------------------------------------------------------- type
-
-const f = (n: number) => +n.toFixed(2);
-
-// opentype.js 2.0's toPathData emits NaN for some coordinates; serialise ourselves.
-const pathData = (cmds: PathCommand[]) => cmds.map((c) =>
-  c.type === "Z" ? "Z" :
-  c.type === "Q" ? `Q${f(c.x1)} ${f(c.y1)} ${f(c.x)} ${f(c.y)}` :
-  c.type === "C" ? `C${f(c.x1)} ${f(c.y1)} ${f(c.x2)} ${f(c.y2)} ${f(c.x)} ${f(c.y)}` :
-  `${c.type}${f(c.x)} ${f(c.y)}`).join("");
-
-// Lays out `str` glyph by glyph (kerning + tracking in em) and aligns by ink
-// bounds, so optical edges line up regardless of sidebearings.
-interface TextOptions {
-  x?: number;
-  y?: number;
-  size: number;
-  tracking?: number;
-  anchor?: "start" | "middle" | "end";
-  fill: string;
-}
-
-function text(font: Font, str: string, { x = 0, y = 0, size, tracking = 0, anchor = "start", fill }: TextOptions) {
-  const build = (ox: number) => {
-    // Direct cmap lookup: opentype.js chokes on some GSUB lookups, and this
-    // is plain ASCII that needs no shaping.
-    const glyphs = [...str].map((c) => font.charToGlyph(c));
-    const scale = size / font.unitsPerEm;
-    const p = new opentype.Path();
-    let cx = ox;
-    glyphs.forEach((g, i) => {
-      // Draw at the origin and translate ourselves: opentype.js emits NaN
-      // control points for some TrueType glyphs at fractional offsets.
-      for (const c of g.getPath(0, 0, size).commands) {
-        const t: Record<string, string | number> = { ...c };
-        for (const k of ["x", "x1", "x2"]) if (typeof t[k] === "number") t[k] += cx;
-        for (const k of ["y", "y1", "y2"]) if (typeof t[k] === "number") t[k] += y;
-        p.commands.push(t as PathCommand);
-      }
-      cx += g.advanceWidth * scale;
-      if (i < glyphs.length - 1) cx += font.getKerningValue(g, glyphs[i + 1]) * scale + tracking * size;
-    });
-    return p;
-  };
-  const bb = build(0).getBoundingBox();
-  const shift = anchor === "start" ? x - bb.x1 : anchor === "end" ? x - bb.x2 : x - (bb.x1 + bb.x2) / 2;
-  const d = pathData(build(shift).commands);
-  return {
-    svg: `<path d="${d}" fill="${fill}"/>`,
-    width: bb.x2 - bb.x1, top: bb.y1, bottom: bb.y2,
-    left: bb.x1 + shift, right: bb.x2 + shift,
-  };
-}
-
-const capHeight = (font: Font, size: number) => {
-  const bb = font.charToGlyph("X").getPath(0, 0, size).getBoundingBox();
-  return -bb.y1;
-};
-
 // ---------------------------------------------------------------- logos
 // Type-only identity: three Ethnocentric lockups, no symbol.
 
@@ -169,7 +82,7 @@ const id = (p: string) => `${p}${++uid}`;
 
 interface Lockup { str: string; tracking: number }
 
-export const logos: Record<"full" | "short" | "x", Lockup & { file: string }> = {
+export const logos: Record<LogoKey, Lockup & { file: string }> = {
   full: { str: "XENA STUDIOS", tracking: 0.04, file: "xena-studios" },
   short: { str: "XENA", tracking: 0.06, file: "xena" },
   x: { str: "X", tracking: 0, file: "x" },
@@ -179,11 +92,15 @@ let cap100: number | undefined;
 const CAP = () => (cap100 ??= capHeight(display, 100) / 100);
 
 // Draws a logo (a `logos` key, or any { str, tracking }) with its ink top-left
-// at (x, y) and the given cap height.
-type LogoKey = keyof typeof logos;
-
+// at (x, y) and the given cap height. The logos come from their committed outlines
+// in logo/ (scripts/logo.ts); only logoFile, which writes those, and the team photos'
+// initials set Ethnocentric itself.
 function logo(key: LogoKey | Lockup, { x = 0, y = 0, cap, fill }: { x?: number; y?: number; cap: number; fill: string }) {
-  const { str, tracking } = typeof key === "string" ? logos[key] : key;
+  if (typeof key === "string") return committedLogo(key, { x, y, cap, fill });
+  return ethnocentric(key, { x, y, cap, fill });
+}
+
+function ethnocentric({ str, tracking }: Lockup, { x = 0, y = 0, cap, fill }: { x?: number; y?: number; cap: number; fill: string }) {
   const t = text(display, str, { size: cap / CAP(), tracking, fill, x, y: y + cap });
   return { svg: t.svg, width: t.width };
 }
@@ -215,8 +132,8 @@ function logoBox(key: LogoKey | Lockup, { w, h, fill, bg, radius = 0, glow, scal
 
 // Transparent export with clear space of half the cap height on every side.
 function logoFile(key: LogoKey, fill: string) {
-  const cap = 100, pad = cap / 2, lw = logo(key, { cap, fill }).width;
-  return svgDoc(f(lw + pad * 2), cap + pad * 2, logo(key, { x: pad, y: pad, cap, fill }).svg);
+  const cap = 100, pad = cap / 2, lw = ethnocentric(logos[key], { cap, fill }).width;
+  return svgDoc(f(lw + pad * 2), cap + pad * 2, ethnocentric(logos[key], { x: pad, y: pad, cap, fill }).svg);
 }
 
 // The X in Ion Blue on a space tile: GitHub avatar, favicon, app icon.
@@ -295,16 +212,6 @@ function raptorBanner() {
 const mix = (a: string, b: string, t: number) => "#" + [1, 3, 5].map((i) =>
   Math.round(parseInt(a.slice(i, i + 2), 16) * (1 - t) + parseInt(b.slice(i, i + 2), 16) * t)
     .toString(16).padStart(2, "0")).join("").toUpperCase();
-// XENA STUDIOS from the outlined logo (logo/xena-studios.svg), ink top-left at (x, y),
-// `cap` tall. The plugin family draws it this way, not from Ethnocentric, so its
-// files come out the same from `pnpm build:plugins`, which runs without the font.
-function endorsement(x: number, y: number, cap: number, fill: string) {
-  const svg = fs.readFileSync(path.join(ROOT, "logo/xena-studios.svg"), "utf8");
-  // logoFile draws it at cap height 100 with 50 of clear space on every side.
-  const d = svg.match(/ d="([^"]+)"/)![1], k = cap / 100;
-  return `<path transform="translate(${f(x - 50 * k)} ${f(y - 50 * k)}) scale(${+k.toFixed(5)})" d="${d}" fill="${fill}"/>`;
-}
-
 const tones = (a: string) => ({ light: mix(a, "#FFFFFF", 0.38), base: a, dark: mix(a, "#000000", 0.42), floor: mix(a, PC.bg, 0.45) });
 
 // The glyph at (x, y) in px-sized cells, over a hard drop shadow one cell down-right.
@@ -569,8 +476,9 @@ const repoCards: Record<string, Card> = {
 const written: string[] = [];
 const out = writer(ROOT, written);
 
-// Everything but the plugin family; `--plugins` skips it.
-if (!pluginsOnly) {
+// pnpm build:logos: the logos in every colour, and the team photos' initials. The only
+// files drawn in Ethnocentric; every other graphic reads the logos back from logo/.
+if (logosOnly) {
   for (const k of Object.keys(logos) as LogoKey[]) {
     const name = logos[k].file, w = k === "x" ? 1024 : 2400;
     out(`logo/${name}.svg`, logoFile(k, C.text), w);
@@ -579,6 +487,18 @@ if (!pluginsOnly) {
     out(`logo/${name}-black.svg`, logoFile(k, "#0A0B10"), w);
   }
 
+  // Team profile photos (Google account, GitHub, Discord): the person's initial
+  // in the avatar's style. Square; Google crops to a circle, which the glyph clears.
+  const people: Record<string, string> = { zachary: "Z" };
+  for (const [name, ch] of Object.entries(people))
+    out(`people/${name}.svg`, logoBox({ str: ch, tracking: 0 }, { w: 512, h: 512, fill: C.accent, bg: C.space, glow: C.accent, scaleH: 0.4, scaleW: 0.6 }), 1024);
+  await out.flush();
+  console.log(`wrote ${written.length} svgs (+png)`);
+  process.exit(0);
+}
+
+// Everything but the plugin family; `--plugins` skips it.
+if (!pluginsOnly) {
   out("avatar/avatar.svg", avatar(512), 1024);
   out("avatar/favicon.svg", avatar(64, 12), 64);
   // The iOS home-screen icon: the avatar at the 180px iOS asks for, square and
@@ -602,11 +522,6 @@ if (!pluginsOnly) {
 
   // The horizon on its own, no type: backgrounds for the website and anything else.
   out("scene/horizon.svg", svgDoc(2400, 900, `<rect width="2400" height="900" fill="${C.void}"/>` + planetLimb(2400, 900, { cx: 1200, r: 2400 * 1.3, top: 900 * 0.62 })), 2400);
-  // Team profile photos (Google account, GitHub, Discord): the person's initial
-  // in the avatar's style. Square; Google crops to a circle, which the glyph clears.
-  const people: Record<string, string> = { zachary: "Z" };
-  for (const [name, ch] of Object.entries(people))
-    out(`people/${name}.svg`, logoBox({ str: ch, tracking: 0 }, { w: 512, h: 512, fill: C.accent, bg: C.space, glow: C.accent, scaleH: 0.4, scaleW: 0.6 }), 1024);
 
   // NeoSkript: icon (Modrinth, GitHub, favicon), small mark, dark/light logos,
   // README banner (1920×600 @2×) and GitHub social preview (1280×640).
@@ -648,8 +563,7 @@ if (!pluginsOnly) {
 }
 
 // GitHub social previews (repo Settings → Social preview) for the studio's own
-// repos, in both builds: they take XENA STUDIOS from logo/xena-studios.svg, so
-// they don't need Ethnocentric.
+// repos, in both builds.
 for (const [name, card] of Object.entries(repoCards)) out(`github/${name}.svg`, xenaCard(card), 1280);
 
 // README banners for the same repos, in Raptor's and NeoSkript's banner size
@@ -683,4 +597,7 @@ writeCatalog();
 // its own. Also runs alone: pnpm build:badges.
 buildBadges(out);
 
+await out.flush();
 console.log(`wrote ${written.length} svgs (+png)`);
+// pnpm dev: the preview page, rewritten after every rebuild.
+if (process.argv.includes("--preview")) console.log(`preview: ${path.relative(process.cwd(), writePreview())}`);

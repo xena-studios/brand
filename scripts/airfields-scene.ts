@@ -21,6 +21,7 @@
 // the wordmark over the key art. Every random choice is seeded, so a rebuild
 // writes the same bytes.
 import fs from "node:fs";
+import { createHash } from "node:crypto";
 import path from "node:path";
 import zlib from "node:zlib";
 import { Resvg } from "@resvg/resvg-js";
@@ -880,9 +881,18 @@ export function scenePng(crop = { x: 0, y: 0, w: W, h: H }) {
   return encodePng(upscale(scene().canvas, 1, crop)).toString("base64");
 }
 
-/** Writes the season's scene files into airfields/themes/<id>/. The key art uses the wordmark.svg already there. */
+/**
+ * Writes the season's scene files into airfields/themes/<id>/. The key art uses the wordmark.svg
+ * already there. Drawing them takes most of a build's time, so they're skipped when nothing they're
+ * made from changed (this file and the wordmark) and they're all there; `--force` redraws them.
+ */
 export function buildAirfieldsScene(root: string, themeId = "winter") {
   const dir = path.join(root, "airfields/themes", themeId);
+  const key = createHash("sha256").update(fs.readFileSync(import.meta.filename)).update(fs.readFileSync(path.join(dir, "wordmark.svg"))).digest("hex");
+  const stamp = path.join(root, ".cache", `airfields-scene-${themeId}`);
+  const outputs = ["scene-320x180.png", "scene.png", "scene-1920x1080.png", "banner-scene.png", "key-art.png", "scene.json", "layers/layers.json"];
+  const fresh = fs.existsSync(stamp) && fs.readFileSync(stamp, "utf8") === key && outputs.every((o) => fs.existsSync(path.join(dir, o)));
+  if (fresh && !process.argv.includes("--force")) return;
   const { canvas, twinkles } = scene();
   const write = (name: string, img: { w: number; h: number; rgb: Uint8Array }) => fs.writeFileSync(path.join(dir, name), encodePng(img));
   write("scene-320x180.png", upscale(canvas, 1));
@@ -906,6 +916,8 @@ export function buildAirfieldsScene(root: string, themeId = "winter") {
   fs.writeFileSync(path.join(layers, "layers.json"), JSON.stringify(manifest, null, 2) + "\n");
   // Where the bright stars are (1× pixels), for sites that make them twinkle.
   fs.writeFileSync(path.join(dir, "scene.json"), JSON.stringify({ width: W, height: H, twinkles }, null, 2) + "\n");
+  fs.mkdirSync(path.dirname(stamp), { recursive: true });
+  fs.writeFileSync(stamp, key);
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === import.meta.filename) {

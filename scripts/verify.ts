@@ -1,5 +1,4 @@
-// Checks what CI can without the fonts the build needs (Ethnocentric is
-// licensed and never in the repo, so `pnpm check` only runs locally): every
+// The checks besides the rebuild (`pnpm check`, which CI also runs): every
 // SVG renders and has its PNG beside it, every PNG is a PNG, every token file
 // parses, every file the README and docs/ show, link to or name exists, the
 // plugin catalog is up to date, and no two accents look alike. `pnpm verify`

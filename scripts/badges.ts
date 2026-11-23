@@ -14,19 +14,19 @@
 // badges/plugins/<id>/. docs/badges.md says which go where.
 //
 // Runs as part of `pnpm build`, or on its own with `pnpm build:badges`, which needs only
-// JetBrains Mono (docs/building.md).
+// JetBrains Mono, from npm (scripts/fonts.ts).
 import fs from "node:fs";
 import path from "node:path";
-import os from "node:os";
-import opentype, { type Font, type PathCommand } from "opentype.js";
+import { type Font } from "opentype.js";
 import { writer, type Out } from "./output.ts";
+import { fonts } from "./fonts.ts";
+import { f, text } from "./type.ts";
 import { icons } from "./badge-icons.ts";
 import { pluginColors as PC, plugins } from "./plugin-brand.ts";
 import { neoskriptColors as NS } from "./neoskript-brand.ts";
 import { readable } from "./color.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
-const FONT_DIR = path.join(os.homedir(), "Library/Fonts");
 
 // ---------------------------------------------------------------- badges
 
@@ -94,30 +94,6 @@ export function themes(): Record<string, Theme> {
   };
 }
 
-// ---------------------------------------------------------------- type
-
-const f = (n: number) => +n.toFixed(2);
-
-// `str` as outlines from the pen position (x, baseline). Each glyph is drawn at the origin and
-// moved here: opentype.js emits NaN for some TrueType glyphs drawn at fractional offsets.
-function text(font: Font, str: string, size: number, x: number, baseline: number, fill: string, tracking = 0) {
-  const scale = size / font.unitsPerEm;
-  let cx = x, d = "";
-  const glyphs = [...str].map((c) => font.charToGlyph(c));
-  glyphs.forEach((g, i) => {
-    const X = (v: number) => f(v + cx), Y = (v: number) => f(v + baseline);
-    for (const c of g.getPath(0, 0, size).commands as PathCommand[]) {
-      d += c.type === "Z" ? "Z" :
-        c.type === "Q" ? `Q${X(c.x1)} ${Y(c.y1)} ${X(c.x)} ${Y(c.y)}` :
-        c.type === "C" ? `C${X(c.x1)} ${Y(c.y1)} ${X(c.x2)} ${Y(c.y2)} ${X(c.x)} ${Y(c.y)}` :
-        `${c.type}${X(c.x)} ${Y(c.y)}`;
-    }
-    cx += g.advanceWidth * scale;
-    if (i < glyphs.length - 1) cx += tracking * size;
-  });
-  return { svg: d ? `<path fill="${fill}" d="${d}"/>` : "", right: cx };
-}
-
 // ---------------------------------------------------------------- drawing
 
 type Style = "cozy" | "compact";
@@ -149,13 +125,13 @@ function badge(b: Badge, t: Theme, style: Style, fonts: Fonts) {
   const h = cozy ? 48 : 32, radius = cozy ? 6 : 5;
   let words = "", w: number;
   if (cozy) {
-    const kicker = text(fonts.regular, `// ${b.kicker.toUpperCase()}`, 9, 50, 20, t.muted, 0.08);
-    const title = text(fonts.semi, b.title, 15, 50, 37, t.text);
+    const kicker = text(fonts.regular, `// ${b.kicker.toUpperCase()}`, { size: 9, x: 50, y: 20, fill: t.muted, tracking: 0.08, anchor: "pen" });
+    const title = text(fonts.semi, b.title, { size: 15, x: 50, y: 37, fill: t.text, anchor: "pen" });
     words = kicker.svg + title.svg;
     w = Math.ceil(Math.max(kicker.right, title.right) + 14);
   } else {
-    const kicker = text(fonts.regular, b.kicker.toLowerCase(), 12, 36, 20.5, t.muted);
-    const title = text(fonts.semi, b.title, 12, kicker.right + 7, 20.5, t.text);
+    const kicker = text(fonts.regular, b.kicker.toLowerCase(), { size: 12, x: 36, y: 20.5, fill: t.muted, anchor: "pen" });
+    const title = text(fonts.semi, b.title, { size: 12, x: kicker.right + 8, y: 20.5, fill: t.text, anchor: "pen" });
     words = kicker.svg + title.svg;
     w = Math.ceil(title.right + 11);
   }
@@ -173,24 +149,12 @@ function badge(b: Badge, t: Theme, style: Style, fonts: Fonts) {
 
 // ---------------------------------------------------------------- output
 
-const loadFont = (p: string): Font => {
-  if (!fs.existsSync(p)) {
-    console.error(`Missing font: ${p}\nSee docs/building.md for where each font comes from, or set its path with the env var.`);
-    process.exit(1);
-  }
-  const b = fs.readFileSync(p);
-  return opentype.parse(b.buffer.slice(b.byteOffset, b.byteOffset + b.length));
-};
-
 export function buildBadges(out: Out) {
-  const fonts = {
-    regular: loadFont(process.env.MONO ?? path.join(FONT_DIR, "JetBrainsMono-Regular.ttf")),
-    semi: loadFont(process.env.MONO_SEMIBOLD ?? path.join(FONT_DIR, "JetBrainsMono-SemiBold.ttf")),
-  };
+  const type = { regular: fonts.mono, semi: fonts.monoSemi };
   for (const [dir, theme] of Object.entries(themes())) {
     for (const style of STYLES) {
       for (const [name, b] of Object.entries(badges)) {
-        const svg = badge(b, theme, style, fonts);
+        const svg = badge(b, theme, style, type);
         // PNGs at twice the size, sharp on high-density screens.
         out(`badges/${dir}/${style}/${name}.svg`, svg, Number(svg.match(/width="(\d+)"/)![1]) * 2);
       }
@@ -201,6 +165,8 @@ export function buildBadges(out: Out) {
 // `pnpm build:badges`: just the badges, with only JetBrains Mono.
 if (process.argv[1] && path.resolve(process.argv[1]) === import.meta.filename) {
   const written: string[] = [];
-  buildBadges(writer(ROOT, written));
+  const out = writer(ROOT, written);
+  buildBadges(out);
+  await out.flush();
   console.log(`wrote ${written.length} badge svgs (+png)`);
 }

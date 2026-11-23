@@ -14,11 +14,12 @@
 // needs only Figtree and JetBrains Mono (docs/building.md).
 import fs from "node:fs";
 import path from "node:path";
-import os from "node:os";
 import opentype, { type Font, type PathCommand, type BoundingBox } from "opentype.js";
 import { lettering, logoColors, type Rect, type Lettering } from "./airfields-logo.ts";
 import { buildAirfieldsScene, scenePng, SCENE_W, SCENE_H, BANNER_CROP } from "./airfields-scene.ts";
 import { writer, type Out } from "./output.ts";
+import { fonts } from "./fonts.ts";
+import { endorsement } from "./logo.ts";
 
 // Airfields Gold on a high-altitude night. The gold is pushed toward yellow
 // (OKLCH hue 96) so it stays clear of the plugin family's amber (xUtilities, 81)
@@ -255,29 +256,10 @@ function horizon(w: number, h: number, { sky = A.sky, body = A["sky-raised"], ri
 // ---------------------------------------------------------------- build
 
 const ROOT = path.resolve(import.meta.dirname, "..");
-const FONT_DIR = path.join(os.homedir(), "Library/Fonts");
-
-function load(file: string): Font {
-  if (!fs.existsSync(file)) {
-    console.error(`Missing font: ${file}\nSee docs/building.md for where each font comes from, or set its path with the env var.`);
-    process.exit(1);
-  }
-  const b = fs.readFileSync(file);
-  return opentype.parse(b.buffer.slice(b.byteOffset, b.byteOffset + b.length));
-}
-
-/** XENA STUDIOS from the outlined logo (logo/xena-studios.svg), ink top-left at (x, y), `cap` tall. */
-function endorsement(x: number, y: number, cap: number, fill: string) {
-  const svg = fs.readFileSync(path.join(ROOT, "logo/xena-studios.svg"), "utf8");
-  // logoFile draws it at cap height 100 with 50 of clear space on every side.
-  const d = svg.match(/ d="([^"]+)"/)![1], k = cap / 100;
-  return `<path transform="translate(${f(x - 50 * k)} ${f(y - 50 * k)}) scale(${+k.toFixed(5)})" d="${d}" fill="${fill}"/>`;
-}
 
 /** Writes everything in airfields/ and tokens/airfields.*. */
 export function buildAirfields(out: Out) {
-  const sans = load(process.env.FIGTREE ?? path.join(ROOT, ".local-fonts/Figtree-700.woff"));
-  const mono = load(process.env.MONO ?? path.join(FONT_DIR, "JetBrainsMono-Regular.ttf"));
+  const { figtree: sans, mono } = fonts;
 
   const wordmark = (theme?: Theme) => lettering("AIRFIELDS", 200, { emblem: theme?.emblem, snow: theme?.snow, idPrefix: id("afwm") });
   const mark = (theme?: Theme) => lettering("AF", 600, { emblem: theme?.emblem, snow: theme?.snow, idPrefix: id("afmono") });
@@ -346,6 +328,8 @@ export function buildAirfields(out: Out) {
 // `pnpm build:airfields`: just these files, without the fonts the rest of the build needs.
 if (process.argv[1] && path.resolve(process.argv[1]) === import.meta.filename) {
   const written: string[] = [];
-  buildAirfields(writer(ROOT, written));
+  const out = writer(ROOT, written);
+  buildAirfields(out);
+  await out.flush();
   console.log(`wrote ${written.length} airfields svgs (+png)`);
 }

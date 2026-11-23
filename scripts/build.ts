@@ -13,6 +13,7 @@ import { pluginColors as PC, plugins, family, glyphCells, type Plugin } from "./
 import { neoskriptColors as NS, neoskript, markText } from "./neoskript-brand.ts";
 import { mostwantedColors as MW, mostwanted, type Art } from "./mostwanted-brand.ts";
 import { buildAirfields } from "./airfields-brand.ts";
+import { buildBadges } from "./badges.ts";
 import { writer } from "./output.ts";
 import { writeCatalog } from "./catalog.ts";
 
@@ -676,5 +677,10 @@ fs.mkdirSync(path.join(ROOT, "tokens"), { recursive: true });
 fs.writeFileSync(path.join(ROOT, "tokens/plugins.json"), JSON.stringify(pluginTokens, null, 2) + "\n");
 fs.writeFileSync(path.join(ROOT, "tokens/plugins.css"), `:root {\n${Object.entries(pluginTokens).map(([k, v]) => `  --plugin-${k}: ${v};`).join("\n")}\n}\n`);
 writeCatalog();
+
+// The badges for READMEs and Modrinth pages, in every brand's colours and each plugin's
+// (scripts/badges.ts), in both builds: they need only JetBrains Mono, and a new plugin gets
+// its own. Also runs alone: pnpm build:badges.
+buildBadges(out);
 
 console.log(`wrote ${written.length} svgs (+png)`);

@@ -1,9 +1,10 @@
 name: Check
 
-# The build needs fonts that can't be in the repo (Ethnocentric is licensed),
-# so CI can't rebuild and diff like `pnpm check` does locally. It checks the
-# rest on every pull request: the scripts type-check, every SVG renders and has
-# its PNG, tokens parse, and the docs' images and links exist. main requires it.
+# Every pull request: the scripts type-check, every SVG renders and has its PNG, tokens
+# parse, the docs' images and links exist (pnpm verify), and the committed files are
+# exactly what the build makes (pnpm check, which renders everything). The build needs
+# no licensed font: Ethnocentric draws only logo/ and people/, which pnpm build reads back.
+# main requires this job.
 on:
   push:
     branches: [main]
@@ -30,3 +31,17 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm verify
+      - run: pnpm check
+      # On a mismatch, the files the build made, to compare with what's committed.
+      - if: failure()
+        run: git status --porcelain | awk '{print $2}' > changed.txt
+      - if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: rebuilt-files
+          path: |
+            changed.txt
+            **/*.png
+            **/*.svg
+            !node_modules/**
+          if-no-files-found: ignore

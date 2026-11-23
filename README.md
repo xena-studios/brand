@@ -54,18 +54,18 @@ Colour tokens for every brand are in [`tokens/`](tokens/), as CSS and JSON.
 
 ## Build
 
-Needs Node 24 and pnpm. The build also needs fonts that aren't in the repo; see [Building](docs/building.md).
+Needs Node 24 and pnpm; every font comes from npm. See [Building](docs/building.md).
 
 ```sh
 pnpm install
-pnpm build    # regenerate every asset
-pnpm check    # rebuild, and fail if anything committed is out of date
-pnpm verify   # no fonts needed: what CI runs
+pnpm build    # regenerate every asset (only what changed)
+pnpm dev      # rebuild on save, with a preview page of every asset
+pnpm check    # rebuild everything, and fail if anything committed is out of date
 ```
 
 ## Making changes
 
-- Changes go through pull requests, and `check` has to pass. Run `pnpm check` first and commit the regenerated files with your change.
+- Changes go through pull requests, and `check` has to pass: it rebuilds everything and fails if a committed file isn't what the build makes. Run `pnpm build` and commit the regenerated files with your change.
 - Commits follow [Conventional Commits](https://www.conventionalcommits.org): `feat:` for a new or changed asset, plus `fix:`, `docs:`, `build:` and `ci:`.
 - Other repos only pick up a change when they copy it in. The website, the plugin docs and the two game repos have a `brand:sync` script; everything else is copied by hand. [Where each file goes](docs/where-files-go.md) lists it all.
 - A new product, server or plugin gets its own `scripts/<id>-brand.ts`, a folder, tokens and a guide in `docs/`, and an accent no other brand uses (compare OKLCH hues: the guides list them).

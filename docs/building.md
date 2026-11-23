@@ -36,6 +36,14 @@ To use another copy of any font, set its path with one of these: `ETHNOCENTRIC`,
 
 `pnpm dev` rebuilds whenever a script changes and rewrites `.preview/index.html`: every image, grouped by folder, with what changed since the last commit marked and an **Only changed** switch, on a dark, light or checkerboard background. On a pull request, GitHub's Files tab also compares each changed PNG with its old version (2-up, swipe and onion skin).
 
+## Releasing
+
+A release is a tag, `vX.Y.Z`, with notes, and it's what other repos and Modrinth pages link (see [Linking files](where-files-go.md#linking-files)). When `main` has changes worth releasing, run **Actions → Release → Run workflow**. It checks `main` builds clean, then [`scripts/release.ts`](../scripts/release.ts) works out the version from the Conventional Commits since the last release: a breaking change (`feat!:`, or `BREAKING CHANGE:` in the body) is a major release, a `feat:` a minor one, anything else a patch. It tags `main` and publishes the notes, grouped by kind, as a GitHub release.
+
+`pnpm release:notes` shows what the next release would be, without releasing.
+
+A breaking change is one that breaks something that links or reads these files: a file renamed, moved or removed, a token renamed, or the catalog's shape changed (which also bumps its `version`).
+
 ## CI
 
 [`check.yml`](../.github/workflows/check.yml) runs on every pull request, and `main` requires it:

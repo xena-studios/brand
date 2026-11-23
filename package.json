@@ -21,7 +21,8 @@
     "verify": "tsc && node scripts/verify.ts",
     "catalog": "node scripts/catalog.ts",
     "new-plugin": "node scripts/new-plugin.ts",
-    "test": "node --test \"test/**/*.test.ts\""
+    "test": "node --test \"test/**/*.test.ts\"",
+    "release:notes": "node scripts/release.ts .preview/release-notes.md && cat .preview/release-notes.md"
   },
   "repository": {
     "type": "git",

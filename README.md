@@ -67,7 +67,8 @@ pnpm check    # rebuild everything, and fail if anything committed is out of dat
 ## Making changes
 
 - Changes go through pull requests, and `check` has to pass: it rebuilds everything and fails if a committed file isn't what the build makes. Run `pnpm build` and commit the regenerated files with your change.
-- Commits follow [Conventional Commits](https://www.conventionalcommits.org): `feat:` for a new or changed asset, plus `fix:`, `docs:`, `build:` and `ci:`.
+- Releases are tags made by the Release workflow, versioned from the commits: see [Releasing](docs/building.md#releasing). Other repos link a release, not `main`.
+- Commits follow [Conventional Commits](https://www.conventionalcommits.org), and the version follows from them: `feat:` for a new or changed asset, plus `fix:`, `docs:`, `build:` and `ci:`.
 - Other repos only pick up a change when they copy it in. The website, the plugin docs and the two game repos have a `brand:sync` script; everything else is copied by hand. [Where each file goes](docs/where-files-go.md) lists it all.
 - A new product, server or plugin gets its own `scripts/<id>-brand.ts`, a folder, tokens and a guide in `docs/`, and an accent no other brand uses (compare OKLCH hues: the guides list them).
 

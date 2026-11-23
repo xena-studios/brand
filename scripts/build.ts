@@ -629,10 +629,6 @@ if (!pluginsOnly) {
   // (scripts/airfields-brand.ts). Also runs alone: pnpm build:airfields.
   buildAirfields(out);
 
-  // Badges in the style of Devin's Badges, for what that library lacks, such as Folia
-  // (scripts/badges.ts). Also runs alone: pnpm build:badges.
-  buildBadges(out);
-
   // PNG previews of the official files copied from xena-studios/raptor.
   for (const f of ["logo-dark", "logo-light", "favicon"]) {
     const svg = hexify(fs.readFileSync(path.join(ROOT, `raptor/official/${f}.svg`), "utf8"));
@@ -681,5 +677,10 @@ fs.mkdirSync(path.join(ROOT, "tokens"), { recursive: true });
 fs.writeFileSync(path.join(ROOT, "tokens/plugins.json"), JSON.stringify(pluginTokens, null, 2) + "\n");
 fs.writeFileSync(path.join(ROOT, "tokens/plugins.css"), `:root {\n${Object.entries(pluginTokens).map(([k, v]) => `  --plugin-${k}: ${v};`).join("\n")}\n}\n`);
 writeCatalog();
+
+// The badges for READMEs and Modrinth pages, in every brand's colours and each plugin's
+// (scripts/badges.ts), in both builds: they need only JetBrains Mono, and a new plugin gets
+// its own. Also runs alone: pnpm build:badges.
+buildBadges(out);
 
 console.log(`wrote ${written.length} svgs (+png)`);

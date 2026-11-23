@@ -28,7 +28,7 @@ Two things tie them together: the **XENA STUDIOS** endorsement (on banners, prev
 | `raptor/`, `neoskript/` | Each product's marks, icon, banner and social preview |
 | `mostwanted/`, `airfields/` | Each server's marks, icon, banner and social preview; `airfields/themes/<season>/` for the seasons |
 | `plugins/` | Each plugin's icon, banner and social preview, and the stepped pixel horizon they share |
-| `badges/` | Badges in the style of Devin's Badges, for what that library doesn't have, such as Folia |
+| `badges/` | The badges for READMEs and Modrinth pages (Modrinth, Paper, Folia, Docs…), in each brand's colours |
 | `<brand>/official/` | Files made in that product's own repo, copied in as they are (see the brand's guide) |
 | `tokens/` | Every brand's colours, as CSS custom properties and JSON |
 | `scripts/` | The build: `build.ts` draws everything, `<brand>-brand.ts` holds each brand's colours, marks and copy, `verify.ts` is what CI runs |

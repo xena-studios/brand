@@ -1,0 +1,184 @@
+---
+// The front page: what this is, the press kit, every brand, and how to use the files.
+import Base from "../layouts/Base.astro";
+import PageHero from "../components/PageHero.astro";
+import External from "../components/External.astro";
+import { BRANDS, accent } from "../lib/brands.ts";
+import { guide } from "../lib/docs.ts";
+import { PRESS_KIT, REPO, release } from "../lib/repo.ts";
+
+const TIERS: Record<string, string> = {
+  xena: "Studio", raptor: "Product", neoskript: "Product", plugins: "Plugins", mostwanted: "Server", airfields: "Server",
+};
+// Each guide's first sentence, as text: the row is one link, so it can't hold the guide's own links.
+const firstSentence = (html: string) => html.replace(/<[^>]+>/g, "").replace(/&quot;/g, '"').replace(/&#39;/g, "'").split(/(?<=\.)\s/)[0];
+const rows = BRANDS.map((b) => ({ ...b, lead: firstSentence(guide(`docs/${b.id}.md`).lead), colour: accent(b), tier: TIERS[b.id] }));
+---
+<Base>
+  <PageHero kicker="Brand" title="Logos, colours and graphics for every Xena brand.">
+    The guides and every finished file for Xena Studios and what it makes, built from <a href={REPO}><External>xena-studios/brand</External></a>{release && <> at {release}</>}.
+    <div slot="after" class="actions">
+      <a class="button primary" href={PRESS_KIT}>Download the press kit</a>
+      <a class="button" href="/xena">Start with the studio</a>
+    </div>
+  </PageHero>
+
+  <section class="wrap section" aria-labelledby="brands">
+    <h2 id="brands">Brands</h2>
+    <p class="intro">
+      Two things tie them together: the XENA STUDIOS endorsement, and the planet horizon. Each brand has its own accent,
+      and no two share one.
+    </p>
+    <ul class="brands">
+      {
+        rows.map((b) => (
+          <li>
+            <a href={`/${b.id}`}>
+              <img src={`/${b.icon}`} alt="" width="56" height="56" />
+              <span class="name">
+                <span class="label">{b.tier}</span>
+                <strong>{b.name}</strong>
+              </span>
+              <span class="what">{b.lead}</span>
+              <span class="accent">
+                <svg viewBox="0 0 10 10" aria-hidden="true" focusable="false"><circle cx="5" cy="5" r="5" fill={b.colour} /></svg>
+                <code>{b.colour}</code>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="wrap section" aria-labelledby="using">
+    <h2 id="using">Using the files</h2>
+    <dl class="uses">
+      <div>
+        <dt><a class="more" href="/files">Where files go</a></dt>
+        <dd>Which file goes on which page or platform, and how to link one so it follows each release.</dd>
+      </div>
+      <div>
+        <dt><a class="more" href="/badges">Badges</a></dt>
+        <dd>The badge row under a README's or Modrinth page's tagline, in every brand's colours, with the HTML to paste.</dd>
+      </div>
+      <div>
+        <dt><a class="more" href="/building">Building</a></dt>
+        <dd>How the files are drawn in code, checked and released, for changing them.</dd>
+      </div>
+    </dl>
+  </section>
+</Base>
+
+<style>
+  .section h2 {
+    font-size: var(--t-h2);
+  }
+
+  .intro {
+    max-width: var(--measure);
+    margin-top: var(--s-4);
+    color: var(--muted);
+  }
+
+  .brands {
+    margin: var(--s-6) 0 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--rule);
+  }
+
+  .brands a {
+    display: grid;
+    grid-template-columns: 56px 12rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--s-5);
+    padding-block: var(--s-5);
+    border-bottom: 1px solid var(--rule);
+    text-decoration: none;
+    color: var(--text);
+    transition: background-color 200ms var(--ease);
+  }
+
+  .brands a:hover {
+    background: color-mix(in srgb, var(--raised) 60%, transparent);
+  }
+
+  .brands img {
+    border-radius: 12px;
+  }
+
+  .name {
+    display: grid;
+    gap: var(--s-1);
+  }
+
+  .name strong {
+    font-size: var(--t-h3);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .what {
+    color: var(--muted);
+  }
+
+  .accent {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    font-size: var(--t-small);
+    color: var(--muted);
+  }
+
+  .accent svg {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+
+  @media (max-width: 52rem) {
+    .brands a {
+      grid-template-columns: 48px minmax(0, 1fr);
+      gap: var(--s-2) var(--s-4);
+    }
+
+    .brands img {
+      width: 48px;
+      height: 48px;
+      grid-row: span 3;
+      align-self: start;
+    }
+  }
+
+  .uses {
+    display: grid;
+    margin: var(--s-6) 0 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  .uses div {
+    display: grid;
+    grid-template-columns: 16rem minmax(0, 1fr);
+    gap: var(--s-5);
+    padding-block: var(--s-5);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .uses .more {
+    margin-top: 0;
+    font-size: var(--t-body);
+  }
+
+  .uses dd {
+    margin: 0;
+    max-width: var(--measure);
+    color: var(--muted);
+  }
+
+  @media (max-width: 44rem) {
+    .uses div {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--s-2);
+    }
+  }
+</style>

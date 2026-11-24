@@ -12,7 +12,7 @@ Desert Orange on dusk. Xena adds the XENA STUDIOS endorsement and the `//` kicke
 
 <img src="../mostwanted/official/wordmark.png" width="420" alt="MOSTWANTED wordmark"> &nbsp; <img src="../mostwanted/icon.png" width="96" alt="MostWanted icon">
 
-- **Wordmark:** **MOSTWANTED** in blocky Minecraft-style letters. It's pixel art, not a font, so always use the file and never retype it.
+- **Wordmark:** **MOSTWANTED** in blocky Minecraft-style letters. It's pixel art, not a font, so always use the file and never retype it. It's one full-colour file with its own dark outline, so it reads on dark and light backgrounds alike: there's no separate dark and light version, as Raptor and NeoSkript have.
 - **Monogram:** **MW** in the same style, for small and square spots.
 - **Icon:** two, for two places. The game's own icon is the monogram over the pixel desert (`mostwanted/official/icon.png`): the avatar, Discord, the favicon and the server list, everywhere players see MostWanted. `mostwanted/icon` is the monogram on a `dusk-raised` tile with a soft orange glow, for Xena's own pages (the org profile, xenastudios.co), where it sits beside the other products' tiles.
 - **Key art:** the wordmark over the blurred pixel desert at sunset. This is MostWanted's horizon, used on its banners, site and listings.

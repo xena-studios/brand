@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://brand.xenastudios.co/sitemap.xml

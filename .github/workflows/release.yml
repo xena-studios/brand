@@ -17,6 +17,8 @@ concurrency: release
 jobs:
   release:
     runs-on: ubuntu-26.04
+    outputs:
+      version: v${{ steps.next.outputs.version }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -43,3 +45,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           VERSION: v${{ steps.next.outputs.version }}
         run: gh release create "$VERSION" --target "$(git rev-parse HEAD)" --title "$VERSION" --notes-file release-notes.md xena-studios-press-kit.zip
+
+  # brand.xenastudios.co follows the release: built from the commit just tagged, so its
+  # pages, files and version match what jsDelivr serves at @<major>.
+  site:
+    needs: release
+    uses: ./.github/workflows/site.yml
+    with:
+      ref: ${{ needs.release.outputs.version }}
+    secrets: inherit

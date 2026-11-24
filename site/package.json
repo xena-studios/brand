@@ -1,0 +1,31 @@
+{
+  "name": "xena-brand-site",
+  "description": "brand.xenastudios.co: the Xena Studios brand guides and files, built from this repo",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "packageManager": "pnpm@12.16.1",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "files": "node scripts/public.ts",
+    "dev": "node scripts/public.ts && astro dev",
+    "check": "astro check",
+    "build": "node scripts/public.ts && astro check && astro build",
+    "preview": "astro preview",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "@fontsource-variable/jetbrains-mono": "5.3.0",
+    "astro": "7.4.11",
+    "marked": "18.2.0",
+    "marked-gfm-heading-id": "4.1.4"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.12",
+    "@types/node": "^24.19.2",
+    "typescript": "6.0.3",
+    "wrangler": "4.152.0"
+  }
+}

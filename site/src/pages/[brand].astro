@@ -1,0 +1,41 @@
+---
+// One page per brand: its guide from docs/, then its colours and every file.
+import GuidePage from "../components/GuidePage.astro";
+import Swatches from "../components/Swatches.astro";
+import Files from "../components/Files.astro";
+import { BRANDS, assets, colours, type Brand } from "../lib/brands.ts";
+import { served } from "../lib/repo.ts";
+
+export function getStaticPaths() {
+  return BRANDS.map((brand) => ({ params: { brand: brand.id }, props: { brand } }));
+}
+
+const { brand } = Astro.props as { brand: Brand };
+const base = brand.tokens.replace(/\.json$/, "");
+const tokenFiles = [`tokens/${base}.css`, `tokens/${base}.json`, `tokens/${base}.tokens.json`].filter(served);
+const groups = assets(brand);
+const count = groups.reduce((n, [, list]) => n + list.length, 0);
+---
+<GuidePage file={`docs/${brand.id}.md`} kicker="Brand guide" extra={[["all-colours", "All colours"], ["all-files", "All files"]]}>
+  <section class="block" aria-labelledby="all-colours">
+    <h2 id="all-colours">All colours</h2>
+    <p>
+      Every colour in {brand.name}'s tokens, as{" "}
+      {tokenFiles.map((f, i) => (
+        <>
+          {i > 0 && (i === tokenFiles.length - 1 ? " and " : ", ")}
+          <a href={`/${f}`}><code>{f.split("/")[1]}</code></a>
+        </>
+      ))}.
+    </p>
+    <Swatches colours={colours(brand)} />
+  </section>
+  <section class="block" aria-labelledby="all-files">
+    <h2 id="all-files">All files</h2>
+    <p>
+      All {count} of {brand.name}'s pictures, at this release. To show one on another page, link it through jsDelivr
+      as <a href="/files#linking-files">Linking files</a> says, rather than this site.
+    </p>
+    <Files groups={groups} />
+  </section>
+</GuidePage>

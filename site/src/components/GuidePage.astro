@@ -1,0 +1,57 @@
+---
+// A page made from one of the guides in docs/: its title and opening line in the hero,
+// the guide, then whatever the page adds after it (colours, files), with a contents list
+// down the side.
+import Base from "../layouts/Base.astro";
+import PageHero from "./PageHero.astro";
+import { guide } from "../lib/docs.ts";
+import { REPO, ref } from "../lib/repo.ts";
+import External from "./External.astro";
+
+interface Props {
+  file: string;
+  kicker: string;
+  /** Sections the page adds after the guide, for the contents list: [id, title]. */
+  extra?: [string, string][];
+}
+
+const { file, kicker, extra = [] } = Astro.props;
+const g = guide(file);
+const headings = [...g.html.matchAll(/<h2 id="([^"]+)">(.*?)<\/h2>/g)].map(([, id, text]) => [id, text.replace(/<[^>]+>/g, "")]);
+const contents = [...headings, ...extra];
+const plain = g.lead.replace(/<[^>]+>/g, "");
+---
+<Base title={g.title} description={plain || undefined}>
+  <PageHero kicker={kicker} title={g.title}><Fragment set:html={g.lead} /></PageHero>
+  <div class="wrap page page-grid">
+    <div>
+      <article class="guide" set:html={g.html} />
+      <slot />
+    </div>
+    {
+      contents.length > 1 && (
+        <aside class="toc" aria-label="On this page">
+          <p class="label">On this page</p>
+          <ul>
+            {contents.map(([id, text]) => (
+              <li><a href={`#${id}`}>{text}</a></li>
+            ))}
+          </ul>
+          <p class="label edit"><a href={`${REPO}/blob/${ref}/${file}`}><External>Edit on GitHub</External></a></p>
+        </aside>
+      )
+    }
+  </div>
+</Base>
+
+<style>
+  .edit {
+    margin-top: var(--s-6);
+    letter-spacing: 0.08em;
+  }
+
+  .edit a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+</style>

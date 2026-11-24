@@ -1,0 +1,75 @@
+---
+// The top of every page but the home page: the // kicker, the page's title and
+// its lead, over a low horizon that rises as the page loads.
+import Horizon from "./Horizon.astro";
+
+interface Props {
+  kicker: string;
+  title: string;
+  id?: string;
+}
+
+const { kicker, title, id = "page-title" } = Astro.props;
+---
+<section class="page-hero" aria-labelledby={id}>
+  <div class="wrap copy">
+    <p class="kicker">// {kicker}</p>
+    <h1 id={id}>{title}</h1>
+    <p class="lead"><slot /></p>
+    <slot name="after" />
+  </div>
+  <Horizon class="horizon" idPrefix={`${id}-horizon`} />
+</section>
+
+<style>
+  .page-hero {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .copy {
+    padding-block: var(--s-8) clamp(9rem, 20vw, 15rem);
+  }
+
+  h1 {
+    max-width: 20ch;
+    font-size: var(--t-h1);
+    line-height: 1.05;
+  }
+
+  .page-hero :global(.horizon) {
+    position: absolute;
+    inset: auto 0 0 0;
+    z-index: -1;
+    width: 100%;
+    height: clamp(9rem, 22vw, 17rem);
+    animation: rise 1800ms var(--ease) both;
+  }
+
+  .copy > * {
+    animation: settle 1000ms var(--ease) both;
+  }
+
+  .copy > :nth-child(2) {
+    animation-delay: 90ms;
+  }
+
+  .copy > :nth-child(n + 3) {
+    animation-delay: 180ms;
+  }
+
+  @keyframes rise {
+    from {
+      transform: translateY(14%);
+      opacity: 0.2;
+    }
+  }
+
+  @keyframes settle {
+    from {
+      transform: translateY(0.75rem);
+      opacity: 0;
+    }
+  }
+</style>

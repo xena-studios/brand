@@ -1,0 +1,307 @@
+/* A guide from docs/, rendered from its Markdown: hairline tables, framed pictures,
+   code in raised boxes. Everything sits inside .guide. */
+
+.guide {
+  max-width: 52rem;
+}
+
+.guide > * + * {
+  margin-top: var(--s-5);
+}
+
+.guide h2 {
+  margin-top: var(--s-8);
+  padding-top: var(--s-6);
+  border-top: 1px solid var(--rule);
+  font-size: var(--t-h2);
+}
+
+.guide h2:first-child {
+  margin-top: 0;
+}
+
+.guide h3 {
+  margin-top: var(--s-7);
+  font-size: var(--t-h3);
+}
+
+.guide h2 + *,
+.guide h3 + * {
+  margin-top: var(--s-4);
+}
+
+.guide p,
+.guide li {
+  max-width: var(--measure);
+  color: color-mix(in srgb, var(--text) 86%, var(--muted));
+}
+
+.guide ul,
+.guide ol {
+  padding-left: 1.25rem;
+}
+
+.guide li + li {
+  margin-top: var(--s-2);
+}
+
+.guide li::marker {
+  color: var(--muted);
+}
+
+.guide strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.guide code {
+  font-family: inherit;
+  font-size: 0.9em;
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.guide pre {
+  overflow-x: auto;
+  padding: var(--s-4) var(--s-5);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--raised);
+  font-size: var(--t-small);
+  line-height: 1.6;
+}
+
+.guide pre code {
+  padding: 0;
+  background: none;
+  font-size: inherit;
+}
+
+.guide img {
+  display: inline-block;
+  height: auto;
+  vertical-align: middle;
+}
+
+/* A banner on a line of its own: framed, full width. */
+.guide p > img:only-child {
+  width: 100%;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+/* A row of pictures side by side. */
+.guide p:has(> img + img) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-4);
+  max-width: none;
+}
+
+.guide p:has(> img + img) img {
+  max-width: min(100%, 26rem);
+}
+
+.guide .table {
+  overflow-x: auto;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+.guide table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--t-small);
+}
+
+.guide th,
+.guide td {
+  padding: var(--s-3) var(--s-4);
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--rule);
+}
+
+.guide tr:last-child td {
+  border-bottom: 0;
+}
+
+.guide th {
+  font-weight: 500;
+  font-size: var(--t-label);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--raised);
+}
+
+.guide td img {
+  max-height: 3rem;
+  width: auto;
+}
+
+.guide a.out::after {
+  content: "";
+  display: inline-block;
+  width: 0.4em;
+  height: 0.4em;
+  margin-left: 0.35em;
+  vertical-align: 0.2em;
+  border-top: 1.4px solid currentColor;
+  border-right: 1.4px solid currentColor;
+  opacity: 0.6;
+}
+
+/* ---------------------------------------------------------------- shared page blocks */
+
+.page {
+  padding-block: var(--s-8);
+}
+
+.page-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 14rem;
+  gap: var(--s-8);
+  align-items: start;
+}
+
+.toc {
+  position: sticky;
+  top: 6rem;
+  font-size: var(--t-small);
+}
+
+.toc ul {
+  display: grid;
+  gap: var(--s-2);
+  margin: var(--s-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.toc a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.toc a:hover {
+  color: var(--text);
+}
+
+@media (max-width: 60rem) {
+  .page-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .toc {
+    display: none;
+  }
+}
+
+.block {
+  margin-top: var(--s-8);
+  padding-top: var(--s-6);
+  border-top: 1px solid var(--rule);
+}
+
+.block > h2 {
+  font-size: var(--t-h2);
+}
+
+.block > p {
+  max-width: var(--measure);
+  margin-top: var(--s-4);
+  color: var(--muted);
+}
+
+/* Colour swatches: a chip drawn as SVG (the CSP allows no inline styles), name, hex. */
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  gap: var(--s-4);
+  margin: var(--s-6) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.swatches li {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.swatches svg {
+  width: 100%;
+  height: 4.5rem;
+}
+
+.swatches div {
+  display: grid;
+  padding: var(--s-3);
+  font-size: var(--t-small);
+  line-height: 1.4;
+}
+
+.swatches code {
+  color: var(--muted);
+  user-select: all;
+}
+
+/* The files: each picture with its downloads. */
+.files h3 {
+  margin-top: var(--s-7);
+  font-size: var(--t-small);
+  font-weight: 500;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: var(--s-5);
+  margin: var(--s-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gallery figure {
+  margin: 0;
+}
+
+.gallery .frame {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 10;
+  padding: var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background:
+    repeating-conic-gradient(var(--raised) 0% 25%, var(--bg) 0% 50%) 50% / 16px 16px;
+}
+
+.gallery .frame img {
+  max-height: 100%;
+  width: auto;
+  object-fit: contain;
+}
+
+.gallery figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--s-2);
+  margin-top: var(--s-2);
+  font-size: var(--t-small);
+}
+
+.gallery figcaption span {
+  overflow-wrap: anywhere;
+}
+
+.gallery figcaption .dl {
+  display: flex;
+  gap: var(--s-3);
+  color: var(--muted);
+}

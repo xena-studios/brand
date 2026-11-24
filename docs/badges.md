@@ -53,7 +53,7 @@ To add a badge, add it to `badges` in `scripts/badges.ts`: the kicker, the name,
 - One row, under the tagline. Never above the banner, and never more than five badges: past that they stop being read.
 - Write the `alt` as the badge reads ("Runs on Folia"), so it makes sense without the picture.
 
-Link them from a release, through jsDelivr pinned to the major version (`https://cdn.jsdelivr.net/gh/xena-studios/brand@1/badges/...`), as [Linking files](where-files-go.md#linking-files) explains. The plugins repo writes its rows itself, with its docs/scripts/catalog.ts between `badges:start` and `badges:end`. Elsewhere, write the HTML by hand so the height is set:
+Link them from a release, through jsDelivr pinned to the major version (`https://cdn.jsdelivr.net/gh/xena-studios/brand@1/badges/...`), as [Linking files](where-files-go.md#linking-files) explains. **On GitHub use the `.svg`; on Modrinth the `.png`.** Modrinth shows images from hosts it doesn't list, jsDelivr among them, through its wsrv.nl proxy, which turns an SVG into a PNG at its 1× size, blurry on a sharp screen. The PNGs are 2× and pass through as they are. The plugins repo writes its rows itself, with its docs/scripts/catalog.ts between `badges:start` and `badges:end`. Elsewhere, write the HTML by hand so the height is set:
 
 ```html
 <a href="https://modrinth.com/plugin/neoskript"><img alt="Available on Modrinth" height="32" src="https://cdn.jsdelivr.net/gh/xena-studios/brand@1/badges/neoskript/compact/modrinth.svg"></a>

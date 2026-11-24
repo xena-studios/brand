@@ -54,7 +54,7 @@ Every SVG has a PNG beside it. Both are committed, so other repos can link or co
 
 Colour tokens for every brand are in [`tokens/`](tokens/): CSS custom properties, plain JSON, and the [W3C design tokens format](https://www.designtokens.org) (`<brand>.tokens.json`) that Style Dictionary, Tokens Studio and Figma read. Third-party material (the platform logos on the badges, Folia's leaf, the typefaces) is listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
-## Build
+## Building
 
 Needs Node 24 and pnpm; every font comes from npm. See [Building](docs/building.md).
 
@@ -65,7 +65,9 @@ pnpm dev      # rebuild on save, with a preview page of every asset
 pnpm check    # rebuild everything, and fail if anything committed is out of date
 ```
 
-## Making changes
+## Contributing
+
+For the team only: the brand is all rights reserved, so the repo doesn't take outside pull requests. Ideas and problems go in an [issue](https://github.com/xena-studios/brand/issues/new/choose).
 
 - Changes go through pull requests, and `check` has to pass: it rebuilds everything and fails if a committed file isn't what the build makes. Run `pnpm build` and commit the regenerated files with your change.
 - Releases are tags made by the Release workflow, versioned from the commits: see [Releasing](docs/building.md#releasing). Other repos link a release, not `main`. Each release also deploys [brand.xenastudios.co](https://brand.xenastudios.co).

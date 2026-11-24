@@ -18,9 +18,10 @@ const plugins = JSON.parse(read("tokens/plugins-catalog.json")).plugins as { id:
 const NAMES: Record<string, string> = { xena: "Xena Studios", neoskript: "NeoSkript", raptor: "Raptor" };
 const nameOf = (theme: string) => NAMES[theme] ?? plugins.find((p) => `plugins/${p.id}` === theme)?.name ?? theme;
 const sorted = [...themes].sort(([a], [b]) => Number(a.startsWith("plugins/")) - Number(b.startsWith("plugins/")) || a.localeCompare(b));
+// SVG for GitHub; PNG for Modrinth, whose image proxy renders an SVG at 1x (docs/badges.md).
 const snippet = (theme: string, style: "compact" | "cozy", h: number) =>
   ORDER.filter((n) => themes.get(theme)!.includes(n))
-    .map((n) => `<img alt="${ALT[n] ?? n}" height="${h}" src="${CDN}/badges/${theme}/${style}/${n}.svg">`)
+    .map((n) => `<img alt="${ALT[n] ?? n}" height="${h}" src="${CDN}/badges/${theme}/${style}/${n}.${style === "cozy" ? "png" : "svg"}">`)
     .join("\n");
 ---
 <GuidePage file="docs/badges.md" kicker="Using the files" extra={[["themes", "Every theme"]]}>
@@ -46,7 +47,7 @@ const snippet = (theme: string, style: "compact" | "cozy", h: number) =>
               <summary>HTML</summary>
               <p class="label">Compact, for a README</p>
               <pre><code>{snippet(theme, "compact", 32)}</code></pre>
-              <p class="label">Cozy, for a Modrinth page</p>
+              <p class="label">Cozy, for a Modrinth page (PNG: Modrinth renders SVGs blurry)</p>
               <pre><code>{snippet(theme, "cozy", 48)}</code></pre>
             </details>
           </section>

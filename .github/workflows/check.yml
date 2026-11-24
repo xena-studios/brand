@@ -21,6 +21,8 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-26.04
+    # A full forced rebuild takes under a minute; a hung one shouldn't hold the queue.
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
       # The version comes from packageManager in package.json.

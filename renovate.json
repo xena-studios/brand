@@ -1,38 +1,18 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "local>xena-studios/.github:renovate-config"
-  ],
+  "description": "The shared settings every Xena repo extends (pinned third-party actions, the Monday schedule, Node majors by approval) are in xena-studios/.github's renovate-config.json. These rules are this repo's own.",
+  "extends": ["local>xena-studios/.github:renovate-config"],
   "packageRules": [
     {
-      "description": "Third-party actions run with the repo's secrets, so they're pinned to a commit (CodeQL flags tags, which can be moved); Renovate keeps the pins current. GitHub's own actions stay on tags.",
-      "matchManagers": [
-        "github-actions"
-      ],
-      "matchPackageNames": [
-        "!actions/**",
-        "!github/**"
-      ],
-      "pinDigests": true
-    },
-    {
       "description": "The site (site/) runs astro check, which doesn't support TypeScript 7 yet. The build at the root already uses 7. Drop this once @astrojs/check supports it.",
-      "matchFileNames": [
-        "site/**"
-      ],
-      "matchPackageNames": [
-        "typescript"
-      ],
+      "matchFileNames": ["site/**"],
+      "matchPackageNames": ["typescript"],
       "allowedVersions": "<7"
     },
     {
       "description": "The site's undici override (site/pnpm-workspace.yaml) patches Miniflare's undici 7, which it pins: keep it on 7, and remove it once Wrangler ships a patched 7.",
-      "matchFileNames": [
-        "site/**"
-      ],
-      "matchPackageNames": [
-        "undici"
-      ],
+      "matchFileNames": ["site/**"],
+      "matchPackageNames": ["undici"],
       "allowedVersions": "<8"
     }
   ]

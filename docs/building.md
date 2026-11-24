@@ -75,7 +75,7 @@ pnpm build    # copy the files in, type-check, build to dist/
 - **rebuild:** `pnpm check`, so the committed files have to be exactly what the build makes. If it fails, run `pnpm build` and commit what changed.
 - **site:** builds brand.xenastudios.co, since a change to a guide, a token or a file can break a page. It isn't required, so a site problem never blocks an asset fix.
 
-CodeQL ([`codeql.yml`](../.github/workflows/codeql.yml)) scans the scripts and workflows.
+CodeQL ([`codeql.yml`](../.github/workflows/codeql.yml)) scans the scripts and workflows. [`links.yml`](../.github/workflows/links.yml) checks every outside link in the README and the guides, on pull requests and every Monday; a Monday failure opens an issue. Neither blocks a merge on its own, apart from CodeQL's high-severity findings.
 
 ## Files that aren't generated
 

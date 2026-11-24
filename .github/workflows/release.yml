@@ -17,6 +17,8 @@ concurrency: release
 jobs:
   release:
     runs-on: ubuntu-26.04
+    # A release rebuilds everything once to check it; a hung one shouldn't hold the queue.
+    timeout-minutes: 20
     outputs:
       version: v${{ steps.next.outputs.version }}
     steps:

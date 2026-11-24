@@ -16,8 +16,6 @@ These repos copy brand files in with their `brand:sync` script (`pnpm brand:sync
 | Where | File |
 |---|---|
 | GitHub org avatar, Modrinth org icon | `avatar/avatar.png` |
-| Org profile header (`.github` repo) | `social/x-header.png`, as `profile/assets/header.png` |
-| Org profile logos and icons (`.github` repo) | `raptor/logo-dark.png`, `raptor/logo-light.png`, `neoskript/logo-dark.png`, `neoskript/logo-light.png`, `<id>-icon.png` from `mostwanted/icon.png`, `airfields/icon.png` and `plugins/<id>/icon.png`, into `profile/assets/` |
 | X / Twitter and Discord | `social/x-header.png`, `social/discord-banner.png` |
 | Google Workspace | `workspace/logo.png` |
 | Team profile photos | `people/<name>.png` |
@@ -40,19 +38,21 @@ jsDelivr caches a version range for up to a week; [purge](https://www.jsdelivr.c
 
 ## README banners
 
-Each repo keeps its banner at `.github/assets/banner.png`.
+Every README shows its banner straight from a release, through jsDelivr (`https://cdn.jsdelivr.net/gh/xena-studios/brand@1/<file>`), as [Linking files](#linking-files) says, rather than a copy in the repo. The [org's README layout](https://github.com/xena-studios/.github#readme-layout) puts it first.
 
 | Repo | File |
 |---|---|
 | raptor | `raptor/banner.png` |
 | neoskript | `neoskript/banner.png` |
 | mostwanted | `mostwanted/banner.png` |
-| airfields | Built in the game repo from the synced files (`brand/out/banner-1600x500.png`) |
+| airfields | Built in the game repo from the synced files (`brand/out/banner-1600x500.png`), and kept there |
 | plugins | `github/plugins-banner.png`, plus `plugins/<id>/banner.png` per plugin and `github/plugin-docs-banner.png` for `docs/` |
 | website | `github/website-banner.png` |
-| .github | `github/dotgithub-banner.png` |
+| .github | `github/dotgithub-banner.png`, and the profile's header is `social/x-header.png` |
 | hallow | `github/hallow-banner.png` |
 | brand | `github/brand-banner.png` (used directly) |
+
+The org profile (`.github` repo) links its logos and icons the same way, and writes its plugin table from `tokens/plugins-catalog.json`.
 
 ## Social previews
 

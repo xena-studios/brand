@@ -1,0 +1,54 @@
+name: Links
+
+# Every link in the README and the guides still answers (pnpm verify checks the
+# local ones). The guides link other sites (the products, GitHub, jsDelivr), which
+# change on their own, so this runs every Monday as well as on pull requests. It never blocks a
+# merge; on Monday, a failure opens an issue here (or comments on the open one), as
+# xena-studios/.github's link check does.
+on:
+  pull_request:
+  schedule:
+    - cron: "29 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: links-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  links:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      # Email addresses are only checked for their form.
+      - uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          # github.com throttles anonymous checks (503s); with the token, lychee asks
+          # GitHub's API about github.com links instead.
+          token: ${{ github.token }}
+          args: >-
+            --no-progress --include-mail=false --max-retries 3
+            '*.md' 'docs/*.md'
+          fail: true
+
+  report:
+    needs: links
+    if: failure() && github.event_name == 'schedule'
+    runs-on: ubuntu-26.04
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          title="Weekly check: a link in the guides is broken"
+          open=$(gh issue list --state open --search "in:title \"$title\"" --json number --jq '.[0].number')
+          body="The Monday link check failed: $RUN."
+          if [ -n "$open" ]; then gh issue comment "$open" --body "$body"; else gh issue create --title "$title" --body "$body"; fi

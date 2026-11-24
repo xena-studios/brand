@@ -57,6 +57,8 @@ function fix(html: string, file: string) {
   return html
     .replace(/\b(src|href)="([^"]*)"/g, (_, attr, url) => `${attr}="${resolve(url.replace(/&amp;/g, "&"), file).replace(/&/g, "&amp;")}"`)
     .replace(/<img /g, '<img loading="lazy" decoding="async" ')
+    // A code block can scroll sideways, so it takes keyboard focus to be scrolled.
+    .replace(/<pre>/g, '<pre tabindex="0">')
     // Pictures put side by side with &nbsp; in the Markdown.
     .replace(/(\s*&nbsp;\s*)+/g, " ")
     // Wide tables scroll inside their own box on a phone, not the page.

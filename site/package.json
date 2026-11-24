@@ -17,15 +17,15 @@
     "deploy": "wrangler deploy"
   },
   "dependencies": {
-    "@fontsource-variable/jetbrains-mono": "5.3.0",
-    "astro": "7.4.13",
-    "marked": "18.2.1",
-    "marked-gfm-heading-id": "4.1.4"
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "astro": "^7.4.13",
+    "marked": "^18.2.1",
+    "marked-gfm-heading-id": "^4.1.4"
   },
   "devDependencies": {
-    "@astrojs/check": "0.9.12",
+    "@astrojs/check": "^0.9.12",
     "@types/node": "^24.19.2",
-    "typescript": "6.0.3",
-    "wrangler": "4.166.0"
+    "typescript": "^6.0.3",
+    "wrangler": "^4.166.0"
   }
 }

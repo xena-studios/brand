@@ -2,11 +2,11 @@
 
 ## Synced automatically
 
-These repos copy brand files in with their `brand:sync` script (`pnpm brand:sync`, or `npm run brand:sync` in the game repos). Run it after a change here merges.
+These repos copy brand files in with their `brand:sync` script (`pnpm brand:sync`, or `npm run brand:sync` in the game repos). Run it after a change here is released; the website's copies the latest release, by its tag.
 
 | Repo | What it takes |
 |---|---|
-| [website](https://github.com/xena-studios/website) | Favicon, iOS icon, link preview, logos, horizon, product marks, plugin icons, MostWanted's wordmark and key art. It has nothing for Airfields yet |
+| [website](https://github.com/xena-studios/website) | Favicon, iOS icon, link preview, logos, horizon, product marks, plugin icons, MostWanted's wordmark and key art, Airfields' icon and its current season's key art |
 | [plugins](https://github.com/xena-studios/plugins) (in `docs/`) | The docs site's logo, favicon, plugin icons and link preview (`social/docs-og.png`) |
 | airfields (private, `brand/`, with `npm run brand:sync`) | `airfields/` and `airfields/themes/`: the wordmark, monogram, icons and server icon, permanent and per season, each season's pixel scene and key art (`scene*.png`, `banner-scene.png`, `key-art.png`, `scene.json`, the depth layers in `layers/`), and `tokens/airfields.json`. The game repo builds its site art, link previews, Discord banners and README banner from them |
 | mostwanted (private, in `website/`) | `logo/xena.svg`, for the site's footer. Its own icons, banners and key art are made in the game repo and copied back into `mostwanted/official/` |

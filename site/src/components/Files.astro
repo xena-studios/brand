@@ -1,0 +1,38 @@
+---
+// A brand's files, by folder: each picture on a checkerboard (so transparency shows),
+// with its PNG and SVG to download.
+import type { Asset } from "../lib/brands.ts";
+
+interface Props {
+  groups: [string, Asset[]][];
+}
+
+const { groups } = Astro.props;
+---
+<div class="files">
+  {
+    groups.map(([dir, list]) => (
+      <section>
+        <h3><code>{dir}/</code></h3>
+        <ul class="gallery">
+          {list.map((a) => (
+            <li>
+              <figure>
+                <a class="frame" href={`/${a.preview}`}>
+                  <img src={`/${a.preview}`} alt={a.name} loading="lazy" decoding="async" />
+                </a>
+                <figcaption>
+                  <span>{a.name}</span>
+                  <span class="dl">
+                    {a.png && <a href={`/${a.png}`} download>PNG</a>}
+                    {a.svg && <a href={`/${a.svg}`} download>SVG</a>}
+                  </span>
+                </figcaption>
+              </figure>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</div>

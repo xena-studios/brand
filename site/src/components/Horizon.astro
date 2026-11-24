@@ -1,0 +1,29 @@
+---
+// The brand's horizon scene (scene/horizon.svg), scaled to
+// cover its box from the bottom edge so the planet limb always sits low.
+import raw from "../../../scene/horizon.svg?raw";
+
+interface Props {
+  class?: string;
+  /** Prefixes the scene's gradient and filter ids, so two horizons on one page don't share them. */
+  idPrefix?: string;
+}
+
+const { class: className, idPrefix = "horizon" } = Astro.props;
+const svg = raw
+  .replace(
+    / width="[^"]*" height="[^"]*"/,
+    ` preserveAspectRatio="xMidYMax slice" class="${className ?? ""}" aria-hidden="true" focusable="false"`,
+  )
+  .replace(/ id="([^"]+)"/g, ` id="${idPrefix}-$1"`)
+  .replace(/url\(#([^)]+)\)/g, `url(#${idPrefix}-$1)`);
+---
+<Fragment set:html={svg} />
+
+<style is:global>
+  /* The planet body fades into the page, so the scene never ends in a hard edge. */
+  svg.horizon {
+    -webkit-mask-image: linear-gradient(to bottom, var(--bg) 55%, transparent);
+    mask-image: linear-gradient(to bottom, var(--bg) 55%, transparent);
+  }
+</style>

@@ -1,0 +1,14 @@
+# The site is its own project, separate from the asset build at the repo root.
+# Dependencies allowed to run install scripts (pnpm runs none by default):
+# esbuild and workerd fetch their platform binaries for Astro and Wrangler.
+allowBuilds:
+  esbuild: true
+  workerd: true
+
+# Security fixes for transitive dependencies, as in the website repo. Drop each
+# once its parent depends on a patched version.
+# undici 7: Miniflare (via Wrangler) pins a version before 7.30.1.
+# @emnapi/runtime: its 2.0 beta crashes astro check; stay on 1.x until 2.0 ships.
+overrides:
+  'undici@>=7.0.0 <7.30.1': 7.30.1
+  '@emnapi/runtime': 1.11.3

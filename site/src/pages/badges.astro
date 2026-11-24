@@ -1,0 +1,122 @@
+---
+// The badge guide, then every theme's set with the HTML to paste.
+import GuidePage from "../components/GuidePage.astro";
+import { CDN, read, tracked } from "../lib/repo.ts";
+
+// Each theme's folder (badges/xena, badges/plugins/xutilities, ...) and its badges.
+const themes = new Map<string, string[]>();
+for (const f of tracked()) {
+  const m = f.match(/^badges\/(.+)\/compact\/([^/]+)\.svg$/);
+  if (m) themes.set(m[1], [...(themes.get(m[1]) ?? []), m[2]]);
+}
+const ORDER = ["modrinth", "github", "paper", "purpur", "folia", "docs", "website", "discord"];
+const ALT: Record<string, string> = {
+  modrinth: "Available on Modrinth", github: "Available on GitHub", paper: "Runs on Paper", purpur: "Runs on Purpur",
+  folia: "Runs on Folia", docs: "Read the Docs", website: "Visit the Website", discord: "Chat on Discord",
+};
+const plugins = JSON.parse(read("tokens/plugins-catalog.json")).plugins as { id: string; name: string }[];
+const NAMES: Record<string, string> = { xena: "Xena Studios", neoskript: "NeoSkript", raptor: "Raptor" };
+const nameOf = (theme: string) => NAMES[theme] ?? plugins.find((p) => `plugins/${p.id}` === theme)?.name ?? theme;
+const sorted = [...themes].sort(([a], [b]) => Number(a.startsWith("plugins/")) - Number(b.startsWith("plugins/")) || a.localeCompare(b));
+const snippet = (theme: string, style: "compact" | "cozy", h: number) =>
+  ORDER.filter((n) => themes.get(theme)!.includes(n))
+    .map((n) => `<img alt="${ALT[n] ?? n}" height="${h}" src="${CDN}/badges/${theme}/${style}/${n}.svg">`)
+    .join("\n");
+---
+<GuidePage file="docs/badges.md" kicker="Using the files" extra={[["themes", "Every theme"]]}>
+  <section class="block" aria-labelledby="themes">
+    <h2 id="themes">Every theme</h2>
+    <p>Each theme's set in both styles. Open a theme for the HTML, then keep only the badges the page needs and wrap each in a link to where it goes.</p>
+    <div class="themes">
+      {
+        sorted.map(([theme]) => (
+          <section>
+            <h3>{nameOf(theme)} <code>badges/{theme}/</code></h3>
+            <div class="row">
+              {ORDER.filter((n) => themes.get(theme)!.includes(n)).map((n) => (
+                <img src={`/badges/${theme}/cozy/${n}.svg`} alt={ALT[n] ?? n} height="48" loading="lazy" decoding="async" />
+              ))}
+            </div>
+            <div class="row">
+              {ORDER.filter((n) => themes.get(theme)!.includes(n)).map((n) => (
+                <img src={`/badges/${theme}/compact/${n}.svg`} alt="" height="32" loading="lazy" decoding="async" />
+              ))}
+            </div>
+            <details>
+              <summary>HTML</summary>
+              <p class="label">Compact, for a README</p>
+              <pre><code>{snippet(theme, "compact", 32)}</code></pre>
+              <p class="label">Cozy, for a Modrinth page</p>
+              <pre><code>{snippet(theme, "cozy", 48)}</code></pre>
+            </details>
+          </section>
+        ))
+      }
+    </div>
+  </section>
+</GuidePage>
+
+<style>
+  .themes > section {
+    padding-block: var(--s-6);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  h3 {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--s-3);
+    font-size: var(--t-h3);
+  }
+
+  h3 code {
+    font-size: var(--t-small);
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--muted);
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    margin-top: var(--s-4);
+  }
+
+  .row img {
+    width: auto;
+  }
+
+  details {
+    margin-top: var(--s-4);
+    font-size: var(--t-small);
+  }
+
+  summary {
+    cursor: pointer;
+    color: var(--muted);
+  }
+
+  summary:hover {
+    color: var(--text);
+  }
+
+  details .label {
+    margin-top: var(--s-4);
+  }
+
+  pre {
+    overflow-x: auto;
+    margin: var(--s-2) 0 0;
+    padding: var(--s-4) var(--s-5);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    background: var(--raised);
+    line-height: 1.6;
+  }
+
+  pre code {
+    user-select: all;
+  }
+</style>

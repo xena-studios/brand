@@ -1,0 +1,265 @@
+---
+import "../styles/global.css";
+import "../styles/guide.css";
+import Logo from "../components/Logo.astro";
+import External from "../components/External.astro";
+import fontLatin from "@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url";
+import { PRESS_KIT, REPO, release } from "../lib/repo.ts";
+
+interface Props {
+  title?: string;
+  description?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = "The Xena Studios brand: logos, colours, type and every finished file for the studio, Raptor, NeoSkript, the plugins, MostWanted and Airfields.",
+  noindex = false,
+} = Astro.props;
+const fullTitle = title ? `${title}: Xena Studios brand` : "Xena Studios brand";
+
+const path = Astro.url.pathname.replace(/(?:index)?\.html$/, "");
+const canonical = new URL(path, Astro.site);
+const og = new URL("/social/og-card.png", Astro.site);
+const year = new Date().getFullYear();
+
+const nav = [
+  { href: "/", text: "Brands" },
+  { href: "/badges", text: "Badges" },
+  { href: "/files", text: "Where files go", optional: true },
+  { href: "/building", text: "Building", optional: true },
+];
+const brandPages = ["/xena", "/raptor", "/neoskript", "/plugins", "/mostwanted", "/airfields"];
+const current = brandPages.includes(path) ? "/" : nav.find((n) => n.href === path)?.href;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+    <meta name="theme-color" content="#06080D" />
+    <link rel="icon" href="/avatar/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/avatar/apple-touch-icon.png" />
+    <link rel="preload" href={fontLatin} as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Xena Studios brand" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    {!noindex && <meta property="og:url" content={canonical} />}
+    <meta property="og:image" content={og} />
+    <meta property="og:image:alt" content="XENA STUDIOS over a planet horizon." />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="wrap bar">
+        <a class="home" href="/" aria-label="Xena Studios brand, home">
+          <Logo class="logo" />
+          <span class="label">Brand</span>
+        </a>
+        <nav aria-label="Main">
+          <ul>
+            {
+              nav.map((n) => (
+                <li class={n.optional ? "optional" : undefined}>
+                  <a href={n.href} aria-current={current === n.href ? "page" : undefined}>{n.text}</a>
+                </li>
+              ))
+            }
+            <li class="optional"><a href={REPO}><External>GitHub</External></a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap foot">
+        <p class="studio">
+          <a class="xena" href="https://xenastudios.co" aria-label="Xena Studios"><Logo name="xena" class="foot-logo" /></a>
+          <span class="label">© {year} Xena Studios{release && ` · ${release}`}</span>
+        </p>
+        <p class="note">
+          All rights reserved. Use the logos as they are to refer to Xena Studios and its products, as <a href={`${REPO}/blob/main/LICENSE`}>the licence</a> says; for anything else, ask <a href="mailto:contact@xenastudios.co">contact@xenastudios.co</a>.
+        </p>
+        <nav aria-label="Footer">
+          <ul>
+            <li><a href="/">Brands</a></li>
+            <li><a href="/badges">Badges</a></li>
+            <li><a href="/files">Where files go</a></li>
+            <li><a href="/building">Building</a></li>
+            <li><a href={PRESS_KIT}>Press kit</a></li>
+            <li><a href={REPO}><External>Source</External></a></li>
+            <li><a href={`${REPO}/issues/new/choose`}><External>Report a problem</External></a></li>
+          </ul>
+        </nav>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-header);
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: blur(12px) saturate(140%);
+    border-bottom: 1px solid color-mix(in srgb, var(--rule) 70%, transparent);
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-5);
+    min-height: 4rem;
+  }
+
+  .home {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    color: var(--text);
+    padding-block: var(--s-3);
+    text-decoration: none;
+  }
+
+  .home :global(.logo) {
+    height: 0.8125rem;
+    width: auto;
+  }
+
+  .home .label {
+    padding-left: var(--s-3);
+    border-left: 1px solid var(--rule);
+    line-height: 1;
+  }
+
+  .site-header nav ul {
+    display: flex;
+    gap: clamp(var(--s-4), 2.5vw, var(--s-6));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--t-small);
+  }
+
+  .site-header nav a {
+    display: inline-block;
+    padding-block: var(--s-2);
+    white-space: nowrap;
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  .site-header nav a:hover,
+  .site-header nav a[aria-current="page"] {
+    color: var(--text);
+  }
+
+  .site-header nav a[aria-current="page"] {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.6em;
+  }
+
+  @media (max-width: 52rem) {
+    .optional {
+      display: none;
+    }
+  }
+
+  @media (max-width: 30rem) {
+    .home .label {
+      display: none;
+    }
+  }
+
+  @media (max-width: 26rem) {
+    .home :global(.logo) {
+      height: 0.6875rem;
+    }
+
+    .site-header nav ul {
+      gap: var(--s-3);
+      font-size: var(--t-label);
+    }
+  }
+
+  /* As on Xena's other sites (neoskript.dev, raptorpanel.net): the XENA mark and the
+     copyright, a line on the licence, then the site's links, stacked. */
+  .site-footer {
+    border-top: 1px solid var(--rule);
+    padding-block: 2.5rem 3rem;
+    color: var(--muted);
+    font-size: 0.9375rem;
+  }
+
+  .foot {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .studio {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1.25rem;
+    margin: 0;
+  }
+
+  .studio .label {
+    font-weight: 500;
+  }
+
+  .note {
+    max-width: 72ch;
+    font-size: var(--t-small);
+  }
+
+  .site-footer .note a {
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+  }
+
+  .site-footer ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.75rem;
+    margin: 0.25rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: inherit;
+  }
+
+  .site-footer a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .site-footer a:hover {
+    color: var(--text);
+  }
+
+  .site-footer .xena {
+    display: inline-flex;
+    color: var(--text);
+  }
+
+  .site-footer :global(.foot-logo) {
+    height: 0.9rem;
+    width: auto;
+  }
+</style>

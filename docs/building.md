@@ -40,9 +40,26 @@ To use another copy of any font, set its path with one of these: `ETHNOCENTRIC`,
 
 A release is a tag, `vX.Y.Z`, with notes, and it's what other repos and Modrinth pages link (see [Linking files](where-files-go.md#linking-files)). When `main` has changes worth releasing, run **Actions → Release → Run workflow**. It checks `main` builds clean, then [`scripts/release.ts`](../scripts/release.ts) works out the version from the Conventional Commits since the last release: a breaking change (`feat!:`, or `BREAKING CHANGE:` in the body) is a major release, a `feat:` a minor one, anything else a patch. It tags `main` and publishes the notes, grouped by kind, as a GitHub release, with **`xena-studios-press-kit.zip`** attached: the logos and avatar, every brand's logos and icons, the colour tokens, the brand guides, the licence and the notices. Link the [latest release](https://github.com/xena-studios/brand/releases/latest) to anyone who asks for a press kit.
 
+Once the release is out, the workflow builds [brand.xenastudios.co](https://brand.xenastudios.co) from the tagged commit and deploys it (below), so the site always shows the latest release.
+
 `pnpm release:notes` shows what the next release would be, without releasing.
 
 A breaking change is one that breaks something that links or reads these files: a file renamed, moved or removed, a token renamed, or the catalog's shape changed (which also bumps its `version`).
+
+## The site
+
+[brand.xenastudios.co](https://brand.xenastudios.co) is the guides and files as a website: a page per brand with its guide, every colour and every file to download, the badges with their HTML, and the press kit. It's a static [Astro](https://astro.build) site in [`site/`](../site/), its own pnpm project, styled like xenastudios.co. It has no content of its own: the pages read `docs/`, `tokens/` and the files at build time, so writing a guide or adding a file here is all it takes.
+
+```sh
+cd site
+pnpm install
+pnpm dev      # http://localhost:4321
+pnpm build    # copy the files in, type-check, build to dist/
+```
+
+- A guide's links work on both: a link to another guide goes to its page, a link to a file to the copy the site serves (at its path here, such as `/raptor/icon.png`), and anything else to GitHub at the release.
+- [`site.yml`](../.github/workflows/site.yml) deploys it to the `xena-brand` Cloudflare Worker. The Release workflow runs it after each release; run **Actions → Site → Run workflow** to redeploy the latest release with the site as it is on `main`, after a change to the site alone.
+- The Cloudflare token is in the `production` environment, which only `main` can use. `static/_headers` sets a strict CSP: no scripts and no inline styles.
 
 ## CI
 
@@ -56,6 +73,7 @@ A breaking change is one that breaks something that links or reads these files: 
   - a brand is missing its icon, banner, social preview or (with a website) favicon;
   - a file a platform takes isn't the size it wants or is over its upload limit: the 64×64 Minecraft server icon, GitHub's social preview (1280×640, under 1 MB), Modrinth's icon (under 256 KB), link previews, the Discord banner, the X header and README banners.
 - **rebuild:** `pnpm check`, so the committed files have to be exactly what the build makes. If it fails, run `pnpm build` and commit what changed.
+- **site:** builds brand.xenastudios.co, since a change to a guide, a token or a file can break a page. It isn't required, so a site problem never blocks an asset fix.
 
 CodeQL ([`codeql.yml`](../.github/workflows/codeql.yml)) scans the scripts and workflows.
 

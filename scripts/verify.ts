@@ -45,10 +45,10 @@ for (const file of tracked) {
 // link ending in a slash is a folder.
 const docs = tracked.filter((f) => f === "README.md" || /^docs\/[^/]+\.md$/.test(f));
 // Paths the docs name in code spans, from the repo root, in this repo's own
-// folders (other repos' paths, like Raptor's `site/public/og.png`, start
-// elsewhere). A name without an extension stands for its SVG and PNG, `<id>`
+// asset folders (other repos' paths, like Raptor's `site/public/og.png`, start
+// elsewhere, and this repo's own site/ shares its name, so site/ isn't checked). A name without an extension stands for its SVG and PNG, `<id>`
 // and `*` for any name, and a trailing slash for a folder.
-const dirs = new Set(tracked.map((f) => f.split("/")[0]).filter((d) => d !== ".github"));
+const dirs = new Set(tracked.map((f) => f.split("/")[0]).filter((d) => d !== ".github" && d !== "site"));
 let links = 0;
 let paths = 0;
 for (const doc of docs) {

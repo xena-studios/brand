@@ -4,7 +4,7 @@
   "description": "Xena Studios brand system: the studio, Raptor, NeoSkript, MostWanted, Airfields and the plugin family",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@12.16.1",
+  "packageManager": "pnpm@12.22.0",
   "engines": {
     "node": ">=24"
   },

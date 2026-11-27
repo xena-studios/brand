@@ -69,7 +69,7 @@ PNGs are exported at 2× unless noted.
 
 <img src="../github/brand.png" width="420" alt="Brand repo card"> &nbsp; <img src="../github/plugins.png" width="420" alt="Plugins repo card">
 
-Every repo gets a 1280×640 GitHub social preview in the same layout: XENA STUDIOS top-left, a `//` kicker top-right, the title, and the horizon. `brand`, `website` and `.github` use the studio's look, `plugins` shows all three plugins, and the products use their own. [Where each file goes](where-files-go.md#social-previews) lists the file for each repo.
+Every repo gets a 1280×640 GitHub social preview in the same layout: XENA STUDIOS top-left, a `//` kicker top-right, the title, and the horizon. `brand`, `website`, `.github` and `tools` use the studio's look, `plugins` shows all three plugins, and the products use their own. [Where each file goes](where-files-go.md#social-previews) lists the file for each repo.
 
 ## Team photos
 

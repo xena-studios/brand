@@ -7,6 +7,7 @@ These repos copy brand files in with their `brand:sync` script (`pnpm brand:sync
 | Repo | What it takes |
 |---|---|
 | [website](https://github.com/xena-studios/website) | Favicon, iOS icon, link preview, logos, horizon, product marks, plugin icons, MostWanted's wordmark and key art, Airfields' icon and its current season's key art |
+| [tools](https://github.com/xena-studios/tools) | The studio's look, as xenastudios.co has it: `tokens/colors.css`, `logo/xena-studios.svg`, `logo/xena.svg`, `scene/horizon.svg`, `avatar/favicon.svg`, `avatar/apple-touch-icon.png`, `social/og-card.png` |
 | [plugins](https://github.com/xena-studios/plugins) (in `docs/`) | The docs site's logo, favicon, plugin icons and link preview (`social/docs-og.png`) |
 | airfields (private, `brand/`, with `npm run brand:sync`) | `airfields/` and `airfields/themes/`: the wordmark, monogram, icons and server icon, permanent and per season, each season's pixel scene and key art (`scene*.png`, `banner-scene.png`, `key-art.png`, `scene.json`, the depth layers in `layers/`), and `tokens/airfields.json`. The game repo builds its site art, link previews, Discord banners and README banner from them |
 | mostwanted (private, in `website/`) | `logo/xena.svg`, for the site's footer. Its own icons, banners and key art are made in the game repo and copied back into `mostwanted/official/` |
@@ -50,6 +51,7 @@ Every README shows its banner straight from a release, through jsDelivr (`https:
 | website | `github/website-banner.png` |
 | .github | `github/dotgithub-banner.png`, and the profile's header is `social/x-header.png` |
 | hallow | `github/hallow-banner.png` |
+| tools | `github/tools-banner.png` |
 | brand | `github/brand-banner.png` (used directly) |
 
 The org profile (`.github` repo) links its logos and icons the same way, and writes its plugin table from `tokens/plugins-catalog.json`.
@@ -60,7 +62,7 @@ Upload in each repo under **Settings → General → Social preview**. GitHub ha
 
 | Repo | File |
 |---|---|
-| brand, website, .github, hallow | `github/brand.png`, `github/website.png`, `github/dotgithub.png`, `github/hallow.png` |
+| brand, website, .github, hallow, tools | `github/brand.png`, `github/website.png`, `github/dotgithub.png`, `github/hallow.png`, `github/tools.png` |
 | plugins | `github/plugins.png` |
 | neoskript, mostwanted | `neoskript/social.png`, `mostwanted/social.png` |
 | airfields | `airfields/social.png` |

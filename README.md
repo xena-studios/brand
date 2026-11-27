@@ -23,7 +23,7 @@ Two things tie them together: the **XENA STUDIOS** endorsement (on banners, prev
 |---|---|
 | `logo/`, `avatar/` | The Xena Studios logo in every version and colour, and the X avatar and favicons |
 | `social/`, `scene/` | Xena's social graphics (X header, Discord banner, link previews) and the bare horizon |
-| `github/` | README banners and social previews for the org's own repos (brand, website, .github, plugins, hallow) |
+| `github/` | README banners and social previews for the org's own repos (brand, website, .github, plugins, hallow, tools) |
 | `people/`, `workspace/` | Team profile photos and the Google Workspace logo |
 | `raptor/`, `neoskript/` | Each product's marks, icon, banner and social preview |
 | `mostwanted/`, `airfields/` | Each server's marks, icon, banner and social preview; `airfields/themes/<season>/` for the seasons |
@@ -72,7 +72,7 @@ For the team only: the brand is all rights reserved, so the repo doesn't take ou
 - Changes go through pull requests, and `check` has to pass: it rebuilds everything and fails if a committed file isn't what the build makes. Run `pnpm build` and commit the regenerated files with your change.
 - Releases are tags made by the Release workflow, versioned from the commits: see [Releasing](docs/building.md#releasing). Other repos link a release, not `main`. Each release also deploys [brand.xenastudios.co](https://brand.xenastudios.co).
 - Commits follow [Conventional Commits](https://www.conventionalcommits.org), and the version follows from them: `feat:` for a new or changed asset, plus `fix:`, `docs:`, `build:` and `ci:`.
-- Other repos only pick up a change when they copy it in. The website, the plugin docs and the two game repos have a `brand:sync` script; everything else is copied by hand. [Where each file goes](docs/where-files-go.md) lists it all.
+- Other repos only pick up a change when they copy it in. The website, tools.xenastudios.co, the plugin docs and the two game repos have a `brand:sync` script; everything else is copied by hand. [Where each file goes](docs/where-files-go.md) lists it all.
 - A new product or server gets its own `scripts/<id>-brand.ts` (its colours, marks and copy) and `scripts/art/<id>.ts` (its files), a folder, tokens, a badge theme and a guide in `docs/`. Add it to the contrast and full-set checks in `scripts/verify.ts`, so `pnpm verify` holds it to the same rules. A new plugin needs only `pnpm new-plugin`. Each needs an accent no other brand uses (compare OKLCH hues: the guides list them).
 
 ## Licence

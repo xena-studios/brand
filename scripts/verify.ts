@@ -155,7 +155,7 @@ for (const p of listed) {
     ["raptor", [["raptor/icon.png"], ["raptor/banner.png"], ["raptor/official/og.png"], ["raptor/official/favicon.svg"]]],
     ...["neoskript", "mostwanted", "airfields"].map((b): [string, string[][]] => [b, [[`${b}/icon.png`], [`${b}/banner.png`], [`${b}/social.png`], [`${b}/favicon.png`]]]),
     ...listed.map((p): [string, string[][]] => [`plugins/${p.id}`, [[`plugins/${p.id}/icon.png`], [`plugins/${p.id}/banner.png`], [`plugins/${p.id}/social.png`]]]),
-    ...["brand", "website", "dotgithub", "hallow", "plugins"].map((r): [string, string[][]] => [`github/${r}`, [[`github/${r}.png`], [`github/${r}-banner.png`]]]),
+    ...["brand", "website", "dotgithub", "hallow", "tools", "plugins"].map((r): [string, string[][]] => [`github/${r}`, [[`github/${r}.png`], [`github/${r}-banner.png`]]]),
   ];
   for (const [brand, files] of sets) {
     for (const alts of files) if (!has(...alts)) problems.push(`${brand}: missing ${alts.join(" or ")}`);
@@ -170,7 +170,7 @@ for (const p of listed) {
     // pattern, width, height, max bytes, what it's for
     [/^avatar\/apple-touch-icon\.png$/, 180, 180, 0, "iOS home-screen icon"],
     [/^airfields\/(themes\/[^/]+\/)?server-icon\.png$/, 64, 64, 0, "Minecraft server icon (exactly 64×64)"],
-    [/^(github\/(brand|website|dotgithub|hallow|plugins)|plugins\/[^/]+\/social|neoskript\/social|mostwanted\/social|airfields\/(themes\/[^/]+\/)?social)\.png$/, 1280, 640, 1024 * KB, "GitHub social preview (under 1 MB)"],
+    [/^(github\/(brand|website|dotgithub|hallow|tools|plugins)|plugins\/[^/]+\/social|neoskript\/social|mostwanted\/social|airfields\/(themes\/[^/]+\/)?social)\.png$/, 1280, 640, 1024 * KB, "GitHub social preview (under 1 MB)"],
     [/^(plugins\/[^/]+\/icon)\.png$/, 512, 512, 256 * KB, "Modrinth icon (under 256 KB)"],
     [/^neoskript\/icon\.png$/, 1024, 1024, 256 * KB, "Modrinth icon (under 256 KB)"],
     [/^social\/(og-card|docs-og)\.png$/, 2400, 1260, 5 * 1024 * KB, "link preview, 1200×630 at 2×"],

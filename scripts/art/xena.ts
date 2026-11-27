@@ -98,7 +98,7 @@ const repoCards: Record<string, Card> = {
   website: { kicker: "// WEBSITE", title: "xenastudios.co", lead: "The studio's website. Astro, served by Cloudflare." },
   dotgithub: { kicker: "// GITHUB", title: "Xena Studios", lead: ORG_TAGLINE },
   hallow: { kicker: "// HALLOW", title: "Hallow", lead: "A full minigame network on Pumpkin, in Rust." },
-  tools: { kicker: "// TOOLS", title: "Xena Tools", lead: "Tools for running a Minecraft server." },
+  tools: { kicker: "// TOOLS", title: "Tools", lead: "Tools for running a Minecraft server." },
 };
 
 /** pnpm build:logos: the logos in every colour, and the team photos' initials. The only files drawn in Ethnocentric. */
